@@ -1,5 +1,9 @@
 #include <iostream>
+#include "TSystem.h"
+
+using namespace std;
 
 int main(int, char**) {
-    std::cout << "Hello, world!\n";
+    cout << "Hello, world!" << endl;
+    cout << gSystem->GetBuildCompilerVersion() << endl;
 }
