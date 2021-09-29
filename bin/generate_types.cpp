@@ -11,6 +11,9 @@
 #include "TSystem.h"
 
 #include <iostream>
+#include <queue>
+#include <set>
+
 using namespace std;
 
 int main(int, char**) {
@@ -20,5 +23,26 @@ int main(int, char**) {
     if (status < 0) {
         cout << "ERROR: Can't load library: " << status << endl;
     }
-    translate_class("xAOD::Jet_v1");
+
+    queue<string> classes_to_do;
+    set<string> classes_done;
+    classes_to_do.push("xAOD::JetContainer");
+
+    while (classes_to_do.size() > 0) {
+        auto class_name(classes_to_do.front());
+        classes_to_do.pop();
+        if (classes_done.find(class_name) != classes_done.end())
+            continue;
+        classes_done.insert(class_name);
+
+        auto c = translate_class(class_name);
+        if (c.name.size() > 0) {
+            cout << c;
+        }
+
+        for (auto &&c_name : referenced_types(c))
+        {
+            classes_to_do.push(c_name);
+        }        
+    }
 }
