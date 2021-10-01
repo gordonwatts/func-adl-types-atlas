@@ -48,4 +48,16 @@ int main(int, char**) {
             classes_to_do.push(c_name);
         }        
     }
+
+    // Types
+	TIter i_typedef (gROOT->GetListOfTypes(true));
+	int junk = gROOT->GetListOfTypes()->GetEntries();
+    cout << "here we are = " << junk << endl;
+	TDataType *typedef_spec;
+	while ((typedef_spec = static_cast<TDataType*>(i_typedef.Next())) != 0)
+	{
+		string typedef_name = typedef_spec->GetName();
+		string base_name = typedef_spec->GetFullTypeName();
+        cout << "typedef " << typedef_name << " " << base_name << endl;
+    }
 }
