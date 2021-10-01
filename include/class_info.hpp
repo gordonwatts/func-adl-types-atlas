@@ -5,12 +5,24 @@
 #include <iostream>
 #include <vector>
 
+struct method_arg {
+    // Name of the argument
+    std::string name;
+
+    // The raw and full type name
+    std::string raw_typename;
+    std::string full_typename;
+};
+
 struct method_info {
     // The method name
     std::string name;
 
     // The return type
     std::string return_type;
+
+    // Arguments
+    std::vector<method_arg> arguments;
 };
 
 struct class_info {
@@ -26,9 +38,11 @@ struct class_info {
 
 std::ostream& operator <<(std::ostream& stream, const class_info& ci);
 std::ostream& operator <<(std::ostream& stream, const method_info& mi);
+std::ostream& operator <<(std::ostream& stream, const method_arg& ai);
 
 // Return all types referenced
 std::vector<std::string> referenced_types(const class_info &c_info);
 std::vector<std::string> referenced_types(const method_info &m_info);
+std::vector<std::string> referenced_types(const method_arg &a_info);
 
 #endif

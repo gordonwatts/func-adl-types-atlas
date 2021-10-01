@@ -7,8 +7,10 @@
 /// atlas software is availible.
 ///
 #include "translate.hpp"
+#include "utils.hpp"
 
 #include "TSystem.h"
+#include "TROOT.h"
 
 #include <iostream>
 #include <queue>
@@ -17,6 +19,7 @@
 using namespace std;
 
 int main(int, char**) {
+    auto app_reference = create_root_app();
 
     // Load a library
     auto status = gSystem->Load("libxAODJet");

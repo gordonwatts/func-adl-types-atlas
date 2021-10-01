@@ -33,6 +33,17 @@ std::ostream& operator <<(std::ostream& stream, const method_info& mi)
         stream << "      Return Type: " << mi.return_type << endl;
     }
 
+    for (auto &&a : mi.arguments)
+    {
+        stream << "      Arg: " << a << endl;
+    }
+
+    return stream;
+}
+
+std::ostream& operator <<(std::ostream& stream, const method_arg& ai)
+{
+    stream << ai.full_typename << " " << ai.name;
     return stream;
 }
 

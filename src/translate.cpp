@@ -6,6 +6,7 @@
 #include "TClass.h"
 #include "TBaseClass.h"
 #include "TMethod.h"
+#include "TMethodArg.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -17,6 +18,20 @@
 using namespace std;
 
 
+///
+// Translate a method argument.
+method_arg translate_argument(const TMethodArg *arg){
+    auto result = method_arg();
+
+	result.name = arg->GetName();
+	result.raw_typename = arg->GetTypeName();
+	result.full_typename = arg->GetFullTypeName();
+
+    return result;
+}
+
+///
+// Translate a method
 method_info translate_method(TMethod *method) {
     method_info m;
 
@@ -29,12 +44,18 @@ method_info translate_method(TMethod *method) {
         m.return_type = "";
     }
 
+    // The arguments for the method
+    auto l = method->GetListOfMethodArgs();
+	for (int i_arg = 0; i_arg < l->GetSize(); i_arg++) {
+        m.arguments.push_back(translate_argument(static_cast<TMethodArg*> (l->At(i_arg))));
+	}
+
     return m;
 }
 
 
 bool is_good_method(const TClass *c_info, const TMethod *m_info, const set<string> &inherited_classes) {
-    if (m_info->GetName() == c_info->GetName())
+    if (string(m_info->GetName()) == string(c_info->GetName()))
         return false;
     
     if (m_info->GetName()[0] == '~')

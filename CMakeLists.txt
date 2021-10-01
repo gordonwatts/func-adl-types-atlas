@@ -14,6 +14,7 @@ add_library(wraper_generators
             src/normalize.cpp
             src/class_info.cpp
             src/type_helpers.cpp
+            src/utils.cpp
             src/translate.cpp)
 target_link_libraries(wraper_generators ROOT::Core)
 
