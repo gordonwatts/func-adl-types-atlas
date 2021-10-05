@@ -29,6 +29,9 @@ struct class_info {
     // Fully qualified C++ class name, as known to ROOT
     std::string name;
 
+    // List of aliases for this class (other names).
+    std::vector<std::string> aliases;
+
     // List of fully qualified C++ class names that this directly inherrits from
     std::vector<std::string> inherrited_class_names;
 

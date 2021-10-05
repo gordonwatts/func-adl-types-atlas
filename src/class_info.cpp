@@ -9,6 +9,15 @@ using namespace std;
 std::ostream& operator <<(std::ostream& stream, const class_info& ci) {
     stream << "Class: " << ci.name << endl;
 
+    if (ci.aliases.size() > 0) {
+        stream << "  Aliases: ";
+        for (auto &&an : ci.aliases)
+        {
+            stream << an << " ";
+        }
+        stream << endl;
+    }
+
     if (ci.inherrited_class_names.size() > 0) {
         stream << "  Inherrits from:" << endl;
         for (auto &&i_name : ci.inherrited_class_names)

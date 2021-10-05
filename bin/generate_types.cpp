@@ -7,6 +7,7 @@
 /// atlas software is availible.
 ///
 #include "translate.hpp"
+#include "type_helpers.hpp"
 #include "utils.hpp"
 
 #include "TSystem.h"
@@ -30,6 +31,7 @@ int main(int, char**) {
     queue<string> classes_to_do;
     set<string> classes_done;
     classes_to_do.push("xAOD::JetContainer");
+    vector<class_info> done_classes;
 
     while (classes_to_do.size() > 0) {
         auto class_name(classes_to_do.front());
@@ -40,24 +42,23 @@ int main(int, char**) {
 
         auto c = translate_class(class_name);
         if (c.name.size() > 0) {
-            cout << c;
+            done_classes.push_back(c);
+
+            for (auto &&c_name : referenced_types(c))
+            {
+                classes_to_do.push(c_name);
+            }        
         }
-
-        for (auto &&c_name : referenced_types(c))
-        {
-            classes_to_do.push(c_name);
-        }        
     }
 
-    // Types
-	TIter i_typedef (gROOT->GetListOfTypes(true));
-	int junk = gROOT->GetListOfTypes()->GetEntries();
-    cout << "here we are = " << junk << endl;
-	TDataType *typedef_spec;
-	while ((typedef_spec = static_cast<TDataType*>(i_typedef.Next())) != 0)
-	{
-		string typedef_name = typedef_spec->GetName();
-		string base_name = typedef_spec->GetFullTypeName();
-        cout << "typedef " << typedef_name << " " << base_name << endl;
+    // Look at the loaded type defs, and add alaises.
+    fixup_type_aliases(done_classes);
+
+    // Dump them all out
+    for (auto &&c : done_classes)
+    {
+        cout << c << endl;
     }
+    
+
 }
