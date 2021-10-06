@@ -132,6 +132,7 @@ class_info translate_class(const std::string &class_name)
     }
     class_info result;
     result.name = c_info->GetName();
+    result.name_as_type = parse_typename(result.name);
 
     // Look to inherrited classes
     auto inherited_list = c_info->GetListOfBases();

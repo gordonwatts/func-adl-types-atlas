@@ -14,6 +14,9 @@ struct typename_info {
 
     // The template arguments (if there are any)
     std::vector<typename_info> template_arguments;
+
+    // The full name of the type
+    std::string nickname;
 };
 
 struct method_arg {
@@ -39,6 +42,7 @@ struct method_info {
 struct class_info {
     // Fully qualified C++ class name, as known to ROOT
     std::string name;
+    typename_info name_as_type;
 
     // List of aliases for this class (other names).
     std::vector<std::string> aliases;
@@ -53,10 +57,12 @@ struct class_info {
 std::ostream& operator <<(std::ostream& stream, const class_info& ci);
 std::ostream& operator <<(std::ostream& stream, const method_info& mi);
 std::ostream& operator <<(std::ostream& stream, const method_arg& ai);
+std::ostream& operator <<(std::ostream& stream, const typename_info& ai);
 
 // Return all types referenced
 std::vector<std::string> referenced_types(const class_info &c_info);
 std::vector<std::string> referenced_types(const method_info &m_info);
 std::vector<std::string> referenced_types(const method_arg &a_info);
+std::vector<std::string> referenced_types(const typename_info &a_info);
 
 #endif

@@ -3,6 +3,14 @@ project(func_adl_types_atlas VERSION 0.1.0)
 
 find_package(ROOT REQUIRED COMPONENTS Core)
 
+# Get Google Test
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/075810f7a20405ea09a93f68847d6e963212fa62.zip
+)
+FetchContent_MakeAvailable(googletest)
+
 include(CTest)
 enable_testing()
 
@@ -20,7 +28,10 @@ target_link_libraries(wraper_generators ROOT::Core)
 
 # Tests
 add_executable(t_type_helpers tests/t_type_helpers.cpp)
-add_test(t_type_helpers ./build/t_type_helpers)
+target_link_libraries(t_type_helpers wraper_generators gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(t_type_helpers)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)
