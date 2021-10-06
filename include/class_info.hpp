@@ -5,6 +5,17 @@
 #include <iostream>
 #include <vector>
 
+struct typename_info {
+    // The list of identifiers separated by "::"
+    std::vector<typename_info> namespace_list;
+
+    // The actual type name
+    std::string type_name;
+
+    // The template arguments (if there are any)
+    std::vector<typename_info> template_arguments;
+};
+
 struct method_arg {
     // Name of the argument
     std::string name;

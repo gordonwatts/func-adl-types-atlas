@@ -3,8 +3,8 @@ project(func_adl_types_atlas VERSION 0.1.0)
 
 find_package(ROOT REQUIRED COMPONENTS Core)
 
-# include(CTest)
-# enable_testing()
+include(CTest)
+enable_testing()
 
 # Package setup
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -17,6 +17,10 @@ add_library(wraper_generators
             src/utils.cpp
             src/translate.cpp)
 target_link_libraries(wraper_generators ROOT::Core)
+
+# Tests
+add_executable(t_type_helpers tests/t_type_helpers.cpp)
+add_test(t_type_helpers ./build/t_type_helpers)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)

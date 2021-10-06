@@ -17,4 +17,7 @@ void fixup_type_aliases(std::vector<class_info> &classes);
 
 // Return a type name with & and * stripped off the end.
 std::string unqualified_type_name(const std::string &full_type_name);
+
+// Parse a fully qualified typename
+typename_info parse_typename(const std::string &type_name);
 #endif

@@ -78,3 +78,28 @@ void fixup_type_aliases(vector<class_info> &classes)
         }
     }
 }
+
+// Parse a horrendus typename into its various peices.
+//
+// "int"
+// class_name::size_type
+// class_name<t1,t2>::class_name2<t3, t4>::size_type
+typename_info parse_typename(const string &type_name)
+{
+    // Go through, pulling out info of this thing.
+    size_t index = 0;
+    int template_counter = 0;
+    string name;
+    typename_info result;
+    while (index < type_name.size()) {
+        if(template_counter == 0) {
+            if (type_name[index] == ':' && type_name[index+1] == ':') {
+                result.namespace_list.push_back(parse_typename(name));
+                index += 2;
+            } else if (type_name[index] == '<') {
+                template_counter = template_counter + 1;
+                index += 1;
+            }
+        }
+    }
+}
