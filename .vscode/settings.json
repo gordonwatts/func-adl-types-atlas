@@ -3,5 +3,6 @@
     "files.associations": {
         "string": "cpp",
         "stdexcept": "cpp"
-    }
+    },
+    "restructuredtext.languageServer.disabled": true
 }
