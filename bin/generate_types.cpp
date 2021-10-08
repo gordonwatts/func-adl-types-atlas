@@ -88,6 +88,7 @@ int main(int, char**) {
 
 
     // Dump them all out
+    cout << "Collections:" << endl;
     for (auto &&c : collections)
     {
         cout << c << endl;
@@ -97,15 +98,4 @@ int main(int, char**) {
     {
         cout << c << endl;
     }
-    
-    // auto my_typedefs = root_typedef_map();
-    // for (auto &&m_td : my_typedefs)
-    // {
-    //     cout << "mapping " << m_td.first << endl;
-    //     for (auto &&m_r : m_td.second)
-    //     {
-    //         cout << "  -> " << m_r << endl;
-    //     }
-        
-    // }
 }

@@ -56,3 +56,39 @@ TEST(t_xaod_helpers, normal_met_collection) {
 
     EXPECT_EQ(r[0].type_info.nickname, "xAOD::MissingETContainer_v1");
 }
+
+// Collection isn't a container
+TEST(t_xaod_helpers, no_good_collection) {
+
+    class_info a;
+    a.name = "xAOD::Jet_v1";
+    a.name_as_type = parse_typename(a.name);
+    a.aliases.push_back("xAOD::Jet");
+    a.inherrited_class_names.push_back("xAOD::IParticle");
+
+    vector<class_info> seq;
+    seq.push_back(a);
+
+    auto r = find_collections(seq);
+
+    EXPECT_EQ(r.size(), 0);
+}
+
+// Single copies only 
+TEST(t_xaod_helpers, no_duplicates) {
+
+    class_info a;
+    a.name = "DataVector<xAOD::Jet_v1>";
+    a.name_as_type = parse_typename(a.name);
+    a.aliases.push_back("xAOD::JetContainer");
+    a.aliases.push_back("xAOD::JetContainer_v1");
+    a.inherrited_class_names.push_back("DataVector<xAOD::IParticle>");
+
+    vector<class_info> seq;
+    seq.push_back(a);
+    seq.push_back(a);
+
+    auto r = find_collections(seq);
+
+    EXPECT_EQ(r.size(), 1);
+}

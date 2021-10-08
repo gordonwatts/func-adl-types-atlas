@@ -38,8 +38,25 @@ typename_info get_first_class(const class_info &c, const string &name) {
         }
     }
 
-    throw runtime_error("No DataVector - programming error");
+    return typename_info();
 }
+
+
+// Find the name that has "Container" in it, or return empty string.
+string get_prefix_name(const class_info &c, const string &prefix) {
+    if (hasEnding(c.name, prefix)) {
+        return c.name;
+    }
+    for (auto &&a_name : c.aliases)
+    {
+        if (hasEnding(a_name, prefix)) {
+            return a_name;
+        }
+    }
+
+    return "";
+}
+
 
 // Extract a collection from the info.
 collection_info get_collection_info(const class_info &c) {
@@ -47,15 +64,7 @@ collection_info get_collection_info(const class_info &c) {
 
     // Find the name that ends in collection - we'll use that
     // to base our other things
-    string collection_name = c.name;
-    if (!hasEnding(collection_name, "Container")) {
-        for (auto &&a_name : c.aliases)
-        {
-            if (hasEnding(a_name, "Container")) {
-                collection_name = a_name;
-            }
-        }
-    }
+    string collection_name = get_prefix_name(c, "Container");
 
     // We need to pull out the name from this
     auto collection_ti = parse_typename(collection_name);
@@ -78,15 +87,30 @@ collection_info get_collection_info(const class_info &c) {
 }
 
 
+// See if this is a collection class or not
+bool is_collection_class(const class_info &c) {
+    if (get_first_class(c, "DataVector").type_name.size() == 0)
+        return false;
+
+    return get_prefix_name(c, "Container").size() != 0;
+}
+
 // Given the list of parsed classes, returns the class info for everything
 // that is a collection.
 vector<collection_info> find_collections(const vector<class_info> &all_classes)
 {
     vector<collection_info> result;
 
+    set<string> seen_collections;
     for (auto &&c : all_classes)
     {
-        result.push_back(get_collection_info(c));
+        if (is_collection_class(c)) {
+            auto c_info = get_collection_info(c);
+            if (seen_collections.find(c_info.name) == seen_collections.end()) {
+                result.push_back(get_collection_info(c));
+                seen_collections.insert(c_info.name);
+            }
+        }
     }
     
 
@@ -96,5 +120,9 @@ vector<collection_info> find_collections(const vector<class_info> &all_classes)
 // Output to the stream a collection
 std::ostream& operator <<(std::ostream& stream, const collection_info& ci)
 {
+    stream << "Collection Name: " << ci.name << endl;
+    stream << "  Full Type Info: " << ci.type_info << endl;
+    stream << "  Iterator Info " << ci.iterator_type_info << endl;
+
     return stream;
 }
