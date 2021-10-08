@@ -2,6 +2,7 @@
 #include "type_helpers.hpp"
 
 #include <vector>
+#include <algorithm>
 #include <set>
 
 using namespace std;
@@ -114,28 +115,46 @@ std::vector<std::string> referenced_types(const method_info &m_info)
 {
     set<string> result;
 
+    // Take care of the return types.
     if (m_info.return_type.size() > 0) {
-        result.insert(unqualified_type_name(m_info.return_type));
+        auto ti = parse_typename(m_info.return_type);
+        auto refed_types = referenced_types(ti);
+        result.insert(refed_types.begin(), refed_types.end());
     }
+
+    // And the arguments
+    for (auto &&a : m_info.arguments)
+    {
+        auto ti = parse_typename(a.full_typename);
+        auto refed_types = referenced_types(ti);
+        result.insert(refed_types.begin(), refed_types.end());
+    }
+    
 
     return vector<string>(result.begin(), result.end());
 }
 
+// This type might refer to several different classes. Dig them out.
 std::vector<std::string> referenced_types(const typename_info &t_info)
 {
     set<string> result;
 
-    for (auto &&ti : t_info.namespace_list)
-    {
-        auto new_types = referenced_types(ti);
-        result.insert(new_types.begin(), new_types.end());
-    }
+    // We do not look at the namespace arguments since they are
+    // qualifiers and not actually referenced.
+
+    // The template arguments are next
     for (auto &&ti : t_info.template_arguments)
     {
         auto new_types = referenced_types(ti);
         result.insert(new_types.begin(), new_types.end());
     }
-    result.insert(t_info.nickname);
 
+    // And the top level name, but make sure it is "legal"
+    if (!all_of(t_info.nickname.begin(), t_info.nickname.end(), ::isdigit)
+        && (t_info.nickname[0] != '-')
+        )
+        result.insert(t_info.nickname);
+
+    // Return as a list.
     return vector<string>(result.begin(), result.end());
 }

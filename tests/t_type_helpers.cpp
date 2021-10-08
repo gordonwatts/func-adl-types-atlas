@@ -84,6 +84,26 @@ TEST(t_type_helpers, type_namespaced_burried) {
 }
 
 
+// Qaualified name by template
+TEST(t_type_helpers, type_qualified_typename) {
+    auto t = parse_typename("vector<float>::size_t");
+
+    EXPECT_EQ(t.nickname, "vector<float>::size_t");
+    EXPECT_EQ(t.type_name, "size_t");
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.namespace_list.size(), 1);
+    EXPECT_EQ(t.namespace_list[0].nickname, "vector<float>");
+}
+
+
+// Whitespace check
+TEST(t_type_helpers, type_whitespace) {
+    auto t = parse_typename("vector<float>::size_t ");
+
+    EXPECT_EQ(t.nickname, "vector<float>::size_t");
+}
+
+
 // Simple typename qualified by namespace
 TEST(t_type_helpers, type_multple_template_args) {
     auto t = parse_typename("vector<std::size_t, std::allocate<std::size_t>>");

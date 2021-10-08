@@ -92,3 +92,28 @@ TEST(t_xaod_helpers, no_duplicates) {
 
     EXPECT_EQ(r.size(), 1);
 }
+
+
+TEST(t_xaod_helpers, unqualified_straight) {
+    EXPECT_EQ(unqualified_type_name("int"), "int");
+}
+
+TEST(t_xaod_helpers, unqualified_straight_pointer) {
+    EXPECT_EQ(unqualified_type_name("int*"), "int");
+}
+
+TEST(t_xaod_helpers, unqualified_straight_ref) {
+    EXPECT_EQ(unqualified_type_name("int&"), "int");
+}
+
+TEST(t_xaod_helpers, unqualified_straight_ref2) {
+    EXPECT_EQ(unqualified_type_name("int&&"), "int");
+}
+
+TEST(t_xaod_helpers, unqualified_straight_ref_ptr_ref) {
+    EXPECT_EQ(unqualified_type_name("int&*&"), "int");
+}
+
+TEST(t_xaod_helpers, unqualified_const) {
+    EXPECT_EQ(unqualified_type_name("const int*"), "int");
+}

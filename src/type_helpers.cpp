@@ -40,13 +40,26 @@ set<string> type_name(const set<string> &qualified_type_names)
     return set<string>(v.begin(), v.end());
 }
 
+// Strip out leading "const" and post modifiers (like ptr, etc.)
 string unqualified_type_name(const string &full_type_name)
 {
     string result(full_type_name);
-    auto s_idx = result.rfind('*');
-    if (s_idx != string::npos) {
-        result = result.substr(0, s_idx);
+
+    // Remove leading const
+    if (result.find("const ") != result.npos) {
+        result = result.substr(6);
     }
+
+    // Remove trailing references or pointers
+    bool found = true;
+    while (found) {
+        auto last_char = result[result.size()-1];
+        found = (last_char == '*') || (last_char == '&');
+        if (found) {
+            result = result.substr(0, result.size()-1);
+        }
+    }
+
     return result;
 }
 
@@ -110,6 +123,14 @@ void fixup_type_aliases(vector<class_info> &classes)
     }
 }
 
+// Remove whitespace around a string.
+string trim(const string& str)
+{
+    size_t first = str.find_first_not_of(' ');
+    size_t last = str.find_last_not_of(' ');
+    return str.substr(first, (last-first+1));
+}
+
 // Parse a horrendus typename into its various peices.
 //
 // "int"
@@ -118,7 +139,7 @@ void fixup_type_aliases(vector<class_info> &classes)
 typename_info parse_typename(const string &type_name)
 {
     typename_info result;
-    result.nickname = type_name;
+    result.nickname = trim(type_name);
 
     int ns_depth = 0;
     size_t t_index = 0;
@@ -156,8 +177,18 @@ typename_info parse_typename(const string &type_name)
 
             case ':':
                 if (ns_depth == 0) {
-                    result.namespace_list.push_back(parse_typename(name));
-                    name = "";
+                    if (name.size() > 0) {
+                        result.namespace_list.push_back(parse_typename(name));
+                        name = "";
+                    } else {
+                        typename_info nested_ns = result;
+                        result = typename_info();
+
+                        result.nickname = nested_ns.nickname;
+                        nested_ns.nickname = nested_ns.nickname.substr(0, t_index);
+
+                        result.namespace_list.push_back(nested_ns);
+                    }
                     t_index++; // Get past the double colon
                 } else {
                     name += type_name[t_index];

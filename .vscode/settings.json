@@ -3,7 +3,9 @@
     "files.associations": {
         "string": "cpp",
         "stdexcept": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "bitset": "cpp",
+        "set": "cpp"
     },
     "restructuredtext.languageServer.disabled": true
 }

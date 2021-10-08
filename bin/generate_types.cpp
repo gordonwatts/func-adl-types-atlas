@@ -61,10 +61,17 @@ int main(int, char**) {
     bad_classes.insert("TObject");
 
     while (classes_to_do.size() > 0) {
-        auto class_name(classes_to_do.front());
+        auto raw_class_name(classes_to_do.front());
         classes_to_do.pop();
-        if (classes_done.find(class_name) != classes_done.end())
+        if (classes_done.find(raw_class_name) != classes_done.end())
             continue;
+        classes_done.insert(raw_class_name);
+
+        auto class_name = unqualified_type_name(raw_class_name);
+        if ((class_name != raw_class_name)
+            && (classes_done.find(class_name) != classes_done.end())) {
+                continue;
+            }
         classes_done.insert(class_name);
 
         auto c = translate_class(class_name);
@@ -73,7 +80,9 @@ int main(int, char**) {
 
             for (auto &&c_name : referenced_types(c))
             {
-                if (bad_classes.find(c_name) == bad_classes.end())
+                if (bad_classes.find(c_name) == bad_classes.end()
+                    && (c_name.find("Eigen") == c_name.npos)
+                    )
                     classes_to_do.push(c_name);
             }        
         }
