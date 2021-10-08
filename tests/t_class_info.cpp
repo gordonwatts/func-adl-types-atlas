@@ -83,3 +83,13 @@ TEST(t_class_info, referenced_typename_ignore_integers) {
         "Eigen::Matrix<double,6,1,0,6,-1>",
         "double"}));
 }
+
+TEST(t_class_info, referenced_typename_deep_inside) {
+    auto tn = parse_typename("unique_ptr<DataVector<xAOD::Jet_v1,DataVector<xAOD::IParticle,DataModel_detail::NoBase> >::base_value_type>");
+
+    auto ref_list = referenced_types(tn);
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({
+        "unique_ptr<DataVector<xAOD::Jet_v1,DataVector<xAOD::IParticle,DataModel_detail::NoBase> >::base_value_type>",
+        "DataVector<xAOD::Jet_v1,DataVector<xAOD::IParticle,DataModel_detail::NoBase> >::base_value_type",
+        }));
+}
