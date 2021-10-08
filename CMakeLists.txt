@@ -23,15 +23,19 @@ add_library(wraper_generators
             src/class_info.cpp
             src/type_helpers.cpp
             src/utils.cpp
+            src/xaod_helpers.cpp
             src/translate.cpp)
 target_link_libraries(wraper_generators ROOT::Core)
 
 # Tests
 add_executable(t_type_helpers tests/t_type_helpers.cpp)
 target_link_libraries(t_type_helpers wraper_generators gtest_main)
+add_executable(t_xaod_helpers tests/t_xaod_helpers.cpp)
+target_link_libraries(t_xaod_helpers wraper_generators gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(t_type_helpers)
+gtest_discover_tests(t_xaod_helpers)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)

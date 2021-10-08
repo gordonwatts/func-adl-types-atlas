@@ -2,7 +2,8 @@
     "cmake.configureOnOpen": true,
     "files.associations": {
         "string": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "typeinfo": "cpp"
     },
     "restructuredtext.languageServer.disabled": true
 }

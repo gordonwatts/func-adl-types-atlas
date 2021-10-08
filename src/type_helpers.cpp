@@ -2,6 +2,7 @@
 #include "class_info.hpp"
 
 #include "TROOT.h"
+#include "TClassTable.h"
 
 #include <algorithm>
 #include <iterator>
@@ -49,12 +50,31 @@ string unqualified_type_name(const string &full_type_name)
     return result;
 }
 
-///
-// Look through the list of typedefs, and add aliases for any classes
-// we've already seen.
-//
-void fixup_type_aliases(vector<class_info> &classes)
-{    
+// Find all classes that inherrit from a given class name
+vector<string> all_that_inherrit_from(const string &c_name)
+{
+    TClassTable::Init();
+    while (auto m_info = TClassTable::Next()) {
+        cout << "** " << m_info << endl;
+    }
+
+    TIter next(gROOT->GetListOfClasses());
+    set<string> results;
+    while (auto c_info = static_cast<TClass *>(next()))
+    {
+        cout << " -> " << c_info->GetName() << endl;
+        if (c_info->InheritsFrom(c_name.c_str()))
+        {
+            results.insert(c_info->GetName());
+            cout << "    *** Inherrits!" << endl;
+        }
+    }
+    return vector<string>(results.begin(), results.end());
+}
+
+// Build a list of type mapping
+map<string, vector<string>> root_typedef_map()
+{
     // Build a typedef backwards mapping
 	TIter i_typedef (gROOT->GetListOfTypes(true));
 	int junk = gROOT->GetListOfTypes()->GetEntries();
@@ -69,6 +89,17 @@ void fixup_type_aliases(vector<class_info> &classes)
             typdef_back_map[base_name].push_back(typedef_name);
         }
     }
+    return typdef_back_map;
+}
+
+///
+// Look through the list of typedefs, and add aliases for any classes
+// we've already seen.
+//
+void fixup_type_aliases(vector<class_info> &classes)
+{    
+    // Build a typedef backwards mapping
+    map<string, vector<string>> typdef_back_map = root_typedef_map();
 
     // Loop through all the classes we are looking at to see if there is an alias we should be done.
     for (auto &&c : classes)
