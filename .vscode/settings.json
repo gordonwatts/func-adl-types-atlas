@@ -5,7 +5,19 @@
         "stdexcept": "cpp",
         "typeinfo": "cpp",
         "bitset": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "vector": "cpp",
+        "iterator": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "regex": "cpp",
+        "tuple": "cpp"
     },
     "restructuredtext.languageServer.disabled": true
 }

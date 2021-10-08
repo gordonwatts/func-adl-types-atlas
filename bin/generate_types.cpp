@@ -38,6 +38,7 @@ int main(int, char**) {
     classes_to_do.push("xAOD::JetContainer");
     classes_to_do.push("xAOD::MissingETContainer");
     vector<class_info> done_classes;
+    map<string, class_info> class_map;
 
     // auto some_stuff = all_that_inherrit_from("SG::AuxVectorBase");
     // cout << "Found " << some_stuff.size() << " classes." << endl;
@@ -77,6 +78,7 @@ int main(int, char**) {
         auto c = translate_class(class_name);
         if (c.name.size() > 0) {
             done_classes.push_back(c);
+            class_map[c.name] = c;
 
             for (auto &&c_name : referenced_types(c))
             {
@@ -95,16 +97,42 @@ int main(int, char**) {
     // stored in the data.
     auto collections = find_collections(done_classes);
 
-
     // Dump them all out
     cout << "Collections:" << endl;
     for (auto &&c : collections)
     {
         cout << c << endl;
     }
-    
-    for (auto &&c : done_classes)
+
+    // Next, dump only the classes that we are interested in
+    classes_done.clear();
+    for (auto &&c : collections)
     {
-        cout << c << endl;
+        classes_to_do.push(c.iterator_type_info.template_arguments[0].nickname);
+    }
+
+    while (!classes_to_do.empty()) {
+        string c_name(unqualified_type_name(classes_to_do.front()));
+        classes_to_do.pop();
+        if (classes_done.find(c_name) != classes_done.end()) {
+            continue;
+        }
+        classes_done.insert(c_name);
+
+        // Find the class
+        auto c_info = class_map.find(c_name);
+        if (c_info == class_map.end()) {
+            continue;
+        }
+
+        cout << c_info->second << endl;
+
+        // Now, add referenced classes back to the queue
+        auto reffed_classes = referenced_types(c_info->second);
+        for (auto &&c_ref : reffed_classes)
+        {
+            classes_to_do.push(c_ref);
+        }
+        
     }
 }
