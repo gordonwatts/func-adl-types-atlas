@@ -1,6 +1,7 @@
 #include "translate.hpp"
 #include "normalize.hpp"
 #include "type_helpers.hpp"
+#include "util_string.hpp"
 
 #include "TSystem.h"
 #include "TClass.h"
@@ -14,6 +15,7 @@
 #include <set>
 #include <queue>
 #include <algorithm>
+#include <regex>
 
 using namespace std;
 
@@ -120,6 +122,46 @@ set<string> all_inherrited_classes(const std::string &cls_name) {
     return result;
 }
 
+string clean_so_name(string original_name)
+{
+    string result(trim(original_name));
+    result = remove_prefix(result, "lib");
+    result = remove_postfix(result, "Dict.so");
+    return result;
+}
+
+// Return the include file name for a particular class. Using some
+// heuristics to get it right.
+string get_include_file_for_class(const string &class_name)
+{
+    auto c_info = TClass::GetClass(class_name.c_str());
+    if (c_info == nullptr) {
+        return "";
+    }
+    if ((c_info->GetDeclFileName() != nullptr) && c_info->GetSharedLibs() != nullptr) {
+        return string(clean_so_name(c_info->GetSharedLibs())) + "/" + c_info->GetDeclFileName();
+    }
+    return "";
+}
+
+// Take the interior object, and rename as a container
+string get_include_file_for_container(const string &class_name, const string &raw_object_name)
+{
+    auto object_name = std::regex_replace(raw_object_name, std::regex("_v[0-9]+$"), "");
+    auto parsed_info = parse_typename(object_name);
+
+    auto c_info = TClass::GetClass(class_name.c_str());
+    if (c_info == nullptr) {
+        return "";
+    }
+    return string(clean_so_name(c_info->GetSharedLibs())) + "/" + parsed_info.type_name + "Container.h";
+}
+
+bool include_file_exists(const string &include_path) {
+    string full = "$ROOTCOREDIR/include/" + include_path;
+    string expanded = gSystem->ExpandPathName(full.c_str());
+    return !gSystem->AccessPathName(expanded.c_str(), kFileExists);
+}
 
 class_info translate_class(const std::string &class_name)
 {
@@ -146,6 +188,27 @@ class_info translate_class(const std::string &class_name)
             result.inherrited_class_names.push_back(m_name);            
         }
     }
+
+    // Get include files associated with this class. This is quite messy, actually, because of the way
+    // the modern root records where things are located, adn the fact we are dealing with typedef's.
+    // In short - we have to use heuristics.
+    string include;
+    if ((include == "")) {
+        auto dv_info = get_first_class(result, "DataVector");
+        if (dv_info.nickname.size() > 0) {
+            include = get_include_file_for_container(class_name, dv_info.nickname);
+            if (include.size() > 0 && !include_file_exists(include)) {
+                include = "";
+            }
+        }
+    }
+    if (include == "") {
+        include = get_include_file_for_class(class_name);
+        if (!include_file_exists(include)) {
+            include = "";
+        }
+    }
+    result.include_file = include;
 
     // Look at all public methods
     {

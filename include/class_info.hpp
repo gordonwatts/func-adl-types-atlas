@@ -44,6 +44,9 @@ struct class_info {
     std::string name;
     typename_info name_as_type;
 
+    // Include file where this object is declared
+    std::string include_file;
+
     // List of aliases for this class (other names).
     std::vector<std::string> aliases;
 

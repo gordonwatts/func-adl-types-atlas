@@ -13,6 +13,9 @@ struct collection_info {
     // The type info of the collection
     typename_info type_info;
 
+    // The include file for the collection
+    std::string include_file;
+
     // The simplified type-info for the collection
     typename_info iterator_type_info;
 };

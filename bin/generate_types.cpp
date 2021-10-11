@@ -14,6 +14,8 @@
 #include "TSystem.h"
 #include "TROOT.h"
 
+#include "yaml-cpp/yaml.h"
+
 #include <iostream>
 #include <queue>
 #include <set>
@@ -39,22 +41,6 @@ int main(int, char**) {
     classes_to_do.push("xAOD::MissingETContainer");
     vector<class_info> done_classes;
     map<string, class_info> class_map;
-
-    // auto some_stuff = all_that_inherrit_from("SG::AuxVectorBase");
-    // cout << "Found " << some_stuff.size() << " classes." << endl;
-    // for (auto &&i : some_stuff)
-    // {
-    //     cout << "  " << i << endl;
-    // }
-    // auto my_typedefs = root_typedef_map();
-    // for (auto &&m_td : my_typedefs)
-    // {
-    //     cout << "mapping " << m_td.first << endl;
-    //     for (auto &&m_r : m_td.second)
-    //     {
-    //         cout << "  -> " << m_r << endl;
-    //     }        
-    // }
 
     set<string> bad_classes;
     bad_classes.insert("ROOT");
@@ -98,11 +84,23 @@ int main(int, char**) {
     auto collections = find_collections(done_classes);
 
     // Dump them all out
-    cout << "Collections:" << endl;
+    YAML::Emitter out;
+    out << YAML::BeginMap
+        << YAML::Key << "collections"
+        << YAML::Value
+        << YAML::BeginSeq;
     for (auto &&c : collections)
     {
-        cout << c << endl;
+        out << YAML::BeginMap
+            << YAML::Key << "name" << YAML::Value << c.name
+            << YAML::Key << "item_type" << YAML::Value << c.iterator_type_info.template_arguments[0].nickname
+            << YAML::Key << "container_type" << YAML::Value << c.type_info.nickname
+            << YAML::Key << "include_file" << YAML::Value << c.include_file
+            << YAML::EndMap;
     }
+    out << YAML::EndSeq << YAML::EndMap;
+
+
 
     // Next, dump only the classes that we are interested in
     classes_done.clear();
@@ -125,14 +123,12 @@ int main(int, char**) {
             continue;
         }
 
-        cout << c_info->second << endl;
-
         // Now, add referenced classes back to the queue
         auto reffed_classes = referenced_types(c_info->second);
         for (auto &&c_ref : reffed_classes)
         {
             classes_to_do.push(c_ref);
-        }
-        
+        }        
     }
+    cout << out.c_str();
 }

@@ -1,5 +1,6 @@
 #include "type_helpers.hpp"
 #include "class_info.hpp"
+#include "util_string.hpp"
 
 #include "TROOT.h"
 #include "TClassTable.h"
@@ -123,14 +124,6 @@ void fixup_type_aliases(vector<class_info> &classes)
     }
 }
 
-// Remove whitespace around a string.
-string trim(const string& str)
-{
-    size_t first = str.find_first_not_of(' ');
-    size_t last = str.find_last_not_of(' ');
-    return str.substr(first, (last-first+1));
-}
-
 // Parse a horrendus typename into its various peices.
 //
 // "int"
@@ -207,4 +200,25 @@ typename_info parse_typename(const string &type_name)
     }
 
     return result;
+}
+
+// Returns the type info for the first class or inherrited class that
+// has name as the name as a class. Can't climb the inherritance tree far,
+// but it will try.
+typename_info get_first_class(const class_info &c, const string &name) {
+    // Check the class itself
+    if (c.name_as_type.type_name == name) {
+        return c.name_as_type.template_arguments[0];
+    }
+
+    // Go after the inherrited item
+    for (auto &&i_name : c.inherrited_class_names)
+    {
+        auto t_info = parse_typename(i_name);
+        if (t_info.type_name ==  name) {
+            return t_info.template_arguments[0];
+        }
+    }
+
+    return typename_info();
 }

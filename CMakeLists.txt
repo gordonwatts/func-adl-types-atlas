@@ -14,6 +14,14 @@ FetchContent_MakeAvailable(googletest)
 include(CTest)
 enable_testing()
 
+# YAML parsing
+include(FetchContent)
+FetchContent_Declare(
+  yaml-cpp
+  URL https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip
+)
+FetchContent_MakeAvailable(yaml-cpp)
+
 # Package setup
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -23,9 +31,10 @@ add_library(wraper_generators
             src/class_info.cpp
             src/type_helpers.cpp
             src/utils.cpp
+            src/util_string.cpp
             src/xaod_helpers.cpp
             src/translate.cpp)
-target_link_libraries(wraper_generators ROOT::Core)
+target_link_libraries(wraper_generators ROOT::Core yaml-cpp)
 
 # Tests
 add_executable(t_type_helpers tests/t_type_helpers.cpp)
@@ -34,11 +43,14 @@ add_executable(t_xaod_helpers tests/t_xaod_helpers.cpp)
 target_link_libraries(t_xaod_helpers wraper_generators gtest_main)
 add_executable(t_class_info tests/t_class_info.cpp)
 target_link_libraries(t_class_info wraper_generators gtest_main)
+add_executable(t_translate tests/t_translate.cpp)
+target_link_libraries(t_translate wraper_generators gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(t_type_helpers)
 gtest_discover_tests(t_xaod_helpers)
 gtest_discover_tests(t_class_info)
+gtest_discover_tests(t_translate)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)

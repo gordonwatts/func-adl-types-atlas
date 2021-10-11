@@ -28,4 +28,9 @@ std::string unqualified_type_name(const std::string &full_type_name);
 
 // Parse a fully qualified typename
 typename_info parse_typename(const std::string &type_name);
+
+// Return type info for the first class or inherrited class that
+// has name as the name of a template class.
+typename_info get_first_class(const class_info &c, const std::string &name);
+
 #endif
