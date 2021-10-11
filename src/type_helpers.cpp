@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <sstream>
 
 using namespace std;
 
@@ -221,4 +222,19 @@ typename_info get_first_class(const class_info &c, const string &name) {
     }
 
     return typename_info();
+}
+
+// Dump out the typename as fully qualified, but normalzied
+// (rather than just C++).
+string normalized_type_name(const typename_info &ti)
+{
+    ostringstream full_name;
+    full_name << ti;
+    return full_name.str();
+}
+
+// Return a C++ type that has been normalized.
+string normalized_type_name(const string &ti)
+{
+    return normalized_type_name(parse_typename(ti));
 }

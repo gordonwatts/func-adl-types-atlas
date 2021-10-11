@@ -33,4 +33,9 @@ typename_info parse_typename(const std::string &type_name);
 // has name as the name of a template class.
 typename_info get_first_class(const class_info &c, const std::string &name);
 
+// Return teh type as a string, but normalized
+// for nto just C++.
+std::string normalized_type_name(const typename_info &ti);
+std::string normalized_type_name(const std::string &ti);
+
 #endif

@@ -22,6 +22,20 @@
 
 using namespace std;
 
+// Return true if it is ok to emit this particular class.
+bool can_emit_class(const class_info &c_info) {
+    if (c_info.name_as_type.type_name == "vector") {
+        return false;
+    }
+    if (c_info.name_as_type.type_name == "string") {
+        return false;
+    }
+    if (c_info.name_as_type.template_arguments.size() > 0) {
+        return false;
+    }
+    return true;
+}
+
 int main(int, char**) {
     auto app_reference = create_root_app();
 
@@ -98,17 +112,16 @@ int main(int, char**) {
             << YAML::Key << "include_file" << YAML::Value << c.include_file
             << YAML::EndMap;
     }
-    out << YAML::EndSeq << YAML::EndMap;
+    out << YAML::EndSeq;
 
-
-
-    // Next, dump only the classes that we are interested in
+    // Look through all the classes we know about, tag just the classes
+    // we can appropriately write out.
     classes_done.clear();
+    set<string> classes_to_emit;
     for (auto &&c : collections)
     {
         classes_to_do.push(c.iterator_type_info.template_arguments[0].nickname);
     }
-
     while (!classes_to_do.empty()) {
         string c_name(unqualified_type_name(classes_to_do.front()));
         classes_to_do.pop();
@@ -123,6 +136,11 @@ int main(int, char**) {
             continue;
         }
 
+        // If we can dump the class, then we should!
+        if (can_emit_class(c_info->second)) {
+            classes_to_emit.insert(c_name);
+        }
+
         // Now, add referenced classes back to the queue
         auto reffed_classes = referenced_types(c_info->second);
         for (auto &&c_ref : reffed_classes)
@@ -130,5 +148,95 @@ int main(int, char**) {
             classes_to_do.push(c_ref);
         }        
     }
+
+    // Add some of the default types that need no introduction
+    classes_to_emit.insert("double");
+    classes_to_emit.insert("short");
+    classes_to_emit.insert("int");
+    classes_to_emit.insert("float");
+
+    out << YAML::Key << "classes"
+        << YAML::Value
+        << YAML::BeginSeq;
+
+    // Get a list of a list of all classes 
+    for (auto &&c : classes_to_emit)
+    {
+        string c_name(unqualified_type_name(c));
+
+        // Find the class
+        auto c_info = class_map.find(c_name);
+        if (c_info == class_map.end()) {
+            continue;
+        }
+
+        // If we can dump the class, then we should!
+        out << YAML::BeginMap
+            << YAML::Key << "name" << YAML::Value << normalized_type_name(c_info->second.name_as_type);
+        
+        if (c_info->second.include_file.size() > 0) {
+            out << YAML::Key << "include_file" << YAML::Value << c_info->second.include_file;
+        }
+
+        // Now we need to emit the methods.
+        bool first_method = true;
+        for (auto &&meth : c_info->second.methods)
+        {
+            // Make sure returns something.
+            if (meth.return_type.size() == 0) {
+                continue;
+            }
+
+            // Get all referenced methods, and make sure we know about those objects.
+            // Or we can't support this guy.
+            auto method_types = referenced_types(meth);
+            set<string> method_types_set(method_types.begin(), method_types.end());
+            if (!includes(classes_to_emit.begin(), classes_to_emit.end(), method_types_set.begin(), method_types_set.end())) {
+                continue;
+            }
+
+            if (first_method) {
+                out << YAML::Key << "methods"
+                    << YAML::Value
+                    << YAML::BeginSeq;
+                first_method = false;
+            }
+
+            out << YAML::BeginMap
+                << YAML::Key << "name" << YAML::Value << meth.name
+                << YAML::Key << "return_type" << YAML::Value << normalized_type_name(meth.return_type);
+
+            bool first_argument = true;
+            for (auto &&arg : meth.arguments)
+            {
+                if (first_argument) {
+                    first_argument = false;
+                    out << YAML::Key << "arguments"
+                        << YAML::Value
+                        << YAML::BeginSeq;
+                }
+                out << YAML::BeginMap
+                    << YAML::Key << "name" << YAML::Value << arg.name
+                    << YAML::Key << "type" << YAML::Value << normalized_type_name(arg.full_typename)
+                    << YAML::EndMap;
+            }
+            if (!first_argument) {
+                out << YAML::EndSeq;
+            }
+            
+
+            out << YAML::EndMap;
+        }
+
+        if (!first_method) {
+            out << YAML::EndSeq;
+        }
+        
+
+        out << YAML::EndMap;
+    }
+    out << YAML::EndSeq << YAML::EndMap;
+
+    // Dump to the output
     cout << out.c_str();
 }
