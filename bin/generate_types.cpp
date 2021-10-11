@@ -139,9 +139,11 @@ int main(int, char**) {
     for (auto &&c : collections)
     {
         out << YAML::BeginMap
-            << YAML::Key << "name" << YAML::Value << c.name
-            << YAML::Key << "item_type" << YAML::Value << c.iterator_type_info.template_arguments[0].nickname
-            << YAML::Key << "container_type" << YAML::Value << c.type_info.nickname
+            << YAML::Key << "collection_name" << YAML::Value << c.name
+            << YAML::Key << "cpp_item_type" << YAML::Value << c.iterator_type_info.template_arguments[0].nickname
+            << YAML::Key << "python_item_type" << YAML::Value << normalized_type_name(c.iterator_type_info.template_arguments[0])
+            << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.nickname
+            << YAML::Key << "python_container_type" << YAML::Value << normalized_type_name(c.iterator_type_info)
             << YAML::Key << "include_file" << YAML::Value << c.include_file
             << YAML::EndMap;
     }
@@ -236,7 +238,8 @@ int main(int, char**) {
 
         // If we can dump the class, then we should!
         out << YAML::BeginMap
-            << YAML::Key << "name" << YAML::Value << normalized_type_name(c_info->second.name_as_type);
+            << YAML::Key << "python_name" << YAML::Value << normalized_type_name(c_info->second.name_as_type)
+            << YAML::Key << "cpp_name" << YAML::Value << c_info->second.name_as_type.nickname;
         
         if (c_info->second.include_file.size() > 0) {
             out << YAML::Key << "include_file" << YAML::Value << c_info->second.include_file;
