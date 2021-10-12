@@ -22,6 +22,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(yaml-cpp)
 
+# Boost
+find_package(Boost COMPONENTS program_options REQUIRED)
+
 # Package setup
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -54,7 +57,7 @@ gtest_discover_tests(t_translate)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)
-target_link_libraries(generate_types ROOT::Core wraper_generators)
+target_link_libraries(generate_types ROOT::Core wraper_generators Boost::program_options)
 
 # Some definitions for CPACK (incase we need those eventually)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

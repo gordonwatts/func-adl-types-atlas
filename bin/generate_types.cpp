@@ -13,8 +13,11 @@
 
 #include "TSystem.h"
 #include "TROOT.h"
+#include "TClassTable.h"
 
 #include "yaml-cpp/yaml.h"
+
+#include <boost/program_options.hpp>
 
 #include <iostream>
 #include <queue>
@@ -23,6 +26,7 @@
 #include <iterator>
 
 using namespace std;
+using namespace boost::program_options;
 
 // Return true if it is ok to emit this particular class.
 bool can_emit_class(const class_info &c_info) {
@@ -69,23 +73,53 @@ bool can_emit_any_methods(const vector<method_info> &methods, const set<string> 
     return false;
 }
 
-int main(int, char**) {
+int main(int argc, char**argv) {
     auto app_reference = create_root_app();
 
-    // Load a library
-    auto status = gSystem->Load("libxAODJet");
-    if (status < 0) {
-        cout << "ERROR: Can't load library: " << status << endl;
-    }
-    status = gSystem->Load("libxAODMissingET");
-    if (status < 0) {
-        cout << "ERROR: Can't load library: " << status << endl;
-    }    
+    // Parse the command line arguments
+    options_description desc{"Options"};
+    desc.add_options()
+      ("help,h", "This message")
+      ("library,l", value<vector<string>>(), "Load shared library")
+      ("class,c", value<vector<string>>(), "Translate class");
+    command_line_parser parser{argc, argv};
+    parser.options(desc);
+    auto parsed_options = parser.run();
 
+    variables_map vm;
+    store(parsed_options, vm);
+    notify(vm);
+
+    if (vm.count("help")) {
+        cout << desc << endl;
+        return 1;
+    }
+
+    if (vm.count("class") == 0) {
+        cerr << "ERROR: Can't do class self discovery. You must provide the --class options!" << endl;
+        return 1;
+    }
+    auto cmd_classes = vm["class"].as<vector<string>>();
     queue<string> classes_to_do;
+    for (auto &&c_name : cmd_classes)
+    {
+        classes_to_do.push(c_name);
+    }
+
+    if (vm.count("library") > 0) {
+        auto libraries = vm["library"].as<vector<string>>();
+        for (auto &&l_name : libraries)
+        {
+            auto status = gSystem->Load(l_name.c_str());
+            if (status < 0) {
+                cerr << "ERROR: Can't load library " << l_name << " - status: " << status << endl;
+            }
+        }
+    }
+
+    // Translate the classes from the ROOT system to our internal system.
+    
     set<string> classes_done;
-    classes_to_do.push("xAOD::JetContainer");
-    classes_to_do.push("xAOD::MissingETContainer");
     vector<class_info> done_classes;
     map<string, class_info> class_map;
 
@@ -292,5 +326,5 @@ int main(int, char**) {
     out << YAML::EndSeq << YAML::EndMap;
 
     // Dump to the output
-    cout << out.c_str();
+    cout << out.c_str() << endl;
 }
