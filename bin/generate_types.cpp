@@ -162,32 +162,13 @@ int main(int argc, char**argv) {
 
     // Get the list of containers from the classes. These will be top level collections
     // stored in the data.
-    auto collections = find_collections(done_classes);
-
-    // Dump them all out
-    YAML::Emitter out;
-    out << YAML::BeginMap
-        << YAML::Key << "collections"
-        << YAML::Value
-        << YAML::BeginSeq;
-    for (auto &&c : collections)
-    {
-        out << YAML::BeginMap
-            << YAML::Key << "collection_name" << YAML::Value << c.name
-            << YAML::Key << "cpp_item_type" << YAML::Value << c.iterator_type_info.template_arguments[0].nickname
-            << YAML::Key << "python_item_type" << YAML::Value << normalized_type_name(c.iterator_type_info.template_arguments[0])
-            << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.nickname
-            << YAML::Key << "python_container_type" << YAML::Value << normalized_type_name(c.iterator_type_info)
-            << YAML::Key << "include_file" << YAML::Value << c.include_file
-            << YAML::EndMap;
-    }
-    out << YAML::EndSeq;
+    auto all_collections = find_collections(done_classes);
 
     // Look through all the classes we know about, tag just the classes
     // we can appropriately write out.
     classes_done.clear();
     set<string> classes_to_emit;
-    for (auto &&c : collections)
+    for (auto &&c : all_collections)
     {
         classes_to_do.push(c.iterator_type_info.template_arguments[0].nickname);
     }
@@ -248,6 +229,35 @@ int main(int argc, char**argv) {
             }
         }        
     }
+
+    // Finally, go through the collections and keep only the ones where we are
+    // dumping out the classes they contain.
+    vector<collection_info> collections;
+    copy_if(all_collections.begin(), all_collections.end(), back_insert_iterator(collections),
+        [&classes_to_emit](const collection_info &c_info) {
+            return find_if(classes_to_emit.begin(), classes_to_emit.end(), [&c_info](const string &cl_info){
+                return cl_info == c_info.iterator_type_info.template_arguments[0].nickname;
+            }) != classes_to_emit.end();
+        });
+
+    // Dump them all out
+    YAML::Emitter out;
+    out << YAML::BeginMap
+        << YAML::Key << "collections"
+        << YAML::Value
+        << YAML::BeginSeq;
+    for (auto &&c : collections)
+    {
+        out << YAML::BeginMap
+            << YAML::Key << "collection_name" << YAML::Value << c.name
+            << YAML::Key << "cpp_item_type" << YAML::Value << c.iterator_type_info.template_arguments[0].nickname
+            << YAML::Key << "python_item_type" << YAML::Value << normalized_type_name(c.iterator_type_info.template_arguments[0])
+            << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.nickname
+            << YAML::Key << "python_container_type" << YAML::Value << normalized_type_name(c.iterator_type_info)
+            << YAML::Key << "include_file" << YAML::Value << c.include_file
+            << YAML::EndMap;
+    }
+    out << YAML::EndSeq;
 
     // Finally, we actually emit these.
     out << YAML::Key << "classes"
