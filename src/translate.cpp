@@ -211,15 +211,21 @@ class_info translate_class(const std::string &class_name)
     result.include_file = include;
 
     // Look at all public methods
+    // TODO: We totally ignore the fact that methods can have different calls depending on the arguments
+    //       given. For now, we demand a single method, and just use the first one.
     {
+        set<string> seen_names;
         auto all_inherited = type_name(all_inherrited_classes(result.name));
         auto all_methods = c_info->GetListOfAllPublicMethods();
         TIter next(all_methods);
         while (auto method = static_cast<TMethod *>(next.Next()))
         {
-            if (is_good_method(c_info, method, all_inherited)) {
-                result.methods.push_back(translate_method(method));
+            if (seen_names.find(method->GetName()) == seen_names.end()) {
+                if (is_good_method(c_info, method, all_inherited)) {
+                    result.methods.push_back(translate_method(method));
+                }
             }
+            seen_names.insert(method->GetName());
         }
     }
 

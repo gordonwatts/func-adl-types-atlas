@@ -2,6 +2,10 @@
 
 #include "translate.hpp"
 
+#include <algorithm>
+
+using namespace std;
+
 TEST(t_translate, include_files) {
     auto info = translate_class("xAOD::Jet_v1");
 
@@ -48,4 +52,11 @@ TEST(t_translate, include_files_met_v1) {
     auto info = translate_class("xAOD::MissingETContainer_v1");
 
     EXPECT_EQ(info.include_file, "xAODMissingET/MissingETContainer.h");
+}
+
+TEST(t_translate, method_only_once) {
+    auto info = translate_class("xAOD::Jet_v1");
+
+    EXPECT_EQ(count_if(info.methods.begin(), info.methods.end(), [](const method_info &m) { return m.name == "pt";}), 1);
+
 }
