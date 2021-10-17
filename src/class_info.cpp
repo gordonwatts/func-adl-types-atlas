@@ -58,6 +58,12 @@ std::ostream& operator <<(std::ostream& stream, const method_arg& ai)
     return stream;
 }
 
+map<string, string> python_type_conversions =
+    {
+        {"double", "float"},
+        {"short", "int"},
+    };
+
 // Reconstruct the full type name
 std::ostream& operator <<(std::ostream& stream, const typename_info& ti)
 {
@@ -72,8 +78,15 @@ std::ostream& operator <<(std::ostream& stream, const typename_info& ti)
     if (!first)
         stream << ".";
 
-    stream << ti.type_name;
+    // Some typenames get a conversion, others not-so-much
+    auto type_convert = python_type_conversions.find(ti.type_name);
+    if (type_convert != python_type_conversions.end()) {
+        stream << type_convert->second;
+    } else {
+        stream << ti.type_name;
+    }
 
+    // And any template arguments
     first = true;
     for (auto &&t_arg : ti.template_arguments)
     {

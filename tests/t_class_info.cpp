@@ -93,3 +93,10 @@ TEST(t_class_info, referenced_typename_deep_inside) {
         "DataVector<xAOD::Jet_v1,DataVector<xAOD::IParticle,DataModel_detail::NoBase> >::base_value_type",
         }));
 }
+
+TEST(t_class_info, convert_double_to_float) {
+    auto tn = parse_typename("vector<double>");
+    ostringstream out;
+    out << tn;
+    EXPECT_EQ(out.str(), "vector[float]");
+}
