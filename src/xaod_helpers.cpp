@@ -4,13 +4,21 @@
 
 #include <sstream>
 #include <map>
+#include <algorithm>
 
 using namespace std;
 
+// Rename the collections slightly to make a little more
+// sense one way or the other.
 map<string, string> g_mapped_collection_names = {
-    {"MissingETs", "MissingET"}
+    {"MissingETs", "MissingET"},
 };
 
+// These are items in the xAOD that are single items, along with their
+// returned type.
+map<string, string> g_single_collection_names = {
+    {"EventInfo", "xAOD::EventInfo"}
+};
 
 // Find the name that has "Container" in it, or return empty string.
 string get_prefix_name(const class_info &c, const string &prefix) {
@@ -74,6 +82,8 @@ vector<collection_info> find_collections(const vector<class_info> &all_classes)
 {
     vector<collection_info> result;
 
+    // From the list of all classes, generate the collections for those
+    // that inherit correctly.
     set<string> seen_collections;
     for (auto &&c : all_classes)
     {
@@ -85,10 +95,34 @@ vector<collection_info> find_collections(const vector<class_info> &all_classes)
             }
         }
     }
-    
 
     return result;
 }
+
+// Find all single collections items. Only return ones where
+// the types are listed in all classes.
+vector<collection_info> get_single_object_collections(const vector<class_info> &all_classes)
+{
+    vector<collection_info> result;
+
+    // We know ahead of time some collections should be accessed by just their first item as a handle, we
+    // turn those into collections here.
+    for (auto &&c : g_single_collection_names) {
+        auto resolved_name = resolve_typedef(c.second);
+        if (find_if(all_classes.begin(), all_classes.end(), [resolved_name](const class_info &cls){return cls.name == resolved_name;}) != all_classes.end()) {
+            collection_info ci;
+            ci.name = c.first;
+            ci.type_info = parse_typename(resolved_name);
+            ci.iterator_type_info = parse_typename(resolved_name);
+            ci.include_file = "";
+
+            result.push_back(ci);
+        }
+    }
+
+    return result;
+}
+
 
 // Output to the stream a collection
 std::ostream& operator <<(std::ostream& stream, const collection_info& ci)

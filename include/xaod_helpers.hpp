@@ -24,5 +24,7 @@ struct collection_info {
 // that is a collection.
 std::vector<collection_info> find_collections(const std::vector<class_info> &all_classes);
 
+std::vector<collection_info> get_single_object_collections(const std::vector<class_info> &all_classes);
+
 std::ostream& operator <<(std::ostream& stream, const collection_info& ci);
 #endif

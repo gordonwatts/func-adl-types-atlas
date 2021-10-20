@@ -73,6 +73,24 @@ bool can_emit_any_methods(const vector<method_info> &methods, const set<string> 
     return false;
 }
 
+// Collections can be actual collections or just single items. Get
+// the type correctly in both those cases.
+string extract_container_iterator_type(const collection_info &c)
+{
+    switch (c.iterator_type_info.template_arguments.size()) {
+        case 0:
+            return c.iterator_type_info.nickname;
+            break;
+        
+        case 1:
+            return c.iterator_type_info.template_arguments[0].nickname;
+            break;
+        
+        default:
+            throw runtime_error("Do not know how to deal with the collectino of iterator type " + c.iterator_type_info.nickname);
+    }
+}
+
 int main(int argc, char**argv) {
     auto app_reference = create_root_app();
 
@@ -160,9 +178,17 @@ int main(int argc, char**argv) {
     // Look at the loaded type defs, and add aliases.
     fixup_type_aliases(done_classes);
 
+    // Fix up type defs. We have to wait to do this b.c. otherwise
+    // ROOT won't load the typedefs
+    fixup_type_defs(done_classes);
+
+
     // Get the list of containers from the classes. These will be top level collections
     // stored in the data.
     auto all_collections = find_collections(done_classes);
+    auto single_collections = get_single_object_collections(done_classes);
+    copy(single_collections.begin(), single_collections.end(),
+        back_inserter(all_collections));
 
     // Look through all the classes we know about, tag just the classes
     // we can appropriately write out.
@@ -170,7 +196,7 @@ int main(int argc, char**argv) {
     set<string> classes_to_emit;
     for (auto &&c : all_collections)
     {
-        classes_to_do.push(c.iterator_type_info.template_arguments[0].nickname);
+        classes_to_do.push(extract_container_iterator_type(c));
     }
     while (!classes_to_do.empty()) {
         string c_name(unqualified_type_name(classes_to_do.front()));
@@ -201,9 +227,15 @@ int main(int argc, char**argv) {
 
     // Add some of the default types that need no introduction
     classes_to_emit.insert("double");
-    classes_to_emit.insert("short");
-    classes_to_emit.insert("int");
     classes_to_emit.insert("float");
+    classes_to_emit.insert("short");
+    classes_to_emit.insert("unsigned short");
+    classes_to_emit.insert("int");
+    classes_to_emit.insert("unsigned int");
+    classes_to_emit.insert("long");
+    classes_to_emit.insert("unsigned long");
+    classes_to_emit.insert("long long");
+    classes_to_emit.insert("unsigned long long");
 
     // Now, we need to loop through all of these things until we get a stable set of classes that we can emit.
     // Yes, this is painful.
@@ -235,8 +267,9 @@ int main(int argc, char**argv) {
     vector<collection_info> collections;
     copy_if(all_collections.begin(), all_collections.end(), back_insert_iterator(collections),
         [&classes_to_emit](const collection_info &c_info) {
-            return find_if(classes_to_emit.begin(), classes_to_emit.end(), [&c_info](const string &cl_info){
-                return cl_info == c_info.iterator_type_info.template_arguments[0].nickname;
+            string collection_iterator_typename(extract_container_iterator_type(c_info));
+            return find_if(classes_to_emit.begin(), classes_to_emit.end(), [&collection_iterator_typename](const string &cl_info){
+                return cl_info == collection_iterator_typename;
             }) != classes_to_emit.end();
         });
 
@@ -250,8 +283,8 @@ int main(int argc, char**argv) {
     {
         out << YAML::BeginMap
             << YAML::Key << "collection_name" << YAML::Value << c.name
-            << YAML::Key << "cpp_item_type" << YAML::Value << c.iterator_type_info.template_arguments[0].nickname
-            << YAML::Key << "python_item_type" << YAML::Value << normalized_type_name(c.iterator_type_info.template_arguments[0])
+            << YAML::Key << "cpp_item_type" << YAML::Value << extract_container_iterator_type(c)
+            << YAML::Key << "python_item_type" << YAML::Value << normalized_type_name(extract_container_iterator_type(c))
             << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.nickname
             << YAML::Key << "python_container_type" << YAML::Value << normalized_type_name(c.iterator_type_info)
             << YAML::Key << "include_file" << YAML::Value << c.include_file

@@ -2,6 +2,8 @@
 #include "xaod_helpers.hpp"
 #include "type_helpers.hpp"
 
+#include "TClass.h"
+
 #include <vector>
 
 using namespace std;
@@ -116,4 +118,21 @@ TEST(t_xaod_helpers, unqualified_straight_ref_ptr_ref) {
 
 TEST(t_xaod_helpers, unqualified_const) {
     EXPECT_EQ(unqualified_type_name("const int*"), "int");
+}
+
+TEST(t_xaod_helpers, single_object_collections_no_classes) {
+    vector<class_info> classes;
+    auto collections = get_single_object_collections(classes);
+    EXPECT_EQ(collections.size(), 0);
+}
+
+TEST(t_xaod_helpers, single_object_collections) {
+    vector<class_info> classes;
+    class_info ci_ei;
+    ci_ei.name = "xAOD::EventInfo_v1";
+    ci_ei.name_as_type = parse_typename(ci_ei.name);
+    classes.push_back(ci_ei);
+    TClass::GetClass("xAOD::EventInfo"); // Make sure the typdefs are loaded
+    auto collections = get_single_object_collections(classes);
+    EXPECT_EQ(collections.size(), 1);
 }

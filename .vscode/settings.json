@@ -17,7 +17,9 @@
         "unordered_map": "cpp",
         "unordered_set": "cpp",
         "regex": "cpp",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "utility": "cpp",
+        "iosfwd": "cpp"
     },
     "restructuredtext.languageServer.disabled": true
 }

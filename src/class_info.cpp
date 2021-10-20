@@ -61,7 +61,13 @@ std::ostream& operator <<(std::ostream& stream, const method_arg& ai)
 map<string, string> python_type_conversions =
     {
         {"double", "float"},
+        {"unsigned int", "int"},
         {"short", "int"},
+        {"unsigned short", "int"},
+        {"long", "int"},
+        {"unsigned long", "int"},
+        {"long long", "int"},
+        {"unsigned long long", "int"},
     };
 
 // Reconstruct the full type name

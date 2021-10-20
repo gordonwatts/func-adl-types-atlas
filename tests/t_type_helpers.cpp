@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 #include "type_helpers.hpp"
 
+#include "TClass.h"
+
+using namespace std;
+
 // Make sure basic type comes back properly
 TEST(t_type_helpers, type_int) {
     auto t = parse_typename("int");
@@ -115,4 +119,58 @@ TEST(t_type_helpers, type_multple_template_args) {
     EXPECT_EQ(t.template_arguments.size(), 2);
     EXPECT_EQ(t.template_arguments[0].type_name, "size_t");
     EXPECT_EQ(t.template_arguments[1].type_name, "allocate");
+}
+
+
+// Simple typedef checks
+TEST(t_type_helpers, typedef_resolve_simple) {
+    TClass::GetClass("xAOD::EventInfo"); // Make sure the typedefs are loaded into root!
+    EXPECT_EQ(resolve_typedef("xAOD::EventInfo"), "xAOD::EventInfo_v1");
+}
+
+// Simple typedef checks - no change
+TEST(t_type_helpers, typedef_resolve_none) {
+    TClass::GetClass("xAOD::EventInfo"); // Make sure the typedefs are loaded into root!
+    EXPECT_EQ(resolve_typedef("xAOD::EventInfo_v1"), "xAOD::EventInfo_v1");
+}
+
+TEST(t_type_helpers, typedef_resolve_utin32) {
+    EXPECT_EQ(resolve_typedef("uint32_t"), "unsigned int");
+}
+
+TEST(t_type_helpers, typedef_resolve_ulong64) {
+    EXPECT_EQ(resolve_typedef("ULong64_t"), "unsigned long long");
+}
+
+TEST(t_type_helpers, typedef_resolve_no_loops) {
+    EXPECT_EQ(resolve_typedef("int"), "int");
+}
+
+TEST(t_type_helpers, typedef_fixup_methods) {
+    method_info mi;
+    mi.name = "test_method";
+    mi.return_type = "ULong64_t";
+
+    method_arg a1;
+    a1.name = "arg1";
+    a1.full_typename = "ULong64_t";
+    mi.arguments.push_back(a1);
+
+    class_info ci;
+    ci.name = "class_1";
+    ci.methods.push_back(mi);
+
+    vector<class_info> all_classes;
+    all_classes.push_back(ci);
+
+    fixup_type_defs(all_classes);
+
+    EXPECT_EQ(all_classes.size(), 1);
+    auto new_ci = all_classes[0];
+    EXPECT_EQ(new_ci.methods.size(), 1);
+    auto new_mi = new_ci.methods[0];
+    EXPECT_EQ(new_mi.return_type, "unsigned long long");
+    EXPECT_EQ(new_mi.arguments.size(), 1);
+    auto new_a1 = new_mi.arguments[0];
+    EXPECT_EQ(new_a1.full_typename, "unsigned long long");
 }

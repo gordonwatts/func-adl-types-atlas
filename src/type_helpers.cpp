@@ -107,6 +107,49 @@ map<string, vector<string>> root_typedef_map()
     return typdef_back_map;
 }
 
+map<string, string> g_typedef_map;
+
+void build_typedef_map() {
+    if (g_typedef_map.size() > 0)
+        return;
+
+    // Build the forward map just once
+	TIter i_typedef (gROOT->GetListOfTypes(true));
+	int junk = gROOT->GetListOfTypes()->GetEntries();
+	TDataType *typedef_spec;
+	while ((typedef_spec = static_cast<TDataType*>(i_typedef.Next())) != 0)
+	{
+		string typedef_name = typedef_spec->GetName();
+		string base_name = typedef_spec->GetFullTypeName();
+
+        if (typedef_name != base_name) {
+            g_typedef_map[typedef_name] = base_name;
+        }
+    }
+
+    // Add a few special ones to keep the system working
+    g_typedef_map["ULong64_t"] = "unsigned long long";
+    g_typedef_map["uint32_t"] = "unsigned int";
+}
+
+// From typedefs, return resolved typedefs.
+// Do not call until all libraries have been loaded!
+string resolve_typedef(const string &c_name) {
+    build_typedef_map();
+    string result = c_name;
+    bool done = false;
+    while (!done) {
+        auto td = g_typedef_map.find(result);
+        if (td == g_typedef_map.end()) {
+            done = true;
+        } else {
+            result = td->second;
+        }
+    }
+    return result;
+}
+
+
 ///
 // Look through the list of typedefs, and add aliases for any classes
 // we've already seen.
@@ -121,6 +164,23 @@ void fixup_type_aliases(vector<class_info> &classes)
     {
         if (typdef_back_map.find(c.name) != typdef_back_map.end()) {
             c.aliases = typdef_back_map[c.name];
+        }
+    }
+}
+
+// Find referenced arguments in methods and resolve any typedefs in there
+void fixup_type_defs(vector<class_info> &classes)
+{    
+    // Loop through all the classes we are looking at to see if there is an alias we should be done.
+    for (auto &&c : classes)
+    {
+        for (auto &&m : c.methods)
+        {
+            m.return_type = resolve_typedef(m.return_type);
+            for (auto &&a : m.arguments)
+            {
+                a.full_typename = resolve_typedef(a.full_typename);
+            }            
         }
     }
 }

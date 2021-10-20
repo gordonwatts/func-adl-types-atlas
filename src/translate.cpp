@@ -176,12 +176,12 @@ class_info translate_class(const std::string &class_name)
     result.name = c_info->GetName();
     result.name_as_type = parse_typename(result.name);
 
-    // Look to inherrited classes
+    // Look to inherited classes
     auto inherited_list = c_info->GetListOfBases();
     TIter next(inherited_list);
     while (auto bobj = static_cast<TBaseClass *>(next()))
     {
-        // Do not grab private or protected inherritance. Only the public
+        // Do not grab private or protected inheritance. Only the public
         // interface for us.
         for (auto &&m_name : inherited_public_classes(c_info->GetName()))
         {
