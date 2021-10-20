@@ -139,7 +139,6 @@ int main(int argc, char**argv) {
     
     set<string> classes_done;
     vector<class_info> done_classes;
-    map<string, class_info> class_map;
 
     set<string> bad_classes;
     bad_classes.insert("ROOT");
@@ -163,7 +162,6 @@ int main(int argc, char**argv) {
         auto c = translate_class(class_name);
         if (c.name.size() > 0) {
             done_classes.push_back(c);
-            class_map[c.name] = c;
 
             for (auto &&c_name : referenced_types(c))
             {
@@ -182,6 +180,12 @@ int main(int argc, char**argv) {
     // ROOT won't load the typedefs
     fixup_type_defs(done_classes);
 
+    // Build a class map
+    map<string, class_info> class_map;
+    for (auto &&c : done_classes)
+    {
+        class_map[c.name] = c;
+    }
 
     // Get the list of containers from the classes. These will be top level collections
     // stored in the data.
