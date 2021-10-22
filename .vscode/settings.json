@@ -19,7 +19,8 @@
         "regex": "cpp",
         "tuple": "cpp",
         "utility": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "typeindex": "cpp"
     },
     "restructuredtext.languageServer.disabled": true
 }

@@ -5,10 +5,14 @@
 #include "class_info.hpp"
 
 #include <vector>
+#include <string>
 
 struct collection_info {
     // The C++ type name of the collection.
     std::string name;
+
+    // The libraries that we need to load for this guy
+    std::vector<std::string> link_libraries;
 
     // The type info of the collection
     typename_info type_info;

@@ -6,6 +6,8 @@
 #include <map>
 #include <algorithm>
 
+#include "TClass.h"
+
 using namespace std;
 
 // Rename the collections slightly to make a little more
@@ -37,7 +39,7 @@ string get_prefix_name(const class_info &c, const string &prefix) {
 
 
 // Extract a collection from the info.
-collection_info get_collection_info(const class_info &c) {
+collection_info get_collection_info(const class_info &c, const vector<class_info> &all_classes) {
     collection_info r;
 
     // Find the name that ends in collection - we'll use that
@@ -57,11 +59,22 @@ collection_info get_collection_info(const class_info &c) {
 
     // The iterator looks at the thing we are looking at. This needs to be a DataVector.
     ostringstream it_name;
-    it_name << "Iterator<" << get_first_class(c, "DataVector").nickname << ">";
+    auto item = get_first_class(c, "DataVector");
+    it_name << "Iterator<" << item.nickname << ">";
 
     // And we need to fetch the include file for the collections too.
     r.include_file = c.include_file;
 
+    // The library is just hte prefix on the include for the cpp item
+    auto cls_ptr = find_if(all_classes.begin(), all_classes.end(),
+        [item](const class_info &a_class_item){return a_class_item.name == item.nickname;});
+    if (cls_ptr == all_classes.end()) {
+        throw runtime_error("Cannot find class " + item.nickname + " in ROOT's class list");
+    }
+    r.link_libraries.push_back(cls_ptr->library_name);
+
+
+    // And parse the iterator
     r.iterator_type_info = parse_typename(it_name.str());
 
     return r;
@@ -88,9 +101,9 @@ vector<collection_info> find_collections(const vector<class_info> &all_classes)
     for (auto &&c : all_classes)
     {
         if (is_collection_class(c)) {
-            auto c_info = get_collection_info(c);
+            auto c_info = get_collection_info(c, all_classes);
             if (seen_collections.find(c_info.name) == seen_collections.end()) {
-                result.push_back(get_collection_info(c));
+                result.push_back(c_info);
                 seen_collections.insert(c_info.name);
             }
         }
@@ -109,13 +122,14 @@ vector<collection_info> get_single_object_collections(const vector<class_info> &
     // turn those into collections here.
     for (auto &&c : g_single_collection_names) {
         auto resolved_name = resolve_typedef(c.second);
-        if (find_if(all_classes.begin(), all_classes.end(), [resolved_name](const class_info &cls){return cls.name == resolved_name;}) != all_classes.end()) {
+        auto found_class = find_if(all_classes.begin(), all_classes.end(), [resolved_name](const class_info &cls){return cls.name == resolved_name;});
+        if (found_class != all_classes.end()) {
             collection_info ci;
             ci.name = c.first;
             ci.type_info = parse_typename(resolved_name);
             ci.iterator_type_info = parse_typename(resolved_name);
-            ci.include_file = "";
-
+            ci.include_file = found_class->include_file;
+            ci.link_libraries.push_back(found_class->library_name);
             result.push_back(ci);
         }
     }

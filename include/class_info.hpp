@@ -55,6 +55,9 @@ struct class_info {
 
     // List of all methods
     std::vector<method_info> methods;
+
+    // The library this is located in
+    std::string library_name;
 };
 
 std::ostream& operator <<(std::ostream& stream, const class_info& ci);

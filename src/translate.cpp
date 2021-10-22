@@ -210,6 +210,11 @@ class_info translate_class(const std::string &class_name)
     }
     result.include_file = include;
 
+    // Library is just the clean so name for us
+    if (c_info->GetSharedLibs() != nullptr) {
+        result.library_name = clean_so_name(c_info->GetSharedLibs());
+    }
+
     // Look at all public methods
     // TODO: We totally ignore the fact that methods can have different calls depending on the arguments
     //       given. For now, we demand a single method, and just use the first one.

@@ -10,6 +10,7 @@ TEST(t_translate, include_files) {
     auto info = translate_class("xAOD::Jet_v1");
 
     EXPECT_EQ(info.include_file, "xAODJet/versions/Jet_v1.h");
+    EXPECT_EQ(info.library_name, "xAODJet");
 }
 
 TEST(t_translate, include_files_no_shared_libs) {
@@ -22,6 +23,7 @@ TEST(t_translate, include_files_neutral_particle) {
     auto info = translate_class("xAOD::NeutralParticleContainer");
 
     EXPECT_EQ(info.include_file, "xAODTracking/NeutralParticleContainer.h");
+    EXPECT_EQ(info.library_name, "xAODTracking");
 }
 
 TEST(t_translate, include_files_jet_container) {

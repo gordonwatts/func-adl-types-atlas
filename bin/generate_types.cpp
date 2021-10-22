@@ -292,7 +292,14 @@ int main(int argc, char**argv) {
             << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.nickname
             << YAML::Key << "python_container_type" << YAML::Value << normalized_type_name(c.iterator_type_info)
             << YAML::Key << "include_file" << YAML::Value << c.include_file
-            << YAML::EndMap;
+            << YAML::Key << "link_libraries" << YAML::Value << YAML::BeginSeq;
+
+        for (auto &&lib : c.link_libraries)
+        {
+            out << lib;
+        }        
+
+        out << YAML::EndSeq << YAML::EndMap;
     }
     out << YAML::EndSeq;
 
