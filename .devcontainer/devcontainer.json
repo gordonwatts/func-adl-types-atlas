@@ -17,6 +17,7 @@
 		"ms-vscode.cpptools",
 		"ms-vscode.cmake-tools",
 		"ms-vscode.cpptools-extension-pack",
+		"streetsidesoftware.code-spell-checker",
 	]
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
