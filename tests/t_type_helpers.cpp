@@ -88,7 +88,7 @@ TEST(t_type_helpers, type_namespaced_burried) {
 }
 
 
-// Qaualified name by template
+// Qualified name by template
 TEST(t_type_helpers, type_qualified_typename) {
     auto t = parse_typename("vector<float>::size_t");
 

@@ -4,7 +4,7 @@
 /// Other tools can be used to generate interface files from the yaml file.
 ///
 /// This must run in an environment where everything ROOT and the
-/// atlas software is availible.
+/// atlas software is available.
 ///
 #include "translate.hpp"
 #include "type_helpers.hpp"
