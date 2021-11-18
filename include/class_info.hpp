@@ -50,8 +50,8 @@ struct class_info {
     // List of aliases for this class (other names).
     std::vector<std::string> aliases;
 
-    // List of fully qualified C++ class names that this directly inherrits from
-    std::vector<std::string> inherrited_class_names;
+    // List of fully qualified C++ class names that this directly inherits from
+    std::vector<std::string> inherited_class_names;
 
     // List of all methods
     std::vector<method_info> methods;

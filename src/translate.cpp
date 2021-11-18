@@ -74,7 +74,7 @@ bool is_good_method(const TClass *c_info, const TMethod *m_info, const set<strin
 
 
 ///
-// Get all publically directly inherrited classes
+// Get all publically directly inherited classes
 vector<string> inherited_public_classes(const std::string &cls_name) {
     auto c_info = TClass::GetClass(cls_name.c_str());
 
@@ -83,7 +83,7 @@ vector<string> inherited_public_classes(const std::string &cls_name) {
     vector<string> result;
     while (auto bobj = static_cast<TBaseClass *>(next()))
     {
-        // Do not grab private or protected inherritance. Only the public
+        // Do not grab private or protected inheritance. Only the public
         // interface for us.
         if (
             ((bobj->Property() & kIsPrivate) == 0) && ((bobj->Property() & kIsProtected) == 0))
@@ -96,9 +96,9 @@ vector<string> inherited_public_classes(const std::string &cls_name) {
 }
 
 ///
-/// Find all inherrited classes
+/// Find all inherited classes
 ///
-set<string> all_inherrited_classes(const std::string &cls_name) {
+set<string> all_inherited_classes(const std::string &cls_name) {
     set<string> result;
     queue<string> to_do;
     to_do.push(cls_name);
@@ -185,7 +185,7 @@ class_info translate_class(const std::string &class_name)
         // interface for us.
         for (auto &&m_name : inherited_public_classes(c_info->GetName()))
         {
-            result.inherrited_class_names.push_back(m_name);            
+            result.inherited_class_names.push_back(m_name);            
         }
     }
 
@@ -220,7 +220,7 @@ class_info translate_class(const std::string &class_name)
     //       given. For now, we demand a single method, and just use the first one.
     {
         set<string> seen_names;
-        auto all_inherited = type_name(all_inherrited_classes(result.name));
+        auto all_inherited = type_name(all_inherited_classes(result.name));
         auto all_methods = c_info->GetListOfAllPublicMethods();
         TIter next(all_methods);
         while (auto method = static_cast<TMethod *>(next.Next()))

@@ -65,8 +65,8 @@ string unqualified_type_name(const string &full_type_name)
     return result;
 }
 
-// Find all classes that inherrit from a given class name
-vector<string> all_that_inherrit_from(const string &c_name)
+// Find all classes that inherit from a given class name
+vector<string> all_that_inherit_from(const string &c_name)
 {
     TClassTable::Init();
     while (auto m_info = TClassTable::Next()) {
@@ -81,7 +81,7 @@ vector<string> all_that_inherrit_from(const string &c_name)
         if (c_info->InheritsFrom(c_name.c_str()))
         {
             results.insert(c_info->GetName());
-            cout << "    *** Inherrits!" << endl;
+            cout << "    *** inherits!" << endl;
         }
     }
     return vector<string>(results.begin(), results.end());
@@ -263,8 +263,8 @@ typename_info parse_typename(const string &type_name)
     return result;
 }
 
-// Returns the type info for the first class or inherrited class that
-// has name as the name as a class. Can't climb the inherritance tree far,
+// Returns the type info for the first class or inherited class that
+// has name as the name as a class. Can't climb the inheritance tree far,
 // but it will try.
 typename_info get_first_class(const class_info &c, const string &name) {
     // Check the class itself
@@ -272,8 +272,8 @@ typename_info get_first_class(const class_info &c, const string &name) {
         return c.name_as_type.template_arguments[0];
     }
 
-    // Go after the inherrited item
-    for (auto &&i_name : c.inherrited_class_names)
+    // Go after the inherited item
+    for (auto &&i_name : c.inherited_class_names)
     {
         auto t_info = parse_typename(i_name);
         if (t_info.type_name ==  name) {

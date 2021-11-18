@@ -16,7 +16,7 @@ TEST(t_xaod_helpers, normal_jet_collection) {
     a.name_as_type = parse_typename(a.name);
     a.aliases.push_back("xAOD::JetContainer");
     a.aliases.push_back("xAOD::JetContainer_v1");
-    a.inherrited_class_names.push_back("DataVector<xAOD::IParticle>");
+    a.inherited_class_names.push_back("DataVector<xAOD::IParticle>");
 
     vector<class_info> seq;
     seq.push_back(a);
@@ -49,7 +49,7 @@ TEST(t_xaod_helpers, normal_met_collection) {
     a.name = "xAOD::MissingETContainer_v1";
     a.name_as_type = parse_typename(a.name);
     a.aliases.push_back("xAOD::MissingETContainer");
-    a.inherrited_class_names.push_back("DataVector<xAOD::MissingET_v1>");
+    a.inherited_class_names.push_back("DataVector<xAOD::MissingET_v1>");
 
     vector<class_info> seq;
     seq.push_back(a);
@@ -82,7 +82,7 @@ TEST(t_xaod_helpers, no_good_collection) {
     a.name = "xAOD::Jet_v1";
     a.name_as_type = parse_typename(a.name);
     a.aliases.push_back("xAOD::Jet");
-    a.inherrited_class_names.push_back("xAOD::IParticle");
+    a.inherited_class_names.push_back("xAOD::IParticle");
 
     vector<class_info> seq;
     seq.push_back(a);
@@ -100,7 +100,7 @@ TEST(t_xaod_helpers, no_duplicates) {
     a.name_as_type = parse_typename(a.name);
     a.aliases.push_back("xAOD::JetContainer");
     a.aliases.push_back("xAOD::JetContainer_v1");
-    a.inherrited_class_names.push_back("DataVector<xAOD::IParticle>");
+    a.inherited_class_names.push_back("DataVector<xAOD::IParticle>");
 
     vector<class_info> seq;
     seq.push_back(a);
@@ -156,7 +156,9 @@ TEST(t_xaod_helpers, single_object_collections) {
     ci_ei.include_file = "include.h";
     classes.push_back(ci_ei);
     TClass::GetClass("xAOD::EventInfo"); // Make sure the typdefs are loaded
+
     auto collections = get_single_object_collections(classes);
+
     EXPECT_EQ(collections.size(), 1);
     EXPECT_EQ(collections[0].link_libraries.size(), 1);
     EXPECT_EQ(collections[0].link_libraries[0], "xAODEventInfo");

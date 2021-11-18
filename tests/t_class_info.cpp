@@ -5,13 +5,13 @@
 using namespace std;
 
 // Make sure basic type comes back properly
-TEST(t_class_info, referenced_class_inherrited_class) {
+TEST(t_class_info, referenced_class_inherited_class) {
     class_info ci;
     ci.name = "SubClass";
     ci.name_as_type = parse_typename(ci.name);
 
-    ci.inherrited_class_names.push_back("fork1");
-    ci.inherrited_class_names.push_back("fork2");
+    ci.inherited_class_names.push_back("fork1");
+    ci.inherited_class_names.push_back("fork2");
 
     auto ref_list = referenced_types(ci);
     EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"SubClass", "fork1", "fork2"}));

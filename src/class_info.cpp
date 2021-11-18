@@ -20,9 +20,9 @@ std::ostream& operator <<(std::ostream& stream, const class_info& ci) {
         stream << endl;
     }
 
-    if (ci.inherrited_class_names.size() > 0) {
-        stream << "  Inherrits from:" << endl;
-        for (auto &&i_name : ci.inherrited_class_names)
+    if (ci.inherited_class_names.size() > 0) {
+        stream << "  inherits from:" << endl;
+        for (auto &&i_name : ci.inherited_class_names)
         {
             stream << "    " << i_name << endl;
         }
@@ -114,7 +114,7 @@ std::ostream& operator <<(std::ostream& stream, const typename_info& ti)
 // Find all classes that this class references.
 std::vector<std::string> referenced_types(const class_info &c_info)
 {
-    set<string> result(c_info.inherrited_class_names.begin(), c_info.inherrited_class_names.end());
+    set<string> result(c_info.inherited_class_names.begin(), c_info.inherited_class_names.end());
 
     auto named_types = referenced_types(c_info.name_as_type);
     result.insert(named_types.begin(), named_types.end());
