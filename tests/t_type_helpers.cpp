@@ -174,3 +174,107 @@ TEST(t_type_helpers, typedef_fixup_methods) {
     auto new_a1 = new_mi.arguments[0];
     EXPECT_EQ(new_a1.full_typename, "unsigned long long");
 }
+
+TEST(t_type_helpers, is_collection_int) {
+    typename_info ti;
+    ti.type_name = "int";
+    ti.nickname = "int";
+    EXPECT_EQ(is_collection(ti), false);
+}
+
+TEST(t_type_helpers, is_collection_vector) {
+    typename_info ti_int;
+    ti_int.type_name = "int";
+    ti_int.nickname = "int";
+
+    typename_info ti;
+    ti.type_name = "vector";
+    ti.nickname = "vector<int>";
+    ti.template_arguments.push_back(ti_int);
+    EXPECT_EQ(is_collection(ti), true);
+}
+
+TEST(t_type_helpers, is_collection_simple_class) {
+    typename_info ti;
+    ti.nickname = "dude";
+    ti.nickname = "dude";
+
+    class_info ci;
+    ci.name = "dude";
+    ci.name_as_type = ti;
+
+    EXPECT_EQ(is_collection(ci), false);
+}
+
+TEST(t_type_helpers, is_collection_custom_iterator_class) {
+    typename_info ti;
+    ti.nickname = "dude";
+    ti.nickname = "dude";
+
+    class_info ci;
+    ci.name = "MyVector";
+    ci.name_as_type.type_name = "MyVector";
+    ci.name_as_type.nickname = "MyVector";
+
+    // Add begin/end vector here
+    method_info m_begin;
+    m_begin.name = "begin";
+    m_begin.return_type = "iterator";
+    method_info m_end;
+    m_end.name = "end";
+    m_end.return_type = "iterator";
+    ci.methods.push_back(m_begin);
+    ci.methods.push_back(m_end);
+
+    EXPECT_EQ(is_collection(ci), true);
+}
+
+TEST(t_type_helpers, container_of_begin_end_TIter) {
+    typename_info ti;
+    ti.nickname = "dude";
+    ti.nickname = "dude";
+
+    class_info ci;
+    ci.name = "MyVector";
+    ci.name_as_type.type_name = "MyVector";
+    ci.name_as_type.nickname = "MyVector";
+
+    // Add begin/end vector here
+    method_info m_begin;
+    m_begin.name = "begin";
+    m_begin.return_type = "TIter";
+    method_info m_end;
+    m_end.name = "end";
+    m_end.return_type = "TIter";
+    ci.methods.push_back(m_begin);
+    ci.methods.push_back(m_end);
+
+    auto t = container_of(ci);
+
+    EXPECT_EQ(t.nickname, "TObject");
+}
+
+TEST(t_type_helpers, container_of_begin_end_JetVertexConst) {
+    typename_info ti;
+    ti.nickname = "dude";
+    ti.nickname = "dude";
+
+    class_info ci;
+    ci.name = "MyVector";
+    ci.name_as_type.type_name = "MyVector";
+    ci.name_as_type.nickname = "MyVector";
+
+    // Add begin/end vector here
+    method_info m_begin;
+    m_begin.name = "begin";
+    m_begin.return_type = "xAOD::JetConstituentVector::iterator";
+    method_info m_end;
+    m_end.name = "end";
+    m_end.return_type = "xAOD::JetConstituentVector::iterator";
+    ci.methods.push_back(m_begin);
+    ci.methods.push_back(m_end);
+
+    auto t = container_of(ci);
+
+    EXPECT_EQ(t.nickname, "JetConstituent");
+}

@@ -185,7 +185,7 @@ void fixup_type_defs(vector<class_info> &classes)
     }
 }
 
-// Parse a horrendus typename into its various peices.
+// Parse a horrendous typename into its various pieces.
 //
 // "int"
 // class_name::size_type
@@ -284,7 +284,7 @@ typename_info get_first_class(const class_info &c, const string &name) {
     return typename_info();
 }
 
-// Dump out the typename as fully qualified, but normalzied
+// Dump out the typename as fully qualified, but normalized
 // (rather than just C++).
 string normalized_type_name(const typename_info &ti)
 {
@@ -297,4 +297,51 @@ string normalized_type_name(const typename_info &ti)
 string normalized_type_name(const string &ti)
 {
     return normalized_type_name(parse_typename(ti));
+}
+
+// Figure out if this type is a container that can be
+// iterated over using standard for like C++ syntax
+// (vector, etc.)
+bool is_collection(const typename_info &ti) {
+    if (ti.type_name == "vector" & ti.template_arguments.size() > 0) {
+        return true;
+    }
+    return false;
+}
+
+typename_info container_of(const typename_info &ti) {
+    throw runtime_error("ops");
+}
+
+// Look at the class see if this is a vector of some sort that
+// can be iterated over.
+bool is_collection(const class_info &ci) {
+    // Look to see if there is a begin/end method. If so, then we will
+    // assume that is good to go!
+
+    if (has_methods(ci, {"begin", "end"})) {
+        return true;
+    }
+    return false;
+}
+
+map<string, string> _g_container_iterator_specials = {
+    {"TIter", "TObject"},
+    {"xAOD::JetConstituentVector::iterator", "xAOD::JetConstituent"}
+};
+
+// Given this is a container, as above, figure out
+// what it is containing.
+typename_info container_of(const class_info &ci) {
+    // If there is a begin/end object, lets lift that out.
+    if (has_methods(ci, {"begin", "end"})) {
+        auto rtn_type_name = get_method(ci, "begin")[0].return_type;
+        auto rtn_type = _g_container_iterator_specials.find(rtn_type_name);
+        if (rtn_type == _g_container_iterator_specials.end()) {
+            throw runtime_error("Unable to find container type for iterator type " + rtn_type_name);
+        }
+        return parse_typename(rtn_type->second);
+    }
+
+    throw runtime_error("Do not know how to find container type for class " + ci.name);
 }

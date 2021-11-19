@@ -328,6 +328,12 @@ int main(int argc, char**argv) {
         out << YAML::BeginMap
             << YAML::Key << "python_name" << YAML::Value << normalized_type_name(c_info->second.name_as_type)
             << YAML::Key << "cpp_name" << YAML::Value << c_info->second.name_as_type.nickname;
+                
+        if (is_collection(c_info->second)) {
+            auto container_typename = container_of(c_info->second);
+            out << YAML::Key << "is_container_of_cpp" << YAML::Value << container_typename.nickname;
+            out << YAML::Key << "is_container_of_python" << YAML::Value << normalized_type_name(container_typename);
+        }
         
         if (c_info->second.include_file.size() > 0) {
             out << YAML::Key << "include_file" << YAML::Value << c_info->second.include_file;

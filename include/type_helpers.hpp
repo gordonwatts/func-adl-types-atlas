@@ -43,4 +43,9 @@ typename_info get_first_class(const class_info &c, const std::string &name);
 std::string normalized_type_name(const typename_info &ti);
 std::string normalized_type_name(const std::string &ti);
 
+// Is this a collection? What does it contain?
+bool is_collection(const typename_info &ti);
+typename_info container_of(const typename_info &ti);
+bool is_collection(const class_info &ci);
+typename_info container_of(const class_info &ci);
 #endif

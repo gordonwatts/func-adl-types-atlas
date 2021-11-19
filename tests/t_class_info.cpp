@@ -100,3 +100,62 @@ TEST(t_class_info, convert_double_to_float) {
     out << tn;
     EXPECT_EQ(out.str(), "vector[float]");
 }
+
+TEST(t_class_info, has_methods_no) {
+    method_info mi;
+    mi.name = "begin";
+
+    class_info ci;
+    ci.methods.push_back(mi);
+
+    EXPECT_EQ(has_methods(ci, {"end"}), false);
+}
+
+TEST(t_class_info, has_methods_yes) {
+    method_info mi;
+    mi.name = "end";
+
+    class_info ci;
+    ci.methods.push_back(mi);
+
+    EXPECT_EQ(has_methods(ci, {"end"}), true);
+}
+
+TEST(t_class_info, has_methods_multiple) {
+    method_info mi_1;
+    mi_1.name = "begin";
+    method_info mi_2;
+    mi_2.name = "end";
+
+    class_info ci;
+    ci.methods.push_back(mi_1);
+    ci.methods.push_back(mi_2);
+
+    EXPECT_EQ(has_methods(ci, {"end", "begin"}), true);
+}
+
+TEST(t_class_info, has_methods_multiple_no) {
+    method_info mi_1;
+    mi_1.name = "begin";
+    method_info mi_2;
+    mi_2.name = "end1";
+
+    class_info ci;
+    ci.methods.push_back(mi_1);
+    ci.methods.push_back(mi_2);
+
+    EXPECT_EQ(has_methods(ci, {"end", "begin"}), false);
+}
+
+TEST(t_class_info, get_methods_yes) {
+    method_info mi;
+    mi.name = "end";
+
+    class_info ci;
+    ci.methods.push_back(mi);
+
+    auto a = get_method(ci, "end");
+
+    EXPECT_EQ(a.size(), 1);
+    EXPECT_EQ(a[0].name, "end");
+}

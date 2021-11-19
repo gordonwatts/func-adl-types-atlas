@@ -177,3 +177,40 @@ std::vector<std::string> referenced_types(const typename_info &t_info)
     // Return as a list.
     return vector<string>(result.begin(), result.end());
 }
+
+// Make sure all listed methods are part of this class
+bool has_methods(const class_info &ci, const vector<string> &names)
+{
+    for (auto &&m_name : names)
+    {
+        bool found = false;
+        for (auto &&m : ci.methods)
+        {
+            if (m.name == m_name) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            return false;
+        }        
+    }
+    
+    return true;
+}
+
+// Return any methods of a given name.
+// Zero length vector returned if the method isn't found.
+vector<method_info> get_method(const class_info &ci, const string &name)
+{
+    vector<method_info> result;
+
+    for (auto &&m: ci.methods)
+    {
+        if (m.name == name) {
+            result.push_back(m);
+        }
+    }
+
+    return result;
+}

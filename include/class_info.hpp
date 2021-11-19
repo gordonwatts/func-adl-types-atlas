@@ -71,4 +71,7 @@ std::vector<std::string> referenced_types(const method_info &m_info);
 std::vector<std::string> referenced_types(const method_arg &a_info);
 std::vector<std::string> referenced_types(const typename_info &a_info);
 
+// Return true if there is a method in the class
+bool has_methods(const class_info &ci, const std::vector<std::string> &names);
+std::vector<method_info> get_method(const class_info &ci, const std::string &method);
 #endif
