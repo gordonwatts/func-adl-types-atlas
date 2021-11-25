@@ -60,7 +60,7 @@ collection_info get_collection_info(const class_info &c, const vector<class_info
     // The iterator looks at the thing we are looking at. This needs to be a DataVector.
     ostringstream it_name;
     auto item = get_first_class(c, "DataVector");
-    it_name << "Iterator<" << item.nickname << ">";
+    it_name << "Iterable<" << item.nickname << ">";
 
     // And we need to fetch the include file for the collections too.
     r.include_file = c.include_file;
@@ -143,7 +143,7 @@ std::ostream& operator <<(std::ostream& stream, const collection_info& ci)
 {
     stream << "Collection Name: " << ci.name << endl;
     stream << "  Full Type Info: " << ci.type_info << endl;
-    stream << "  Iterator Info: " << ci.iterator_type_info << endl;
+    stream << "  Iterable Info: " << ci.iterator_type_info << endl;
     stream << "  Include file: " << ci.include_file << endl;
 
     return stream;

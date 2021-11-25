@@ -31,13 +31,13 @@ TEST(t_xaod_helpers, normal_jet_collection) {
     EXPECT_EQ(r.size(), 1);
     EXPECT_EQ(r[0].name, "Jets");
 
-    EXPECT_EQ(r[0].iterator_type_info.type_name, "Iterator");
+    EXPECT_EQ(r[0].iterator_type_info.type_name, "Iterable");
     EXPECT_EQ(r[0].iterator_type_info.namespace_list.size(), 0);
     EXPECT_EQ(r[0].iterator_type_info.template_arguments.size(), 1);
     EXPECT_EQ(r[0].iterator_type_info.template_arguments[0].type_name, "Jet_v1");
 
     EXPECT_EQ(r[0].type_info.nickname, "DataVector<xAOD::Jet_v1>");
-
+    
     EXPECT_EQ(r[0].link_libraries.size(), 1);
     EXPECT_EQ(r[0].link_libraries[0], "xAODJet");
 }
@@ -64,7 +64,7 @@ TEST(t_xaod_helpers, normal_met_collection) {
     EXPECT_EQ(r.size(), 1);
     EXPECT_EQ(r[0].name, "MissingET");
 
-    EXPECT_EQ(r[0].iterator_type_info.type_name, "Iterator");
+    EXPECT_EQ(r[0].iterator_type_info.type_name, "Iterable");
     EXPECT_EQ(r[0].iterator_type_info.namespace_list.size(), 0);
     EXPECT_EQ(r[0].iterator_type_info.template_arguments.size(), 1);
     EXPECT_EQ(r[0].iterator_type_info.template_arguments[0].type_name, "MissingET_v1");
