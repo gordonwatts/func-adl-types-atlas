@@ -278,3 +278,22 @@ TEST(t_type_helpers, container_of_begin_end_JetVertexConst) {
 
     EXPECT_EQ(t.nickname, "xAOD::JetConstituent");
 }
+
+TEST(t_type_helpers, container_of_vector) {
+    class_info ci;
+    ci.name = "vector<int>";
+    ci.name_as_type = parse_typename("vector<int>");
+    
+    method_info m_begin;
+    m_begin.name = "begin";
+    m_begin.return_type = "vector<int>::iterator";
+    method_info m_end;
+    m_end.name = "end";
+    m_end.return_type = "vector<int>::iterator";
+    ci.methods.push_back(m_begin);
+    ci.methods.push_back(m_end);
+
+    auto t = container_of(ci);
+
+    EXPECT_EQ(t.nickname, "int");
+}

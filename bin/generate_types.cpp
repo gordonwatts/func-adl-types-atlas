@@ -230,6 +230,7 @@ int main(int argc, char**argv) {
     }
 
     // Add some of the default types that need no introduction
+    classes_to_emit.insert("bool");
     classes_to_emit.insert("double");
     classes_to_emit.insert("float");
     classes_to_emit.insert("short");

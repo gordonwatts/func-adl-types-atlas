@@ -314,31 +314,44 @@ typename_info container_of(const typename_info &ti) {
 }
 
 // Look at the class see if this is a vector of some sort that
-// can be iterated over.
+// can be iterated over. We also only return true if we are sure we can get
+// an actual type out of (in short - container_of will return successfully).
 bool is_collection(const class_info &ci) {
     // Look to see if there is a begin/end method. If so, then we will
     // assume that is good to go!
 
-    if (has_methods(ci, {"begin", "end"})) {
+    try {
+        container_of(ci);
         return true;
+    } catch (std::runtime_error &e) {
+        return false;
     }
-    return false;
+
+    // if (has_methods(ci, {"begin", "end"})) {
+    //     return true;
+    // }
+    // return false;
 }
 
 map<string, string> _g_container_iterator_specials = {
     {"TIter", "TObject"},
-    {"xAOD::JetConstituentVector::iterator", "xAOD::JetConstituent"}
+    {"xAOD::JetConstituentVector::iterator", "xAOD::JetConstituent"},
 };
 
 // Given this is a container, as above, figure out
 // what it is containing.
 typename_info container_of(const class_info &ci) {
+    // If this is a vector object, then we can grab from the argument
+    if (ci.name_as_type.type_name == "vector") {
+        return ci.name_as_type.template_arguments[0];
+    }
+
     // If there is a begin/end object, lets lift that out.
     if (has_methods(ci, {"begin", "end"})) {
         auto rtn_type_name = get_method(ci, "begin")[0].return_type;
         auto rtn_type = _g_container_iterator_specials.find(rtn_type_name);
         if (rtn_type == _g_container_iterator_specials.end()) {
-            throw runtime_error("Unable to find container type for iterator type " + rtn_type_name);
+            throw runtime_error("Unable to find container type for iterator type " + rtn_type_name + " for container " + ci.name);
         }
         return parse_typename(rtn_type->second);
     }

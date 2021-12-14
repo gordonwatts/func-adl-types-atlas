@@ -61,3 +61,10 @@ TEST(t_translate, method_only_once) {
 
     EXPECT_EQ(count_if(info.methods.begin(), info.methods.end(), [](const method_info &m) { return m.name == "pt";}), 1);
 }
+
+
+TEST(t_translate, truth_particle_methods) {
+    auto info = translate_class("xAOD::TruthParticle_v1");
+    EXPECT_EQ(count_if(info.methods.begin(), info.methods.end(), [](const method_info &m) { return m.name == "prodVtx";}), 1);
+    EXPECT_EQ(count_if(info.methods.begin(), info.methods.end(), [](const method_info &m) { return m.name == "hasProdVtx";}), 1);
+}

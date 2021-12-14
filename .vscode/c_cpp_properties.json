@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "/usr/AnalysisBaseExternals/21.2.184/InstallArea/x86_64-centos7-gcc8-opt/include"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/lcg/gcc/8.3.0-cebb0/x86_64-centos7/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
