@@ -352,9 +352,11 @@ int main(int argc, char**argv) {
                     first_method = false;
                 }
 
+                auto rtn_type = parse_typename(meth.return_type);
                 out << YAML::BeginMap
                     << YAML::Key << "name" << YAML::Value << meth.name
-                    << YAML::Key << "return_type" << YAML::Value << normalized_type_name(meth.return_type);
+                    << YAML::Key << "return_type" << YAML::Value << normalized_type_name(rtn_type)
+                    << YAML::Key << "return_is_pointer" << YAML::Value << (rtn_type.is_pointer ? "True" : "False");
 
                 bool first_argument = true;
                 for (auto &&arg : meth.arguments)

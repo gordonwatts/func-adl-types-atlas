@@ -39,9 +39,15 @@ typename_info parse_typename(const std::string &type_name);
 typename_info get_first_class(const class_info &c, const std::string &name);
 
 // Return the type as a string, but normalized
-// for nto just C++.
+// for just C++.
 std::string normalized_type_name(const typename_info &ti);
 std::string normalized_type_name(const std::string &ti);
+
+// Return the complete type without modifiers (like * or const)
+std::string unqualified_typename(const typename_info &ti);
+
+// Return the C++ type in a standard format
+std::string typename_cpp_string(const typename_info &ti);
 
 // Is this a collection? What does it contain?
 bool is_collection(const typename_info &ti);

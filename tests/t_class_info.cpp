@@ -28,6 +28,20 @@ TEST(t_class_info, referenced_class_template_argument) {
     EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"SubClass", "vector<SubClass>"}));
 }
 
+TEST(t_class_info, referenced_typeinfo_pointer) {
+    auto tn = parse_typename("int*");
+
+    auto ref_list = referenced_types(tn);
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"int"}));
+}
+
+TEST(t_class_info, referenced_typeinfo_pointer_const) {
+    auto tn = parse_typename("const int*");
+
+    auto ref_list = referenced_types(tn);
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"int"}));
+}
+
 // Template argument
 TEST(t_class_info, referenced_typeinfo_template) {
     auto tn = parse_typename("vector<SubClass>");
@@ -79,8 +93,8 @@ TEST(t_class_info, referenced_typename_ignore_integers) {
 
     auto ref_list = referenced_types(tn);
     EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({
-        "Eigen::DenseBase<Eigen::Matrix<double,6,1,0,6,-1> >",
-        "Eigen::Matrix<double,6,1,0,6,-1>",
+        "Eigen::DenseBase<Eigen::Matrix<double, 6, 1, 0, 6, -1>>",
+        "Eigen::Matrix<double, 6, 1, 0, 6, -1>",
         "double"}));
 }
 
@@ -89,8 +103,8 @@ TEST(t_class_info, referenced_typename_deep_inside) {
 
     auto ref_list = referenced_types(tn);
     EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({
-        "unique_ptr<DataVector<xAOD::Jet_v1,DataVector<xAOD::IParticle,DataModel_detail::NoBase> >::base_value_type>",
-        "DataVector<xAOD::Jet_v1,DataVector<xAOD::IParticle,DataModel_detail::NoBase> >::base_value_type",
+        "unique_ptr<DataVector<xAOD::Jet_v1, DataVector<xAOD::IParticle, DataModel_detail::NoBase>>::base_value_type>",
+        "DataVector<xAOD::Jet_v1, DataVector<xAOD::IParticle, DataModel_detail::NoBase>>::base_value_type",
         }));
 }
 

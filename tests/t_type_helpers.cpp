@@ -12,6 +12,48 @@ TEST(t_type_helpers, type_int) {
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.is_pointer, false);
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_int_ptr) {
+    auto t = parse_typename("int*");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.nickname, "int*");
+    EXPECT_EQ(t.is_pointer, true);
+}
+
+TEST(t_type_helpers, type_int_ref) {
+    auto t = parse_typename("int&");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.nickname, "int&");
+    EXPECT_EQ(t.is_pointer, false);
+}
+
+TEST(t_type_helpers, type_int_ptr_space) {
+    auto t = parse_typename("int *");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.nickname, "int *");
+    EXPECT_EQ(t.is_pointer, true);
+}
+
+TEST(t_type_helpers, type_int_const) {
+    auto t = parse_typename("const int");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.nickname, "const int");
+    EXPECT_EQ(t.is_const, true);
 }
 
 // Simple template
@@ -206,29 +248,6 @@ TEST(t_type_helpers, is_collection_simple_class) {
     EXPECT_EQ(is_collection(ci), false);
 }
 
-TEST(t_type_helpers, is_collection_custom_iterator_class) {
-    typename_info ti;
-    ti.nickname = "dude";
-    ti.nickname = "dude";
-
-    class_info ci;
-    ci.name = "MyVector";
-    ci.name_as_type.type_name = "MyVector";
-    ci.name_as_type.nickname = "MyVector";
-
-    // Add begin/end vector here
-    method_info m_begin;
-    m_begin.name = "begin";
-    m_begin.return_type = "iterator";
-    method_info m_end;
-    m_end.name = "end";
-    m_end.return_type = "iterator";
-    ci.methods.push_back(m_begin);
-    ci.methods.push_back(m_end);
-
-    EXPECT_EQ(is_collection(ci), true);
-}
-
 TEST(t_type_helpers, container_of_begin_end_TIter) {
     typename_info ti;
     ti.nickname = "dude";
@@ -296,4 +315,45 @@ TEST(t_type_helpers, container_of_vector) {
     auto t = container_of(ci);
 
     EXPECT_EQ(t.nickname, "int");
+}
+
+TEST(t_type_helpers, cpp_string_simple) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("int")), "int");
+}
+
+TEST(t_type_helpers, cpp_string_simple_pointer) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("int*")), "int *");
+}
+
+TEST(t_type_helpers, cpp_string_simple_const) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("const int*")), "const int *");
+}
+
+TEST(t_type_helpers, cpp_string_simple_ns) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("int*")), "int *");
+}
+
+TEST(t_type_helpers, cpp_string_simple_template) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("vector<int>")), "vector<int>");
+}
+
+
+TEST(t_type_helpers, cpp_string_simple_multi_ns) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("fork::spoon::int")), "fork::spoon::int");
+}
+
+TEST(t_type_helpers, cpp_string_simple_template_args) {
+    EXPECT_EQ(typename_cpp_string(parse_typename("vector<int, float>")), "vector<int, float>");
+}
+
+TEST(t_type_helpers, unqualified_pointer) {
+    EXPECT_EQ(unqualified_typename(parse_typename("int*")), "int");
+}
+
+TEST(t_type_helpers, unqualified_const) {
+    EXPECT_EQ(unqualified_typename(parse_typename("const int")), "int");
+}
+
+TEST(t_type_helpers, unqualified_template_args_untouched) {
+    EXPECT_EQ(unqualified_typename(parse_typename("const vector<int*>")), "vector<int *>");
 }

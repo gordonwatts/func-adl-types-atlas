@@ -172,7 +172,7 @@ std::vector<std::string> referenced_types(const typename_info &t_info)
     if (!all_of(t_info.nickname.begin(), t_info.nickname.end(), ::isdigit)
         && (t_info.nickname[0] != '-')
         )
-        result.insert(t_info.nickname);
+        result.insert(unqualified_typename(t_info));
 
     // Return as a list.
     return vector<string>(result.begin(), result.end());

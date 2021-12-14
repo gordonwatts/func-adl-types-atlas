@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iterator>
 #include <sstream>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -193,6 +194,8 @@ void fixup_type_defs(vector<class_info> &classes)
 typename_info parse_typename(const string &type_name)
 {
     typename_info result;
+    result.is_const = false;
+    result.is_pointer = false;
     result.nickname = trim(type_name);
 
     int ns_depth = 0;
@@ -249,6 +252,34 @@ typename_info parse_typename(const string &type_name)
                 }
                 break;
 
+            case '*':
+                if (ns_depth == 0) {
+                    result.is_pointer = true;
+                } else {
+                    name += type_name[t_index];
+                }
+                break;
+            
+            case ' ':
+                if (ns_depth == 0) {
+                    auto n1 = boost::trim_copy(name);
+                    if (n1 == "const") {
+                        result.is_const = true;
+                        name = "";
+                    } else {
+                        name += type_name[t_index];
+                    }
+                } else {
+                    name += type_name[t_index];
+                }
+            
+            case '&':
+                // We don't care about reference modifiers for this work.
+                if (ns_depth != 0) {
+                    name += type_name[t_index];
+                }
+                break;
+
             default:
                 name += type_name[t_index];
                 break;
@@ -256,6 +287,7 @@ typename_info parse_typename(const string &type_name)
         t_index++;
     }
     if (name.size() > 0 && result.type_name.size() == 0) {
+        boost::trim(name);
         result.type_name = name;
         name = "";
     }
@@ -326,11 +358,6 @@ bool is_collection(const class_info &ci) {
     } catch (std::runtime_error &e) {
         return false;
     }
-
-    // if (has_methods(ci, {"begin", "end"})) {
-    //     return true;
-    // }
-    // return false;
 }
 
 map<string, string> _g_container_iterator_specials = {
@@ -357,4 +384,58 @@ typename_info container_of(const class_info &ci) {
     }
 
     throw runtime_error("Do not know how to find container type for class " + ci.name);
+}
+
+// Return the C++ type as unqualified.
+std::string unqualified_typename(const typename_info &ti)
+{
+    typename_info n_ti = ti;
+    n_ti.is_const = false;
+    n_ti.is_pointer = false;
+    return typename_cpp_string(n_ti);
+}
+
+// Return the C++ type in a standard format
+std::string typename_cpp_string(const typename_info &ti)
+{
+    bool first = true;
+    ostringstream stream;
+
+    if (ti.is_const) {
+        stream << "const ";
+    }
+
+    for (auto &&ns : ti.namespace_list)
+    {
+        if (!first)
+            stream << "::";
+        first = false;
+        stream << typename_cpp_string(ns);
+    }
+    if (!first)
+        stream << "::";
+
+    stream << ti.type_name;
+
+    // And any template arguments
+    first = true;
+    for (auto &&t_arg : ti.template_arguments)
+    {
+        if (first) {
+            stream << "<";
+            first = false;
+        } else {
+            stream << ", ";
+        }
+        stream << typename_cpp_string(t_arg);
+    }
+    if (!first) {
+        stream << ">";
+    }
+
+    if (ti.is_pointer) {
+        stream << " *";
+    }
+
+    return stream.str();
 }
