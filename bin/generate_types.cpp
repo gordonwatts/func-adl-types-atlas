@@ -91,6 +91,20 @@ string extract_container_iterator_type(const collection_info &c)
     }
 }
 
+// These classes are known to be problematic
+set<string> _g_bad_classes {
+    "ROOT", "SG", "xAOD", "TObject", "SG::auxid_set_t"
+};
+
+// Inspect the class name. There are just some classes we
+// should not be writing out under any circumstances.
+bool class_name_is_good(const string &c_name) {
+    return (_g_bad_classes.find(c_name) == _g_bad_classes.end()
+        && (c_name.find("Eigen") == c_name.npos)
+        && (c_name.find("SG::") == c_name.npos)
+       );
+}
+
 int main(int argc, char**argv) {
     auto app_reference = create_root_app();
 
@@ -121,7 +135,9 @@ int main(int argc, char**argv) {
     queue<string> classes_to_do;
     for (auto &&c_name : cmd_classes)
     {
-        classes_to_do.push(c_name);
+        if (class_name_is_good(c_name)) {
+            classes_to_do.push(c_name);
+        }
     }
 
     if (vm.count("library") > 0) {
@@ -139,11 +155,6 @@ int main(int argc, char**argv) {
     
     set<string> classes_done;
     vector<class_info> done_classes;
-
-    set<string> bad_classes;
-    bad_classes.insert("ROOT");
-    bad_classes.insert("xAOD");    
-    bad_classes.insert("TObject");
 
     while (classes_to_do.size() > 0) {
         auto raw_class_name(classes_to_do.front());
@@ -165,10 +176,9 @@ int main(int argc, char**argv) {
 
             for (auto &&c_name : referenced_types(c))
             {
-                if (bad_classes.find(c_name) == bad_classes.end()
-                    && (c_name.find("Eigen") == c_name.npos)
-                    )
+                if (class_name_is_good(c_name)) {
                     classes_to_do.push(c_name);
+                }
             }        
         }
     }
@@ -200,7 +210,10 @@ int main(int argc, char**argv) {
     set<string> classes_to_emit;
     for (auto &&c : all_collections)
     {
-        classes_to_do.push(extract_container_iterator_type(c));
+        auto c_name (extract_container_iterator_type(c));
+        if (class_name_is_good(c_name)) {
+            classes_to_do.push(c_name);
+        }
     }
     while (!classes_to_do.empty()) {
         string c_name(unqualified_type_name(classes_to_do.front()));
@@ -225,7 +238,9 @@ int main(int argc, char**argv) {
         auto reffed_classes = referenced_types(c_info->second);
         for (auto &&c_ref : reffed_classes)
         {
-            classes_to_do.push(c_ref);
+            if (class_name_is_good(c_ref)) {
+                classes_to_do.push(c_ref);
+            }
         }        
     }
 
