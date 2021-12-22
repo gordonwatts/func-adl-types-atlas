@@ -29,6 +29,11 @@ method_arg translate_argument(const TMethodArg *arg){
 	result.raw_typename = arg->GetTypeName();
 	result.full_typename = arg->GetFullTypeName();
 
+    // Some arguments have no name to them
+    if (result.name.size() == 0) {
+        result.name = "noname_arg";
+    }
+
     return result;
 }
 
