@@ -251,6 +251,7 @@ int main(int argc, char**argv) {
     classes_to_emit.insert("short");
     classes_to_emit.insert("unsigned short");
     classes_to_emit.insert("int");
+    classes_to_emit.insert("size_t");
     classes_to_emit.insert("unsigned int");
     classes_to_emit.insert("long");
     classes_to_emit.insert("unsigned long");

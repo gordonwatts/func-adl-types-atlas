@@ -16,9 +16,13 @@
 #include <queue>
 #include <algorithm>
 #include <regex>
+#include <ostream>
 
 using namespace std;
 
+int _g_no_name_arg_index = 0;
+
+set<string> reserved_words = {"from"};
 
 ///
 // Translate a method argument.
@@ -31,7 +35,16 @@ method_arg translate_argument(const TMethodArg *arg){
 
     // Some arguments have no name to them
     if (result.name.size() == 0) {
-        result.name = "noname_arg";
+        if (_g_no_name_arg_index == 0) {
+            result.name = "noname_arg";
+        } else {
+            ostringstream arg_name;
+            arg_name << "noname_arg_" << _g_no_name_arg_index;
+            result.name = arg_name.str();
+        }
+        _g_no_name_arg_index++;
+    } else if (reserved_words.find(result.name) != reserved_words.end()) {
+        result.name += "_arg";
     }
 
     return result;
@@ -53,6 +66,7 @@ method_info translate_method(TMethod *method) {
 
     // The arguments for the method
     auto l = method->GetListOfMethodArgs();
+    _g_no_name_arg_index = 0;
 	for (int i_arg = 0; i_arg < l->GetSize(); i_arg++) {
         m.arguments.push_back(translate_argument(static_cast<TMethodArg*> (l->At(i_arg))));
 	}

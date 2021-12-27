@@ -68,6 +68,7 @@ map<string, string> python_type_conversions =
         {"unsigned long", "int"},
         {"long long", "int"},
         {"unsigned long long", "int"},
+        {"size_t", "int"},
     };
 
 // Reconstruct the full type name
