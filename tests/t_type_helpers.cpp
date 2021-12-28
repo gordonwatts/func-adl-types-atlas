@@ -424,3 +424,33 @@ TEST(t_type_helpers, understood_simple_elementlink_yes) {
 TEST(t_type_helpers, understood_simple_elementlink_no) {
     EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hit"})), false);
 }
+
+TEST(t_type_helpers, py_type_simple_type) {
+    auto t = py_typename("int");
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.is_pointer, false);
+}
+
+TEST(t_type_helpers, py_type_vector) {
+    auto t = py_typename("vector<int>");
+    EXPECT_EQ(t.nickname, "Iterable<int>");
+    EXPECT_EQ(t.is_pointer, false);
+}
+
+TEST(t_type_helpers, py_type_element_link) {
+    auto t = py_typename("ElementLink<DataVector<int>>");
+    EXPECT_EQ(t.nickname, "int *");
+    EXPECT_EQ(t.is_pointer, true);
+}
+
+TEST(t_type_helpers, py_type_dv) {
+    auto t = py_typename("DataVector<int>");
+    EXPECT_EQ(t.nickname, "Iterable<int>");
+    EXPECT_EQ(t.is_pointer, false);
+}
+
+TEST(t_type_helpers, py_type_dv_el) {
+    auto t = py_typename("vector<ElementLink<DataVector<int>>>");
+    EXPECT_EQ(t.nickname, "Iterable<int *>");
+    EXPECT_EQ(t.is_pointer, false);
+}

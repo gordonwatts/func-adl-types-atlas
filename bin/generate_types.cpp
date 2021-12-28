@@ -371,7 +371,7 @@ int main(int argc, char**argv) {
                     first_method = false;
                 }
 
-                auto rtn_type = parse_typename(meth.return_type);
+                auto rtn_type = py_typename(meth.return_type);
                 out << YAML::BeginMap
                     << YAML::Key << "name" << YAML::Value << meth.name
                     << YAML::Key << "return_type" << YAML::Value << normalized_type_name(rtn_type)

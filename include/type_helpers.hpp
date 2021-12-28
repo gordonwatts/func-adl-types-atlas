@@ -59,3 +59,7 @@ typename_info container_of(const class_info &ci);
 // Is this type something we can deal with?
 bool is_understood_type(const std::string &t_name, const std::set<std::string> &known_types);
 bool is_understood_type(const typename_info &t, const std::set<std::string> &known_types);
+
+// Return the python version of the typename.
+typename_info py_typename(const std::string &t_name);
+typename_info py_typename(const typename_info &t);

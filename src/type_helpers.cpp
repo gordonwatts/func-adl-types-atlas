@@ -182,13 +182,7 @@ void fixup_type_defs(vector<class_info> &classes)
     {
         for (auto &&m : c.methods)
         {
-            if (m.name == "outgoingParticleLinks") {
-                cout << "m.return_type - " << m.return_type << endl;
-            }
             m.return_type = resolve_typedef(m.return_type);
-            if (m.name == "outgoingParticleLinks") {
-                cout << "m.return_type after resolution - " << m.return_type << endl;
-            }
             for (auto &&a : m.arguments)
             {
                 a.full_typename = resolve_typedef(a.full_typename);
@@ -494,4 +488,39 @@ bool is_understood_type(const typename_info &t, const set<std::string> &known_ty
     }
 
     return false;
+}
+
+// Convert C++ types into python types for return
+typename_info py_typename(const string &t_name){
+    return py_typename(parse_typename(t_name));
+}
+
+// Convert C++ types into python types, with some special
+// handling.
+typename_info py_typename(const typename_info &t)
+{
+    // If the type is either vector or DataVector, we
+    // just convert it to Iterable.
+    if (t.type_name == "vector" || t.type_name == "DataVector") {
+        typename_info result(t);
+        result.type_name = "Iterable";
+        result.template_arguments[0] = py_typename(t.template_arguments[0]);
+        result.nickname = typename_cpp_string(result);
+        return result;
+    }
+
+    // If this is an element link, then we need to conver this to a pointer.
+    // Element links can only be taken of data vectors, and we are interested in their
+    // inside type.
+    if (t.type_name == "ElementLink") {
+        if (t.template_arguments[0].type_name != "DataVector") {
+            throw runtime_error("Found element link type, but not of a DataVector: '" + t.nickname + "'.");
+        }
+        // Lift from twice deep - this is a link to a datavector.
+        typename_info result = py_typename(t.template_arguments[0].template_arguments[0]);
+        result.is_pointer = true;
+        result.nickname = typename_cpp_string(result);
+        return result;
+    }
+    return t;
 }
