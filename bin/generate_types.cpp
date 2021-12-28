@@ -74,6 +74,24 @@ bool can_emit_any_methods(const vector<method_info> &methods, const set<string> 
     return false;
 }
 
+// If this has template arguments, see if they are in the list of classes to emit
+bool check_template_arguments(const typename_info &info, const set<string> &classes_to_emit) {
+    for(auto && ta: info.template_arguments) {
+        if (ta.template_arguments.size() > 0) {
+            if (!check_template_arguments(ta, classes_to_emit)) {
+                return false;
+            }
+        } else {
+            if (classes_to_emit.find(ta.nickname) == classes_to_emit.end()) {
+                return false;
+            }
+        }
+    }
+
+    // Everything checks out!
+    return true;
+}
+
 // Collections can be actual collections or just single items. Get
 // the type correctly in both those cases.
 string extract_container_iterator_type(const collection_info &c)
@@ -275,6 +293,9 @@ int main(int argc, char**argv) {
             if (class_info_ptr != class_map.end()) {
                 auto &&class_info = class_info_ptr->second;
                 if (!can_emit_any_methods(class_info.methods, classes_to_emit)) {
+                    bad_classes.insert(c_name);
+                }
+                if (!check_template_arguments(class_info.name_as_type, classes_to_emit)) {
                     bad_classes.insert(c_name);
                 }
             }
