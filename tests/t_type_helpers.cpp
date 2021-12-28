@@ -392,3 +392,35 @@ TEST(t_type_helpers, unqualified_template_args_untouched_with_const) {
 TEST(t_type_helpers, unqualified_const_datavector) {
     EXPECT_EQ(unqualified_typename(parse_typename("const DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector")), "DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector");
 }
+
+TEST(t_type_helpers, understood_simple_yes) {
+    EXPECT_EQ(is_understood_type("hi", set<string>({"hi"})), true);
+}
+
+TEST(t_type_helpers, understood_simple_no) {
+    EXPECT_EQ(is_understood_type("hi", set<string>()), false);
+}
+
+TEST(t_type_helpers, understood_simple_vector_yes) {
+    EXPECT_EQ(is_understood_type("vector<hi>", set<string>({"hi"})), true);
+}
+
+TEST(t_type_helpers, understood_simple_vector_no) {
+    EXPECT_EQ(is_understood_type("vector<hi>", set<string>({"hit"})), false);
+}
+
+TEST(t_type_helpers, understood_simple_datavector_yes) {
+    EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hi"})), true);
+}
+
+TEST(t_type_helpers, understood_simple_datavector_no) {
+    EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hit"})), false);
+}
+
+TEST(t_type_helpers, understood_simple_elementlink_yes) {
+    EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hi"})), true);
+}
+
+TEST(t_type_helpers, understood_simple_elementlink_no) {
+    EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hit"})), false);
+}

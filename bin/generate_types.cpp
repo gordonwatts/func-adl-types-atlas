@@ -56,8 +56,10 @@ bool can_emit_method(const method_info &meth, const set<string> &classes_to_emit
     // Or we can't support this guy.
     auto method_types = referenced_types(meth);
     set<string> method_types_set(method_types.begin(), method_types.end());
-    if (!includes(classes_to_emit.begin(), classes_to_emit.end(), method_types_set.begin(), method_types_set.end())) {
-        return false;
+    for (auto &&m_type: method_types_set) {
+        if (!is_understood_type(m_type, classes_to_emit)) {
+            return false;
+        }
     }
     return true;
 }
@@ -215,6 +217,7 @@ int main(int argc, char**argv) {
             classes_to_do.push(c_name);
         }
     }
+
     while (!classes_to_do.empty()) {
         string c_name(unqualified_type_name(classes_to_do.front()));
         classes_to_do.pop();

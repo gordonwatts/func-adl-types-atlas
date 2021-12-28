@@ -459,3 +459,39 @@ std::string typename_cpp_string(const typename_info &ti)
 
     return stream.str();
 }
+
+set<string> _known_templates({
+    "vector",
+    "ElementLink",
+    "DataVector",
+});
+
+// See if we can handle this type:
+// Raw types in the known list are ok
+// Vectors of known types are ok
+// Element links of known types are ok
+// DataVectors of known types are ok.
+bool is_understood_type(const string &t_name, const set<std::string> &known_types)
+{
+    // First, check to see if the type is in the list of known types
+    auto t = parse_typename(t_name);
+    return is_understood_type(t, known_types);
+}
+
+bool is_understood_type(const typename_info &t, const set<std::string> &known_types)
+{
+    // First, check to see if the type is in the list of known types
+    auto uq_name = unqualified_typename(t);
+    if (known_types.find(uq_name) != known_types.end()) {
+        return true;
+    }
+
+    // Next, see if this is one of the known types.
+    if (_known_templates.find(t.type_name) != _known_templates.end()) {
+        if (t.template_arguments.size() == 1) {
+            return is_understood_type(t.template_arguments[0], known_types);
+        }
+    }
+
+    return false;
+}
