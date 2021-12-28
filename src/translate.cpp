@@ -76,17 +76,21 @@ method_info translate_method(TMethod *method) {
 
 
 bool is_good_method(const TClass *c_info, const TMethod *m_info, const set<string> &inherited_classes) {
-    if (string(m_info->GetName()) == string(c_info->GetName()))
+    if (string(m_info->GetName()) == string(c_info->GetName())) {
         return false;
+    }
     
-    if (m_info->GetName()[0] == '~')
+    if (m_info->GetName()[0] == '~') {
         return false;
+    }
 
-    if (string(m_info->GetName()).rfind("operator", 0) == 0)
+    if (string(m_info->GetName()).rfind("operator", 0) == 0) {
         return false;
+    }
     
-    if (inherited_classes.find(m_info->GetName()) != inherited_classes.end())
+    if (inherited_classes.find(m_info->GetName()) != inherited_classes.end()) {
         return false;
+    }
 
     return true;
 }
@@ -94,9 +98,7 @@ bool is_good_method(const TClass *c_info, const TMethod *m_info, const set<strin
 
 ///
 // Get all publically directly inherited classes
-vector<string> inherited_public_classes(const std::string &cls_name) {
-    auto c_info = TClass::GetClass(cls_name.c_str());
-
+vector<string> inherited_public_classes(TClass *c_info) {
     auto inherited_list = c_info->GetListOfBases();
     TIter next(inherited_list);
     vector<string> result;
@@ -112,6 +114,11 @@ vector<string> inherited_public_classes(const std::string &cls_name) {
         }
     }
     return result;
+}
+
+vector<string> inherited_public_classes(const std::string &cls_name) {
+    auto c_info = TClass::GetClass(cls_name.c_str());
+    return inherited_public_classes(c_info);
 }
 
 ///
@@ -185,26 +192,57 @@ bool include_file_exists(const string &include_path) {
 class_info translate_class(const std::string &class_name)
 {
     // Get the class
-    auto c_info = TClass::GetClass(class_name.c_str());
+    class_info result;
+    auto unq_class_name = unqualified_type_name(class_name);
+    auto c_info = TClass::GetClass(unq_class_name.c_str());
     if (c_info == nullptr)
     {
-        std::cerr << "ERROR: Cannot translate class " << class_name << ": ROOT's type system doesn't have it loaded." << std::endl;
-        return class_info();
+        std::cerr << "ERROR: Cannot translate class '" << class_name << "': ROOT's type system doesn't have it loaded." << std::endl;
+        return result;
     }
-    class_info result;
-    result.name = c_info->GetName();
-    result.name_as_type = parse_typename(result.name);
+    // There are several other types of classes we do not need to translate as well.
+    string name = c_info->GetName();
+    auto t = parse_typename(name);
+    if (t.type_name.substr(0,2) == "__") {
+        cerr << "INFO: Not translating '" << class_name << "' as it is a private internal class" << endl;
+        return result;
+    }
+    if (t.type_name == "vector") {
+        cerr << "INFO: Not translating '" << class_name << "' as it is a vector, and just an interable." << endl;
+        return result;
+    }
+    result.name = name;
+    result.name_as_type = t;
 
-    // Look to inherited classes
-    auto inherited_list = c_info->GetListOfBases();
-    TIter next(inherited_list);
-    while (auto bobj = static_cast<TBaseClass *>(next()))
+
+    // Library is just the clean so name for us
+    if (c_info->GetSharedLibs() != nullptr) {
+        result.library_name = clean_so_name(c_info->GetSharedLibs());
+    }
+
+    // Get all inherited classes
+    auto all_bases = inherited_public_classes(c_info);
+    for (auto &&b : all_bases)
     {
-        // Do not grab private or protected inheritance. Only the public
-        // interface for us.
-        for (auto &&m_name : inherited_public_classes(c_info->GetName()))
+        result.inherited_class_names.push_back(b);
+    }
+
+    // Look at all public methods
+    // TODO: We totally ignore the fact that methods can have different calls depending on the arguments
+    //       given. For now, we demand a single method, and just use the first one.
+    {
+        set<string> seen_names;
+        auto all_inherited = type_name(all_inherited_classes(unq_class_name));
+        auto all_methods = c_info->GetListOfAllPublicMethods();
+        TIter next(all_methods);
+        while (auto method = static_cast<TMethod *>(next.Next()))
         {
-            result.inherited_class_names.push_back(m_name);            
+            if (seen_names.find(method->GetName()) == seen_names.end()) {
+                if (is_good_method(c_info, method, all_inherited)) {
+                    result.methods.push_back(translate_method(method));
+                }
+            }
+            seen_names.insert(method->GetName());
         }
     }
 
@@ -228,30 +266,6 @@ class_info translate_class(const std::string &class_name)
         }
     }
     result.include_file = include;
-
-    // Library is just the clean so name for us
-    if (c_info->GetSharedLibs() != nullptr) {
-        result.library_name = clean_so_name(c_info->GetSharedLibs());
-    }
-
-    // Look at all public methods
-    // TODO: We totally ignore the fact that methods can have different calls depending on the arguments
-    //       given. For now, we demand a single method, and just use the first one.
-    {
-        set<string> seen_names;
-        auto all_inherited = type_name(all_inherited_classes(result.name));
-        auto all_methods = c_info->GetListOfAllPublicMethods();
-        TIter next(all_methods);
-        while (auto method = static_cast<TMethod *>(next.Next()))
-        {
-            if (seen_names.find(method->GetName()) == seen_names.end()) {
-                if (is_good_method(c_info, method, all_inherited)) {
-                    result.methods.push_back(translate_method(method));
-                }
-            }
-            seen_names.insert(method->GetName());
-        }
-    }
 
     return result;
 }

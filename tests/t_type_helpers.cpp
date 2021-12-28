@@ -163,11 +163,38 @@ TEST(t_type_helpers, type_multple_template_args) {
     EXPECT_EQ(t.template_arguments[1].type_name, "allocate");
 }
 
+TEST(t_type_helpers, type_const_on_top) {
+    auto t = parse_typename("const DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector");
+
+    EXPECT_EQ(t.type_name, "PtrVector");
+    EXPECT_EQ(t.is_const, true);
+}
+
+TEST(t_type_helpers, type_blank) {
+    auto t = parse_typename("");
+
+    EXPECT_EQ(t.type_name, "");
+}
+
+TEST(t_type_helpers, type_spaces) {
+    auto t = parse_typename("  ");
+
+    EXPECT_EQ(t.type_name, "");
+}
 
 // Simple typedef checks
 TEST(t_type_helpers, typedef_resolve_simple) {
     TClass::GetClass("xAOD::EventInfo"); // Make sure the typedefs are loaded into root!
     EXPECT_EQ(resolve_typedef("xAOD::EventInfo"), "xAOD::EventInfo_v1");
+}
+
+TEST(t_type_helpers, typedef_resolve_blank) {
+    EXPECT_EQ(resolve_typedef(""), "");
+}
+
+TEST(t_type_helpers, typedef_resolve_simple_ptr) {
+    TClass::GetClass("xAOD::EventInfo"); // Make sure the typedefs are loaded into root!
+    EXPECT_EQ(resolve_typedef("xAOD::EventInfo*"), "xAOD::EventInfo_v1*");
 }
 
 // Simple typedef checks - no change
@@ -356,4 +383,12 @@ TEST(t_type_helpers, unqualified_const) {
 
 TEST(t_type_helpers, unqualified_template_args_untouched) {
     EXPECT_EQ(unqualified_typename(parse_typename("const vector<int*>")), "vector<int *>");
+}
+
+TEST(t_type_helpers, unqualified_template_args_untouched_with_const) {
+    EXPECT_EQ(unqualified_typename(parse_typename("vector<const int*>")), "vector<const int *>");
+}
+
+TEST(t_type_helpers, unqualified_const_datavector) {
+    EXPECT_EQ(unqualified_typename(parse_typename("const DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector")), "DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector");
 }

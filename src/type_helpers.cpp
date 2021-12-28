@@ -46,24 +46,8 @@ set<string> type_name(const set<string> &qualified_type_names)
 // Strip out leading "const" and post modifiers (like ptr, etc.)
 string unqualified_type_name(const string &full_type_name)
 {
-    string result(full_type_name);
-
-    // Remove leading const
-    if (result.find("const ") != result.npos) {
-        result = result.substr(6);
-    }
-
-    // Remove trailing references or pointers
-    bool found = true;
-    while (found) {
-        auto last_char = result[result.size()-1];
-        found = (last_char == '*') || (last_char == '&');
-        if (found) {
-            result = result.substr(0, result.size()-1);
-        }
-    }
-
-    return result;
+    auto t = parse_typename(full_type_name);
+    return unqualified_typename(t);
 }
 
 // Find all classes that inherit from a given class name
@@ -136,8 +120,14 @@ void build_typedef_map() {
 // From typedefs, return resolved typedefs.
 // Do not call until all libraries have been loaded!
 string resolve_typedef(const string &c_name) {
+    // Check the typedef name
     build_typedef_map();
-    string result = c_name;
+    auto t = parse_typename(c_name);
+    if (t.type_name == "") {
+        return "";
+    }
+
+    string result = unqualified_typename(t);
     bool done = false;
     while (!done) {
         auto td = g_typedef_map.find(result);
@@ -147,6 +137,21 @@ string resolve_typedef(const string &c_name) {
             result = td->second;
         }
     }
+
+    // Last is to normalize, if possible, with a class name
+    auto c = TClass::GetClass(result.c_str());
+    if (c != nullptr) {
+        result = c->GetName();
+    }
+
+    // Reapply the various modifiers
+    if (t.is_const) {
+        result = "const " + result;
+    }
+    if (t.is_pointer) {
+        result = result + "*";
+    }
+
     return result;
 }
 
@@ -177,11 +182,17 @@ void fixup_type_defs(vector<class_info> &classes)
     {
         for (auto &&m : c.methods)
         {
+            if (m.name == "outgoingParticleLinks") {
+                cout << "m.return_type - " << m.return_type << endl;
+            }
             m.return_type = resolve_typedef(m.return_type);
+            if (m.name == "outgoingParticleLinks") {
+                cout << "m.return_type after resolution - " << m.return_type << endl;
+            }
             for (auto &&a : m.arguments)
             {
                 a.full_typename = resolve_typedef(a.full_typename);
-            }            
+            }
         }
     }
 }
@@ -197,7 +208,14 @@ typename_info parse_typename(const string &type_name)
     result.is_const = false;
     result.is_pointer = false;
     result.nickname = trim(type_name);
+    bool top_level_is_const = false;
 
+    // Simple bail if this is a blank.
+    if (result.nickname.size() == 0) {
+        return result;
+    }
+
+    // Walk through, parsing.
     int ns_depth = 0;
     size_t t_index = 0;
     string name;
@@ -264,7 +282,7 @@ typename_info parse_typename(const string &type_name)
                 if (ns_depth == 0) {
                     auto n1 = boost::trim_copy(name);
                     if (n1 == "const") {
-                        result.is_const = true;
+                        top_level_is_const = true;
                         name = "";
                     } else {
                         name += type_name[t_index];
@@ -291,6 +309,8 @@ typename_info parse_typename(const string &type_name)
         result.type_name = name;
         name = "";
     }
+
+    result.is_const = top_level_is_const;
 
     return result;
 }
