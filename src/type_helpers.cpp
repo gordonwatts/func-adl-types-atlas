@@ -355,10 +355,6 @@ bool is_collection(const typename_info &ti) {
     return false;
 }
 
-typename_info container_of(const typename_info &ti) {
-    throw runtime_error("ops");
-}
-
 // Look at the class see if this is a vector of some sort that
 // can be iterated over. We also only return true if we are sure we can get
 // an actual type out of (in short - container_of will return successfully).
@@ -378,6 +374,10 @@ map<string, string> _g_container_iterator_specials = {
     {"TIter", "TObject"},
     {"xAOD::JetConstituentVector::iterator", "xAOD::JetConstituent"},
 };
+
+typename_info container_of(const typename_info &ti) {
+    throw runtime_error("ops");
+}
 
 // Given this is a container, as above, figure out
 // what it is containing.

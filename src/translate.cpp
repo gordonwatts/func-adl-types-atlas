@@ -207,12 +207,17 @@ class_info translate_class(const std::string &class_name)
         cerr << "INFO: Not translating '" << class_name << "' as it is a private internal class" << endl;
         return result;
     }
-    if (t.type_name == "vector") {
-        cerr << "INFO: Not translating '" << class_name << "' as it is a vector, and just an interable." << endl;
-        return result;
-    }
+
     result.name = name;
     result.name_as_type = t;
+    if (t.type_name == "vector") {
+        // We do very simple things with vector.
+        method_info size_method;
+        size_method.name = "size";
+        size_method.return_type = "size_t";
+        result.methods.push_back(size_method);
+        return result;
+    }
 
 
     // Library is just the clean so name for us

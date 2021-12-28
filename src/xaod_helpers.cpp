@@ -82,7 +82,7 @@ collection_info get_collection_info(const class_info &c, const vector<class_info
 
 
 // See if this is a collection class or not
-bool is_collection_class(const class_info &c) {
+bool is_xaod_collection_class(const class_info &c) {
     if (get_first_class(c, "DataVector").type_name.size() == 0)
         return false;
 
@@ -100,7 +100,7 @@ vector<collection_info> find_collections(const vector<class_info> &all_classes)
     set<string> seen_collections;
     for (auto &&c : all_classes)
     {
-        if (is_collection_class(c)) {
+        if (is_xaod_collection_class(c)) {
             auto c_info = get_collection_info(c, all_classes);
             if (seen_collections.find(c_info.name) == seen_collections.end()) {
                 result.push_back(c_info);

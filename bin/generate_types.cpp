@@ -30,14 +30,13 @@ using namespace boost::program_options;
 
 // Return true if it is ok to emit this particular class.
 bool can_emit_class(const class_info &c_info) {
-    if (c_info.name_as_type.type_name == "vector") {
-        return false;
-    }
     if (c_info.name_as_type.type_name == "string") {
         return false;
     }
-    if (c_info.name_as_type.template_arguments.size() > 0) {
-        return false;
+    if (c_info.name_as_type.type_name != "vector") {
+        if (c_info.name_as_type.template_arguments.size() > 0) {
+            return false;
+        }
     }
     if (c_info.methods.size() == 0) {
         return false;
@@ -153,8 +152,8 @@ int main(int argc, char**argv) {
         }
     }
 
-    // Translate the classes from the ROOT system to our internal system.
-    
+    // Translate the classes from the ROOT system to our internal system, starting from
+    // a given top level. Add all connected classes below that.
     set<string> classes_done;
     vector<class_info> done_classes;
 
@@ -206,8 +205,8 @@ int main(int argc, char**argv) {
     copy(single_collections.begin(), single_collections.end(),
         back_inserter(all_collections));
 
-    // Look through all the classes we know about, tag just the classes
-    // we can appropriately write out.
+    // Start by looking at the classes that are connected to our
+    // containers.
     classes_done.clear();
     set<string> classes_to_emit;
     for (auto &&c : all_collections)
@@ -218,6 +217,7 @@ int main(int argc, char**argv) {
         }
     }
 
+    // With that list of classes, lets find everything connected.
     while (!classes_to_do.empty()) {
         string c_name(unqualified_type_name(classes_to_do.front()));
         classes_to_do.pop();
@@ -237,7 +237,7 @@ int main(int argc, char**argv) {
             classes_to_emit.insert(c_name);
         }
 
-        // Now, add referenced classes back to the queue
+        // Now, add referenced classes to the queue
         auto reffed_classes = referenced_types(c_info->second);
         for (auto &&c_ref : reffed_classes)
         {
@@ -262,7 +262,9 @@ int main(int argc, char**argv) {
     classes_to_emit.insert("unsigned long long");
 
     // Now, we need to loop through all of these things until we get a stable set of classes that we can emit.
-    // Yes, this is painful.
+    // This is painful, because there could be classes that look good, but contain no valid methods - so no need
+    // to emit them. Cross them off the list, and another class' method is no longer interesting, in which case, that
+    // has to be crossed. So we keep looping until we reach a stable set of classes.
     bool modified = true;
     while (modified) {
         modified = false;
@@ -371,7 +373,7 @@ int main(int argc, char**argv) {
                     first_method = false;
                 }
 
-                auto rtn_type = py_typename(meth.return_type);
+                auto rtn_type = parse_typename(meth.return_type);
                 out << YAML::BeginMap
                     << YAML::Key << "name" << YAML::Value << meth.name
                     << YAML::Key << "return_type" << YAML::Value << normalized_type_name(rtn_type)
