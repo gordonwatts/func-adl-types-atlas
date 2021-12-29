@@ -162,11 +162,17 @@ std::vector<std::string> referenced_types(const typename_info &t_info)
     // We do not look at the namespace arguments since they are
     // qualifiers and not actually referenced.
 
-    // The template arguments are next
-    for (auto &&ti : t_info.template_arguments)
-    {
-        auto new_types = referenced_types(ti);
+    // Special case the ElementLink. Turns out the DataVector type is
+    // not important for references or resolution.
+    if (t_info.type_name == "ElementLink" && t_info.template_arguments[0].type_name == "DataVector") {
+        auto new_types = referenced_types(t_info.template_arguments[0].template_arguments[0]);        
         result.insert(new_types.begin(), new_types.end());
+    } else {
+        for (auto &&ti : t_info.template_arguments)
+        {
+            auto new_types = referenced_types(ti);
+            result.insert(new_types.begin(), new_types.end());
+        }
     }
 
     // And the top level name, but make sure it is "legal"

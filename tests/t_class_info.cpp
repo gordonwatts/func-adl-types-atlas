@@ -64,6 +64,13 @@ TEST(t_class_info, referenced_typeinfo_qualified_name) {
     EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"vector<std::SubClass>::size_t"}));
 }
 
+TEST(t_class_info, referenced_element_link) {
+    auto tn = parse_typename("ElementLink<DataVector<xAOD::TruthVertex>>");
+
+    auto ref_list = referenced_types(tn);
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"ElementLink<DataVector<xAOD::TruthVertex>>", "xAOD::TruthVertex"}));
+}
+
 TEST(t_class_info, referenced_method_return_type) {
     method_info mi;
     mi.name = "do_it";

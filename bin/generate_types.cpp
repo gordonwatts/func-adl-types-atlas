@@ -33,7 +33,7 @@ bool can_emit_class(const class_info &c_info) {
     if (c_info.name_as_type.type_name == "string") {
         return false;
     }
-    if (c_info.name_as_type.type_name != "vector") {
+    if ((c_info.name_as_type.type_name != "vector") && (c_info.name_as_type.type_name != "ElementLink")) {
         if (c_info.name_as_type.template_arguments.size() > 0) {
             return false;
         }
@@ -76,6 +76,12 @@ bool can_emit_any_methods(const vector<method_info> &methods, const set<string> 
 
 // If this has template arguments, see if they are in the list of classes to emit
 bool check_template_arguments(const typename_info &info, const set<string> &classes_to_emit) {
+    // If this is an element link, we skip a level.
+    if (info.type_name == "ElementLink" && info.template_arguments[0].type_name == "DataVector") {
+        return check_template_arguments(info.template_arguments[0].template_arguments[0], classes_to_emit);
+    }
+
+    // Otherwise, we should look at everything.
     for(auto && ta: info.template_arguments) {
         if (ta.template_arguments.size() > 0) {
             if (!check_template_arguments(ta, classes_to_emit)) {

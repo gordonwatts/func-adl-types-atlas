@@ -134,7 +134,6 @@ string resolve_typedef(const string &c_name) {
         return "int";
     }
 
-
     string result = unqualified_typename(t);
     bool done = false;
     while (!done) {
@@ -426,6 +425,9 @@ typename_info container_of(const typename_info &ti) {
 typename_info container_of(const class_info &ci) {
     // If this is a vector object, then we can grab from the argument
     if (ci.name_as_type.type_name == "vector") {
+        return ci.name_as_type.template_arguments[0];
+    }
+    if (ci.name_as_type.type_name == "DataVector") {
         return ci.name_as_type.template_arguments[0];
     }
 

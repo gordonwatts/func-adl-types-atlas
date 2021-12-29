@@ -206,14 +206,46 @@ class_info translate_class(const std::string &class_name)
         return result;
     }
 
-    result.name = name;
+    result.name = typename_cpp_string(t);
     result.name_as_type = t;
+
+    // Special case a vector.
+    //  * Add `size` which will call vector's size method
+    //  * The fact we are emitting a C++ template is noted in `can_emit_class`
+    //  * This is a container. The fact it is a container is taken care of in the method
+    //    `is_collection`.
     if (t.type_name == "vector") {
         // We do very simple things with vector.
         method_info size_method;
         size_method.name = "size";
         size_method.return_type = "size_t";
         result.methods.push_back(size_method);
+        return result;
+    }
+
+    // // Special case a DataVector.
+    // //  * Add `size` which will call vector's size method
+    // //  * This is a container. The fact it is a container is taken care of in the method
+    // //    `is_collection`.
+    // if (t.type_name == "DataVector") {
+    //     // We do very simple things with vector.
+    //     method_info size_method;
+    //     size_method.name = "size";
+    //     size_method.return_type = "size_t";
+    //     result.methods.push_back(size_method);
+    //     return result;
+    // }
+
+    // Special case ElementLink
+    //  * Add `isValid` which returns if the link is valid, calling straight through.
+    //  * The fact we are emitting a C++ template is noted in `can_emit_class`
+    if (t.type_name == "ElementLink") {
+        // isValid
+        method_info isValid_method;
+        isValid_method.name = "isValid";
+        isValid_method.return_type = "bool";
+        result.methods.push_back(isValid_method);
+        cout << "Adding EL: " << result.name << endl;
         return result;
     }
 

@@ -41,6 +41,7 @@ TEST(t_translate, include_files_jet_container_v1) {
 TEST(t_translate, include_files_datavector) {
     auto info = translate_class("DataVector<xAOD::Jet_v1>");
 
+    EXPECT_EQ(info.name, "DataVector<xAOD::Jet_v1>");
     EXPECT_EQ(info.include_file, "xAODJet/JetContainer.h");
 }
 
@@ -76,4 +77,13 @@ TEST(t_translate, vector_float) {
     EXPECT_EQ(info.methods[0].name, "size");
     EXPECT_EQ(info.inherited_class_names.size(), 0);
     EXPECT_EQ(info.library_name, "");
+}
+
+TEST(t_translate, elementlink) {
+    auto info = translate_class("ElementLink<DataVector<xAOD::Jet_v1> >");
+
+    EXPECT_EQ(info.name, "ElementLink<DataVector<xAOD::Jet_v1>>");
+    EXPECT_EQ(info.methods.size(), 1);
+    EXPECT_EQ(info.methods[0].name, "isValid");
+    EXPECT_EQ(info.inherited_class_names.size(), 0);
 }
