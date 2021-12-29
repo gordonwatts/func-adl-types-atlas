@@ -92,6 +92,47 @@ bool check_template_arguments(const typename_info &info, const set<string> &clas
     return true;
 }
 
+set<string> _g_bad_root_libraries({
+    "RIO.so",
+    "Tree.so",
+    "Graf.so",
+    "Gui.so",
+    "Hist.so",
+    "TreePlayer.so",
+    "Gpad.so",
+});
+
+set<string> _g_bad_root_classes({
+    "TClonesArray",
+    "TArray",
+    "TArrayC",
+    "TArrayD",
+    "TArrayF",
+    "TArrayI",
+    "TAttAxis",
+    "TBrowser",
+    "TBroserImp",
+    "TBuffer",
+    "TBuffer3D",
+    "TClass",
+    "type_info"
+});
+
+// If this is a ROOT class that we do not want to have any part of
+// our results...
+bool is_root_only_class(const class_info &info) {
+    if (_g_bad_root_libraries.find(info.library_name) != _g_bad_root_libraries.end()) {
+        return false;
+    }
+    if (_g_bad_root_classes.find(info.name) != _g_bad_root_classes.end()) {
+        return false;
+    }
+    if (info.library_name.size() == 0 && info.name[0] == 'T') {
+        return false;
+    }
+    return true;
+}
+
 // Collections can be actual collections or just single items. Get
 // the type correctly in both those cases.
 string extract_container_iterator_type(const collection_info &c)
@@ -298,6 +339,9 @@ int main(int argc, char**argv) {
                 if (!check_template_arguments(class_info.name_as_type, classes_to_emit)) {
                     bad_classes.insert(c_name);
                 }
+                if (!is_root_only_class(class_info)) {
+                    bad_classes.insert(c_name);
+                }
             }
         }
         if (bad_classes.size() > 0) {
@@ -397,7 +441,7 @@ int main(int argc, char**argv) {
                 auto rtn_type = parse_typename(meth.return_type);
                 out << YAML::BeginMap
                     << YAML::Key << "name" << YAML::Value << meth.name
-                    << YAML::Key << "return_type" << YAML::Value << normalized_type_name(rtn_type)
+                    << YAML::Key << "return_type" << YAML::Value << rtn_type.nickname
                     << YAML::Key << "return_is_pointer" << YAML::Value << (rtn_type.is_pointer ? "True" : "False");
 
                 bool first_argument = true;
