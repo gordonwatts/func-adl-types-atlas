@@ -347,8 +347,13 @@ string normalized_type_name(const typename_info &ti)
 
     // Iterable should not be touched as it is understood as a python template
     // (the only template that is understood).
-    if (result.substr(0,9) == "Iterable[") {
+    if (ti.type_name == "Iterable") {
         return result;
+    }
+
+    // If we are looking at an Element link, we also must do some fancy footwork
+    if (ti.type_name == "ElementLink" && ti.template_arguments[0].type_name == "DataVector") {
+        return normalized_type_name(ti.template_arguments[0].template_arguments[0]);
     }
 
     // Walk through the rest sensibly converting the typename.
@@ -369,6 +374,10 @@ string normalized_type_name(const typename_info &ti)
             if (bracket_depth > 0) {
                 result[i] = '_';
             }
+            break;
+
+        case ',':
+            result[i] = '_';
             break;
 
         default:

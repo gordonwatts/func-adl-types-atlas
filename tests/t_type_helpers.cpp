@@ -480,3 +480,7 @@ TEST(t_type_helpers, normalized_vector_ns) {
 TEST(t_type_helpers, normalized_vector_front_ns) {
     EXPECT_EQ(normalized_type_name("std::vector<double>"), "std.vector_float_");
 }
+
+TEST(t_type_helpers, normalized_elP) {
+    EXPECT_EQ(normalized_type_name("ElementLink<DataVector<xAOD::Truth>>"), "xAOD.Truth");
+}
