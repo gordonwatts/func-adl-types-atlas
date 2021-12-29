@@ -402,28 +402,28 @@ TEST(t_type_helpers, understood_simple_no) {
 }
 
 TEST(t_type_helpers, understood_simple_vector_yes) {
-    EXPECT_EQ(is_understood_type("vector<hi>", set<string>({"hi"})), true);
+    EXPECT_EQ(is_understood_type("vector<hi>", set<string>({"vector<hi>"})), true);
 }
 
 TEST(t_type_helpers, understood_simple_vector_no) {
     EXPECT_EQ(is_understood_type("vector<hi>", set<string>({"hit"})), false);
 }
 
-TEST(t_type_helpers, understood_simple_datavector_yes) {
-    EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hi"})), true);
-}
+// TEST(t_type_helpers, understood_simple_datavector_yes) {
+//     EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hi"})), true);
+// }
 
-TEST(t_type_helpers, understood_simple_datavector_no) {
-    EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hit"})), false);
-}
+// TEST(t_type_helpers, understood_simple_datavector_no) {
+//     EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hit"})), false);
+// }
 
-TEST(t_type_helpers, understood_simple_elementlink_yes) {
-    EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hi"})), true);
-}
+// TEST(t_type_helpers, understood_simple_elementlink_yes) {
+//     EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hi"})), true);
+// }
 
-TEST(t_type_helpers, understood_simple_elementlink_no) {
-    EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hit"})), false);
-}
+// TEST(t_type_helpers, understood_simple_elementlink_no) {
+//     EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hit"})), false);
+// }
 
 TEST(t_type_helpers, py_type_simple_type) {
     auto t = py_typename("int");
@@ -453,4 +453,21 @@ TEST(t_type_helpers, py_type_dv_el) {
     auto t = py_typename("vector<ElementLink<DataVector<int>>>");
     EXPECT_EQ(t.nickname, "Iterable<int *>");
     EXPECT_EQ(t.is_pointer, false);
+}
+// TODO: Remove py_typename, not used.
+
+TEST(t_type_helpers, normalized_int) {
+    EXPECT_EQ(normalized_type_name("int"), "int");
+}
+
+TEST(t_type_helpers, normalized_vector) {
+    EXPECT_EQ(normalized_type_name("vector<float>"), "vector_float_");
+}
+
+TEST(t_type_helpers, normalized_vector_ns) {
+    EXPECT_EQ(normalized_type_name("vector<ROOT::Fit::ParameterSettings>"), "vector_ROOT_Fit_ParameterSettings_");
+}
+
+TEST(t_type_helpers, normalized_vector_front_ns) {
+    EXPECT_EQ(normalized_type_name("std::vector<double>"), "std.vector_float_");
 }

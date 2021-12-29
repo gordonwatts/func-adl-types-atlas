@@ -336,7 +336,33 @@ string normalized_type_name(const typename_info &ti)
 {
     ostringstream full_name;
     full_name << ti;
-    return full_name.str();
+    string result(full_name.str());
+    int bracket_depth = 0;
+    for(int i = 0; i < result.size(); i++) {
+        switch (result[i])
+        {
+        case '[':
+            result[i] = '_';
+            bracket_depth++;
+            break;
+        case ']':
+            result[i] = '_';
+            bracket_depth--;
+            break;
+        
+        case '.':
+            if (bracket_depth > 0) {
+                result[i] = '_';
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+    replace(result.begin(), result.end(), '[', '_');
+    replace(result.begin(), result.end(), ']', '_');
+    return result;
 }
 
 // Return a C++ type that has been normalized.
