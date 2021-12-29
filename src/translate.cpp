@@ -202,7 +202,7 @@ class_info translate_class(const std::string &class_name)
     string name = c_info->GetName();
     auto t = parse_typename(name);
     if (t.type_name.substr(0,2) == "__") {
-        cerr << "INFO: Not translating '" << class_name << "' as it is a private internal class" << endl;
+        cerr << "INFO: Not translating '" << class_name << "' as it is a private internal class (" << t.type_name << ")" << endl;
         return result;
     }
 
