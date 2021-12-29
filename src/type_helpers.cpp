@@ -480,13 +480,6 @@ bool is_understood_type(const typename_info &t, const set<std::string> &known_ty
         return true;
     }
 
-    // Next, see if this is one of the known types.
-    if (_known_templates.find(t.type_name) != _known_templates.end()) {
-        if (t.template_arguments.size() == 1) {
-            return is_understood_type(t.template_arguments[0], known_types);
-        }
-    }
-
     return false;
 }
 
