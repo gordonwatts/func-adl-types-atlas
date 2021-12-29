@@ -337,6 +337,14 @@ string normalized_type_name(const typename_info &ti)
     ostringstream full_name;
     full_name << ti;
     string result(full_name.str());
+
+    // Iterable should not be touched as it is understood as a python template
+    // (the only template that is understood).
+    if (result.substr(0,9) == "Iterable[") {
+        return result;
+    }
+
+    // Walk through the rest sensibly converting the typename.
     int bracket_depth = 0;
     for(int i = 0; i < result.size(); i++) {
         switch (result[i])

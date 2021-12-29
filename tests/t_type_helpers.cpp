@@ -464,6 +464,10 @@ TEST(t_type_helpers, normalized_vector) {
     EXPECT_EQ(normalized_type_name("vector<float>"), "vector_float_");
 }
 
+TEST(t_type_helpers, normalized_iterable) {
+    EXPECT_EQ(normalized_type_name("Iterable<float>"), "Iterable[float]");
+}
+
 TEST(t_type_helpers, normalized_vector_ns) {
     EXPECT_EQ(normalized_type_name("vector<ROOT::Fit::ParameterSettings>"), "vector_ROOT_Fit_ParameterSettings_");
 }
