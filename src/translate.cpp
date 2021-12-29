@@ -74,7 +74,6 @@ method_info translate_method(TMethod *method) {
     return m;
 }
 
-
 bool is_good_method(const TClass *c_info, const TMethod *m_info, const set<string> &inherited_classes) {
     if (string(m_info->GetName()) == string(c_info->GetName())) {
         return false;
@@ -94,7 +93,6 @@ bool is_good_method(const TClass *c_info, const TMethod *m_info, const set<strin
 
     return true;
 }
-
 
 ///
 // Get all publically directly inherited classes

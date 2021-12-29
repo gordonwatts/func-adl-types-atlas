@@ -456,8 +456,8 @@ std::string typename_cpp_string(const typename_info &ti)
 
 set<string> _known_templates({
     "vector",
-    "ElementLink",
-    "DataVector",
+    // "ElementLink",
+    // "DataVector",
 });
 
 // See if we can handle this type:
