@@ -127,6 +127,14 @@ string resolve_typedef(const string &c_name) {
         return "";
     }
 
+    // If it is size_t then we are going to take a shortcut
+    // For whatever reason, ROOT never seems to know about this,
+    // and this is a strictly C++ type.
+    if (t.type_name == "size_t") {
+        return "int";
+    }
+
+
     string result = unqualified_typename(t);
     bool done = false;
     while (!done) {

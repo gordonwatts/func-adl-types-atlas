@@ -188,6 +188,11 @@ TEST(t_type_helpers, typedef_resolve_simple) {
     EXPECT_EQ(resolve_typedef("xAOD::EventInfo"), "xAOD::EventInfo_v1");
 }
 
+TEST(t_type_helpers, typedef_resolve_size_t) {
+    TClass::GetClass("xAOD::EventInfo"); // Make sure the typedefs are loaded into root!
+    EXPECT_EQ(resolve_typedef("size_t"), "int");
+}
+
 TEST(t_type_helpers, typedef_resolve_blank) {
     EXPECT_EQ(resolve_typedef(""), "");
 }
