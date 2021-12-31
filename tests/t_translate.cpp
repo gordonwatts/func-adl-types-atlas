@@ -86,4 +86,6 @@ TEST(t_translate, elementlink) {
     EXPECT_EQ(info.methods.size(), 1);
     EXPECT_EQ(info.methods[0].name, "isValid");
     EXPECT_EQ(info.inherited_class_names.size(), 0);
+    EXPECT_EQ(info.class_behaviors.size(), 1);
+    EXPECT_EQ(info.class_behaviors[0], "xAOD::Jet_v1**");
 }

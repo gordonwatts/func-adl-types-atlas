@@ -65,6 +65,9 @@ struct class_info {
 
     // The library this is located in
     std::string library_name;
+
+    // Other classes this can take on a the behavior of
+    std::vector<std::string> class_behaviors;
 };
 
 std::ostream& operator <<(std::ostream& stream, const class_info& ci);

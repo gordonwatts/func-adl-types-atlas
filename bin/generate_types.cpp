@@ -55,6 +55,7 @@ bool can_emit_method(const method_info &meth, const set<string> &classes_to_emit
     // Or we can't support this guy.
     auto method_types = referenced_types(meth);
     set<string> method_types_set(method_types.begin(), method_types.end());
+
     for (auto &&m_type: method_types_set) {
         if (!is_understood_type(m_type, classes_to_emit)) {
             return false;
@@ -413,6 +414,7 @@ int main(int argc, char**argv) {
         }
 
         // Make sure there is at least one method
+        // TODO: this is not needed, delete and check.
         if (!can_emit_any_methods(c_info->second.methods, classes_to_emit)) {
             continue;
         }
@@ -432,6 +434,20 @@ int main(int argc, char**argv) {
             out << YAML::Key << "include_file" << YAML::Value << c_info->second.include_file;
         }
 
+        // out << YAML::Key << "is_alias";
+        // if (c_info->second.name_as_type.type_name == "ElementLink") {
+        //     out << YAML::Value << "True";
+        // } else {
+        //     out << YAML::Value << "False";
+        // }
+        if (c_info->second.class_behaviors.size() > 0) {
+            out << YAML::Key << "also_behaves_like" << YAML::Value << YAML::BeginSeq;
+            for(auto &&c : c_info->second.class_behaviors) {
+                out << c;
+            }
+            out << YAML::EndSeq;
+        }
+
         // Now we need to emit the methods.
         bool first_method = true;
         for (auto &&meth : c_info->second.methods)
@@ -447,8 +463,7 @@ int main(int argc, char**argv) {
                 auto rtn_type = parse_typename(meth.return_type);
                 out << YAML::BeginMap
                     << YAML::Key << "name" << YAML::Value << meth.name
-                    << YAML::Key << "return_type" << YAML::Value << rtn_type.nickname
-                    << YAML::Key << "return_is_pointer" << YAML::Value << (rtn_type.is_pointer ? "True" : "False");
+                    << YAML::Key << "return_type" << YAML::Value << rtn_type.nickname;
 
                 bool first_argument = true;
                 for (auto &&arg : meth.arguments)
