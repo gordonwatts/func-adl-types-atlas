@@ -434,12 +434,6 @@ int main(int argc, char**argv) {
             out << YAML::Key << "include_file" << YAML::Value << c_info->second.include_file;
         }
 
-        // out << YAML::Key << "is_alias";
-        // if (c_info->second.name_as_type.type_name == "ElementLink") {
-        //     out << YAML::Value << "True";
-        // } else {
-        //     out << YAML::Value << "False";
-        // }
         if (c_info->second.class_behaviors.size() > 0) {
             out << YAML::Key << "also_behaves_like" << YAML::Value << YAML::BeginSeq;
             for(auto &&c : c_info->second.class_behaviors) {

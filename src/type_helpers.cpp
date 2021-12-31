@@ -351,10 +351,10 @@ string normalized_type_name(const typename_info &ti)
         return result;
     }
 
-    // If we are looking at an Element link, we also must do some fancy footwork
-    if (ti.type_name == "ElementLink" && ti.template_arguments[0].type_name == "DataVector") {
-        return normalized_type_name(ti.template_arguments[0].template_arguments[0]);
-    }
+    // // If we are looking at an Element link, we also must do some fancy footwork
+    // if (ti.type_name == "ElementLink" && ti.template_arguments[0].type_name == "DataVector") {
+    //     return normalized_type_name(ti.template_arguments[0].template_arguments[0]);
+    // }
 
     // Walk through the rest sensibly converting the typename.
     int bracket_depth = 0;
