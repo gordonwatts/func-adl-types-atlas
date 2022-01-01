@@ -327,7 +327,7 @@ TEST(t_type_helpers, container_of_begin_end_JetVertexConst) {
 
     auto t = container_of(ci);
 
-    EXPECT_EQ(t.nickname, "xAOD::JetConstituent");
+    EXPECT_EQ(t.nickname, "xAOD::JetConstituent*");
 }
 
 TEST(t_type_helpers, container_of_vector) {

@@ -422,7 +422,7 @@ bool is_collection(const class_info &ci) {
 
 map<string, string> _g_container_iterator_specials = {
     {"TIter", "TObject"},
-    {"xAOD::JetConstituentVector::iterator", "xAOD::JetConstituent"},
+    {"xAOD::JetConstituentVector::iterator", "xAOD::JetConstituent*"},
 };
 
 typename_info container_of(const typename_info &ti) {
@@ -443,11 +443,19 @@ typename_info container_of(const class_info &ci) {
     // If there is a begin/end object, lets lift that out.
     if (has_methods(ci, {"begin", "end"})) {
         auto rtn_type_name = get_method(ci, "begin")[0].return_type;
+
+
         auto rtn_type = _g_container_iterator_specials.find(rtn_type_name);
-        if (rtn_type == _g_container_iterator_specials.end()) {
+        if (rtn_type != _g_container_iterator_specials.end()) {
+            return parse_typename(rtn_type->second);
+        }
+
+        auto &&c = TClass::GetClass(rtn_type_name.c_str());
+        if (c != nullptr) {
+            return parse_typename(c->GetName());
+        } else {
             throw runtime_error("Unable to find container type for iterator type " + rtn_type_name + " for container " + ci.name);
         }
-        return parse_typename(rtn_type->second);
     }
 
     throw runtime_error("Do not know how to find container type for class " + ci.name);
