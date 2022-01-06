@@ -10,6 +10,7 @@
 #include "type_helpers.hpp"
 #include "utils.hpp"
 #include "xaod_helpers.hpp"
+#include "collections_info.hpp"
 
 #include "TSystem.h"
 #include "TROOT.h"
@@ -24,6 +25,7 @@
 #include <set>
 #include <algorithm>
 #include <iterator>
+#include <fstream>
 
 using namespace std;
 using namespace boost::program_options;
@@ -391,9 +393,42 @@ int main(int argc, char**argv) {
         for (auto &&lib : c.link_libraries)
         {
             out << lib;
-        }        
+        }
+        out << YAML::EndSeq;
 
-        out << YAML::EndSeq << YAML::EndMap;
+        auto meta_data_itr = _g_collection_config.find(c.name);
+        if (meta_data_itr != _g_collection_config.end()) {
+            auto &&meta_data = meta_data_itr->second;
+            out << YAML::Key << "extra_parameters" << YAML::Value;
+            out << YAML::BeginSeq;
+            for (auto &&p : meta_data.parameters)
+            {
+                out << YAML::BeginMap;
+                out << YAML::Key << "name" << YAML::Value << p.name;
+                out << YAML::Key << "type" << YAML::Value << p.p_type;
+                out << YAML::Key << "default_value" << YAML::Value << p.p_default;
+                out << YAML::Key << "actions" << YAML::BeginSeq;
+
+                for (auto && a: p.variable_actions) {
+                    out << YAML::BeginMap;
+                    out << YAML::Key << "value" << YAML::Value << a.value;
+                    out << YAML::Key << "metadata_names" << YAML::Value << YAML::BeginSeq;
+                    for (auto &&md : a.metadata_names) {
+                        out << md;
+                    }
+                    out << YAML::EndSeq;
+                    out << YAML::EndMap;
+                }
+
+                out << YAML::EndSeq;
+                out << YAML::EndMap;
+
+            }
+            
+            out << YAML::EndSeq;
+        }
+
+        out << YAML::EndMap;
     }
     out << YAML::EndSeq;
 
@@ -491,4 +526,13 @@ int main(int argc, char**argv) {
 
     // Dump to the output
     cout << out.c_str() << endl;
+
+    // Next, append the metadata file onto the end of this
+    fstream metadata_in("metadata/r21.yaml");
+    const int buf_size = 4096;
+    char buf[buf_size];
+    do {
+        metadata_in.read(&buf[0], buf_size);
+        cout.write(&buf[0], metadata_in.gcount());
+    } while (metadata_in.gcount() > 0);     
 }
