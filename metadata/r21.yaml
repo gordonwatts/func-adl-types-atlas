@@ -1,0 +1,54 @@
+metadata:
+  - name: sys_error_tool
+    data:
+      - metadata_type: add_job_script
+        name: sys_error_tool
+        script:
+          - "# pulled from:https://gitlab.cern.ch/atlas/athena/-/blob/21.2/PhysicsAnalysis/Algorithms/JetAnalysisAlgorithms/python/JetAnalysisAlgorithmsTest.py "
+          - "# Set up the systematics loader/handler service:"
+          - "from AnaAlgorithm.DualUseConfig import createService"
+          - "from AnaAlgorithm.AlgSequence import AlgSequence"
+          - "calibrationAlgSeq = AlgSequence()"
+          - "sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )"
+          - "sysService.sigmaRecommended = 1"
+          - "# Add sequence to job"
+  - name: pileup_tool
+    data:
+      - metadata_type: add_job_script
+        name: pileup_tool
+        script:
+          - "from AsgAnalysisAlgorithms.PileupAnalysisSequence import makePileupAnalysisSequence"
+          - "from AsgAnalysisAlgorithms.AsgAnalysisAlgorithmsTest import pileupConfigFiles"
+          - "prwfiles, lumicalcfiles = pileupConfigFiles('mc')"
+          - "# Can't use pwrfiles, lumicalcfiles b.c. they are on cvms and docker does not have those."
+          - "# pileupSequence = makePileupAnalysisSequence( 'mc', userPileupConfigs=prwfiles, userLumicalcFiles=lumicalcfiles)"
+          - "pileupSequence = makePileupAnalysisSequence( 'mc' )"
+          - "pileupSequence.configure( inputName = {}, outputName = {} )"
+          - "# print( pileupSequence ) # For debugging"
+          - "calibrationAlgSeq += pileupSequence"
+        depends_on: 
+          - sys_error_tool
+  - name: jet_corrections
+    data:
+      - metadata_type: add_job_script
+        name: jet_corrections
+        script:
+          - "jetContainer = '{bank_name}'"
+          - "from JetAnalysisAlgorithms.JetAnalysisSequence import makeJetAnalysisSequence"
+          - "jetSequence = makeJetAnalysisSequence( 'mc', jetContainer)"
+          - "jetSequence.configure( inputName = jetContainer, outputName = 'AnalysisJetsBase_%SYS%' )"
+          - "calibrationAlgSeq += jetSequence"
+          - "# print( jetSequence ) # For debugging"
+          - ""
+          - "# Include, and then set up the jet analysis algorithm sequence:"
+          - "from JetAnalysisAlgorithms.JetJvtAnalysisSequence import makeJetJvtAnalysisSequence"
+          - "jvtSequence = makeJetJvtAnalysisSequence( 'mc', jetContainer, enableCutflow=True )"
+          - "jvtSequence.configure( inputName = {'jets'      : 'AnalysisJetsBase_%SYS%' },"
+          - "                       outputName = { 'jets'      : 'AnalysisJets_%SYS%' },"
+          - "                       )"
+          - "calibrationAlgSeq += jvtSequence"
+          - "# print( jvtSequence ) # For debugging"
+          - "calibrationAlgSeq.addSelfToJob( job )"
+          - "print(job) # for debugging"
+        depends_on:
+          - 'pileup_tool'
