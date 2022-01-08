@@ -10,7 +10,8 @@ metadata:
           - "from AnaAlgorithm.AlgSequence import AlgSequence"
           - "calibrationAlgSeq = AlgSequence()"
           - "sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )"
-          - "sysService.sigmaRecommended = 1"
+          - "# Just run nominal for now"
+          - "# sysService.sigmaRecommended = 1"
           - "# Add sequence to job"
   - name: pileup_tool
     data:
