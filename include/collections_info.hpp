@@ -15,6 +15,11 @@ struct var_action {
     // When the variable is this value, these are the metadata names that
     // should be run.
     std::vector<std::string> metadata_names;
+
+    // The bank name can be renamed too. Leave this empty
+    // if the bank name shouldn't be renamed. Otherwise follows usual
+    // replacement guidelines.
+    std::string bank_rename;
 };
 
 // Info for a parameter
@@ -44,7 +49,7 @@ struct collection_extra {
 // Hardcode the config for ATLAS R21
 std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
-        {"calibrated", "bool", "True", {{"True", {"sys_error_tool", "pileup_tool", "jet_corrections"}}}}
+        {"calibrated", "bool", "True", {{"True", {"sys_error_tool", "pileup_tool", "jet_corrections"}, "{bank_name}Calib_NOSYS"}}}
     }}}
 };
 

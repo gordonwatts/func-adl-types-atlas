@@ -417,6 +417,7 @@ int main(int argc, char**argv) {
                         out << md;
                     }
                     out << YAML::EndSeq;
+                    out << YAML::Key << "bank_rename" << YAML::Value << a.bank_rename;
                     out << YAML::EndMap;
                 }
 
