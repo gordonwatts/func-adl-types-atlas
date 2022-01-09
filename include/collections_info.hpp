@@ -49,7 +49,11 @@ struct collection_extra {
 // Hardcode the config for ATLAS R21
 std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
-        {"calibrated", "bool", "True", {{"True", {"sys_error_tool", "pileup_tool", "jet_corrections"}, "{bank_name}Calib_NOSYS"}}}
+        {"calibration", "str", "'NOSYS'", {
+            {"'*None*'", {}, "{bank_name}"},
+            {"'*Any*'", {"sys_error_tool", "pileup_tool", "jet_corrections"}, "{bank_name}Calib_{calibration}"}
+            }
+        }
     }}}
 };
 

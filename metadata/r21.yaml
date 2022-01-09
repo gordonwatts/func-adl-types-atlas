@@ -12,6 +12,7 @@ metadata:
           - "sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )"
           - "# Just run nominal for now"
           - "# sysService.sigmaRecommended = 1"
+          - "sysService.systematicsList = ['{calibration}']"
           - "# Add sequence to job"
   - name: pileup_tool
     data:
