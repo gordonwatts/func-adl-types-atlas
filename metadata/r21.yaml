@@ -10,8 +10,6 @@ metadata:
           - "from AnaAlgorithm.AlgSequence import AlgSequence"
           - "calibrationAlgSeq = AlgSequence()"
           - "sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )"
-          - "# Just run nominal for now"
-          - "# sysService.sigmaRecommended = 1"
           - "sysService.systematicsList = ['{calibration}']"
           - "# Add sequence to job"
   - name: pileup_tool
@@ -54,3 +52,40 @@ metadata:
           - "print(job) # for debugging"
         depends_on:
           - 'pileup_tool'
+  - name: muon_corrections
+    data:
+      - metadata_type: add_job_script
+        name: muon_corrections
+        script:
+          - "muon_container = '{bank_name}'"
+          - "from MuonAnalysisAlgorithms.MuonAnalysisSequence import makeMuonAnalysisSequence"
+          - "muonSequence = makeMuonAnalysisSequence('mc', workingPoint='{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
+          - "muonSequence.configure( inputName = muon_container,"
+          - "                        outputName = muon_container + 'Calib_{working_point}{isolation}_%SYS%' )"
+          - "calibrationAlgSeq += muonSequence"
+          - "print( muonSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: electron_corrections
+    data:
+      - metadata_type: add_job_script
+        name: electron_corrections
+        script:
+          - "from EgammaAnalysisAlgorithms.ElectronAnalysisSequence import makeElectronAnalysisSequence"
+          - "electronSequence = makeElectronAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = 'loose',"
+          - "                                  recomputeLikelihood=True, enableCutflow=False, enableKinematicHistograms=False )"
+          - "electronSequence.configure( inputName = '{bank_name}',"
+          - "                            outputName = '{bank_name}_{working_point}{isolation}_%SYS%' )"
+          - "calibrationAlgSeq += electronSequence"
+          - "print( electronSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: add_calibration_to_job
+    data:
+      - metadata_type: add_job_script
+        name: add_calibration_to_job
+        script:
+          - "calibrationAlgSeq.addSelfToJob( job )"
+          - "print(job) # for debugging"
+        depends_on:
+          - '*PREVIOUS*'
