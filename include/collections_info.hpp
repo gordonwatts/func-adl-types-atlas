@@ -72,6 +72,22 @@ std::map<std::string, collection_extra> _g_collection_config {
         },
         {"working_point", "str", "'MediumLHElectron'", {}},
         {"isolation", "str", "'GradientMedium'", {}}
+    }}},
+    {"TauJets", {"TauJets", {
+        {"calibration", "str", "'NOSYS'", {
+            {"'*None*'", {}, "{bank_name}"},
+            {"'*Any*'", {"sys_error_tool", "pileup_tool", "tau_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}{isolation}_{calibration}"}
+            }
+        },
+        {"working_point", "str", "'Tight'", {}},
+    }}},
+    {"DiTauJets", {"DiTauJets", {
+        {"calibration", "str", "'NOSYS'", {
+            {"'*None*'", {}, "{bank_name}"},
+            {"'*Any*'", {"sys_error_tool", "pileup_tool", "ditau_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}{isolation}_{calibration}"}
+            }
+        },
+        {"working_point", "str", "'Tight'", {}},
     }}}
 };
 

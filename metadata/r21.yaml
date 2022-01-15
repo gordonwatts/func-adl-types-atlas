@@ -80,6 +80,32 @@ metadata:
           - "print( electronSequence ) # For debugging"
         depends_on:
           - 'pileup_tool'
+  - name: tau_corrections
+    data:
+      - metadata_type: add_job_script
+        name: tau_corrections
+        script:
+          - "from TauAnalysisAlgorithms.TauAnalysisSequence import makeTauAnalysisSequence"
+          - "tauSequence = makeTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}')"
+          - "tauSequence.configure( inputName = '{bank_name}',"
+          - "                       outputName = '{bank_name}_{working_point}_%SYS%' )"
+          - "calibrationAlgSeq += tauSequence"
+          - "print( tauSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: ditau_corrections
+    data:
+      - metadata_type: add_job_script
+        name: ditau_corrections
+        script:
+          - "from TauAnalysisAlgorithms.DiTauAnalysisSequence import makeDiTauAnalysisSequence"
+          - "diTauSequence = makeDiTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}')"
+          - "diTauSequence.configure( inputName = '{bank_name}',"
+          - "                       outputName = '{bank_name}_{working_point}_%SYS%' )"
+          - "calibrationAlgSeq += diTauSequence"
+          - "print( diTauSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
   - name: add_calibration_to_job
     data:
       - metadata_type: add_job_script
