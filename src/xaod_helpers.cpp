@@ -14,6 +14,9 @@ using namespace std;
 // sense one way or the other.
 map<string, string> g_mapped_collection_names = {
     {"MissingETs", "MissingET"},
+    {"Vertexs", "Vertices"},
+    {"TruthVertexs", "TruthVertices"},
+    {"BTagVertexs", "BTagVertices"},
 };
 
 // These are items in the xAOD that are single items, along with their
