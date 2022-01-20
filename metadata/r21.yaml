@@ -37,8 +37,10 @@ metadata:
           - "from JetAnalysisAlgorithms.JetAnalysisSequence import makeJetAnalysisSequence"
           - "jetSequence = makeJetAnalysisSequence( 'mc', jetContainer)"
           - "jetSequence.configure( inputName = jetContainer, outputName = '{bank_name}_Base_%SYS%' )"
+          - "jetSequence.JvtEfficiencyAlg.truthJetCollection = 'AntiKt4TruthDressedWZJets'"
+          - "jetSequence.ForwardJvtEfficiencyAlg.truthJetCollection = 'AntiKt4TruthDressedWZJets'"
           - "calibrationAlgSeq += jetSequence"
-          - "# print( jetSequence ) # For debugging"
+          - "print( jetSequence ) # For debugging"
           - ""
           - "# Include, and then set up the jet analysis algorithm sequence:"
           - "from JetAnalysisAlgorithms.JetJvtAnalysisSequence import makeJetJvtAnalysisSequence"
@@ -47,9 +49,7 @@ metadata:
           - "                       outputName = { 'jets'      : '{bank_name}Calib_%SYS%' },"
           - "                       )"
           - "calibrationAlgSeq += jvtSequence"
-          - "# print( jvtSequence ) # For debugging"
-          - "calibrationAlgSeq.addSelfToJob( job )"
-          - "print(job) # for debugging"
+          - "print( jvtSequence ) # For debugging"
         depends_on:
           - 'pileup_tool'
   - name: muon_corrections
