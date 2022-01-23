@@ -53,7 +53,8 @@ std::map<std::string, collection_extra> _g_collection_config {
             {"'*None*'", {}, "{bank_name}"},
             {"'*Any*'", {"sys_error_tool", "pileup_tool", "jet_corrections", "add_calibration_to_job"}, "{bank_name}Calib_{calibration}"}
             }
-        }
+        },
+        {"truth_jets", "str", "'AntiKt4TruthDressedWZJets'"},
     }}},
     {"Muons", {"Muons", {
         {"calibration", "str", "'NOSYS'", {
