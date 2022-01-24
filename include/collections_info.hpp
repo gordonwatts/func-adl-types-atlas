@@ -68,11 +68,20 @@ std::map<std::string, collection_extra> _g_collection_config {
     {"Electrons", {"Electrons", {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
-            {"'*Any*'", {"sys_error_tool", "pileup_tool", "electron_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}{isolation}_{calibration}"}
+            {"'*Any*'", {"sys_error_tool", "pileup_tool", "electron_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}_{isolation}_{calibration}"}
             }
         },
         {"working_point", "str", "'MediumLHElectron'", {}},
-        {"isolation", "str", "'GradientMedium'", {}}
+        {"isolation", "str", "'NonIso'", {}}
+    }}},
+    {"Photons", {"Photons", {
+        {"calibration", "str", "'NOSYS'", {
+            {"'*None*'", {}, "{bank_name}"},
+            {"'*Any*'", {"sys_error_tool", "pileup_tool", "photon_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}_{isolation}_{calibration}"}
+            }
+        },
+        {"working_point", "str", "'Tight'", {}},
+        {"isolation", "str", "'NonIso'", {}}
     }}},
     {"TauJets", {"TauJets", {
         {"calibration", "str", "'NOSYS'", {

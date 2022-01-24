@@ -66,16 +66,28 @@ metadata:
           - "print( muonSequence ) # For debugging"
         depends_on:
           - 'pileup_tool'
+  - name: photon_corrections
+    data:
+      - metadata_type: add_job_script
+        name: electron_corrections
+        script:
+          - "from EgammaAnalysisAlgorithms.PhotonAnalysisSequence import makePhotonAnalysisSequence"
+          - "photonSequence = makePhotonAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
+          - "photonSequence.configure( inputName = '{bank_name}',"
+          - "                            outputName = '{bank_name}_{working_point}_{isolation}_%SYS%' )"
+          - "calibrationAlgSeq += photonSequence"
+          - "print( photonSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
   - name: electron_corrections
     data:
       - metadata_type: add_job_script
         name: electron_corrections
         script:
           - "from EgammaAnalysisAlgorithms.ElectronAnalysisSequence import makeElectronAnalysisSequence"
-          - "electronSequence = makeElectronAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = 'loose',"
-          - "                                  recomputeLikelihood=True, enableCutflow=False, enableKinematicHistograms=False )"
+          - "electronSequence = makeElectronAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
           - "electronSequence.configure( inputName = '{bank_name}',"
-          - "                            outputName = '{bank_name}_{working_point}{isolation}_%SYS%' )"
+          - "                            outputName = '{bank_name}_{working_point}_{isolation}_%SYS%' )"
           - "calibrationAlgSeq += electronSequence"
           - "print( electronSequence ) # For debugging"
         depends_on:
