@@ -98,7 +98,7 @@ metadata:
         name: tau_corrections
         script:
           - "from TauAnalysisAlgorithms.TauAnalysisSequence import makeTauAnalysisSequence"
-          - "tauSequence = makeTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}')"
+          - "tauSequence = makeTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}', rerunTruthMatching=False)"
           - "tauSequence.configure( inputName = '{bank_name}',"
           - "                       outputName = '{bank_name}_{working_point}_%SYS%' )"
           - "calibrationAlgSeq += tauSequence"
