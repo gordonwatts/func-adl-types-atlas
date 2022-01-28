@@ -11,6 +11,7 @@
 #include "utils.hpp"
 #include "xaod_helpers.hpp"
 #include "collections_info.hpp"
+#include "helper_files.hpp"
 
 #include "TSystem.h"
 #include "TROOT.h"
@@ -523,7 +524,12 @@ int main(int argc, char**argv) {
 
         out << YAML::EndMap;
     }
-    out << YAML::EndSeq << YAML::EndMap;
+    out << YAML::EndSeq;
+
+    // Do the helper files
+    emit_helper_files(out);
+
+    out << YAML::EndMap;
 
     // Dump to the output
     cout << out.c_str() << endl;

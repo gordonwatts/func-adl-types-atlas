@@ -36,6 +36,7 @@ add_library(wraper_generators
             src/utils.cpp
             src/util_string.cpp
             src/xaod_helpers.cpp
+            src/helper_files.cpp
             src/translate.cpp)
 target_link_libraries(wraper_generators ROOT::Core yaml-cpp)
 
