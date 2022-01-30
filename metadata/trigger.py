@@ -38,24 +38,23 @@ def _add_decision_tool(s: ObjectStream[T]) -> ObjectStream[T]:
 
 def _add_match_tool(s: ObjectStream[T]) -> ObjectStream[T]:
     new_s = s.MetaData(
-        {
-            "metadata_type": "inject_code",
-            "name": "trigger_match_tool",
-            "private_members": [
-                "asg::AnaToolHandle<Trig::IMatchingTool> m_tmt;",
-            ],
-            "header_includes": [
-                "TriggerMatchingTool/MatchingTool.h",
-            ],
-            "instance_initialization": [
-                'm_tmt("Trig::MatchingTool")',
-            ],
-            "initialize_lines": [
-                'ANA_CHECK(m_tmt.setProperty("TrigDecisionTool", m_trigDec.getHandle()));',
-                'ANA_CHECK(m_tmt.initialize());',
-            ],
-            "link_libraries": ["TriggerMatchingToolLib"],
-        }
+            {
+                "metadata_type": "inject_code",
+                "name": "trigger_match_tool",
+                "private_members": [
+                    "asg::AnaToolHandle<Trig::IMatchingTool> m_tmt;",
+                ],
+                "header_includes": [
+                    "TriggerMatchingTool/MatchFromCompositeTool.h",
+                ],
+                "instance_initialization": [
+                    'm_tmt("Trig::MatchFromCompositeTool")',
+                ],
+                "initialize_lines": [
+                    'ANA_CHECK(m_tmt.initialize());',
+                ],
+                "link_libraries": ["TriggerMatchingToolLib"],
+            }
     )
     return _add_decision_tool(new_s)
 
