@@ -430,6 +430,36 @@ TEST(t_type_helpers, understood_simple_vector_no) {
 //     EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hit"})), false);
 // }
 
+TEST(t_type_helpers, understood_method_simple) {
+    method_info m;
+    m.name = "fork";
+    m.return_type = "int";
+
+    EXPECT_EQ(is_understood_method(m, set<string>({"int"})), true);
+}
+
+TEST(t_type_helpers, understood_method_unkown) {
+    method_info m;
+    m.name = "fork";
+    m.return_type = "U";
+
+    EXPECT_EQ(is_understood_method(m, set<string>({"int"})), false);
+}
+
+TEST(t_type_helpers, understood_method_template) {
+    method_info m;
+    m.name = "fork";
+    m.return_type = "U";
+
+    method_arg ma;
+    ma.name = "return_type";
+    ma.raw_typename = "cpp_type<U>";
+    ma.full_typename = "cpp_type<U>";
+    m.parameter_arguments.push_back(ma);
+
+    EXPECT_EQ(is_understood_method(m, set<string>({"int"})), true);
+}
+
 TEST(t_type_helpers, py_type_simple_type) {
     auto t = py_typename("int");
     EXPECT_EQ(t.type_name, "int");
@@ -483,4 +513,8 @@ TEST(t_type_helpers, normalized_vector_front_ns) {
 
 TEST(t_type_helpers, normalized_elPtr) {
     EXPECT_EQ(normalized_type_name("ElementLink<DataVector<xAOD::Truth>>"), "ElementLink_DataVector_xAOD_Truth__");
+}
+
+TEST(t_type_helpers, normalized_cpp_type) {
+    EXPECT_EQ(normalized_type_name("cpp_type<U>"), "cpp_type[U]");
 }

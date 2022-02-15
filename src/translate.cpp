@@ -289,5 +289,33 @@ class_info translate_class(const std::string &class_name)
     }
     result.include_file = include;
 
+    // Some classes get special treatment b.c. the ROOT type system can't
+    // do introspection.
+    // TODO: Is there a way to automate this?
+    if (result.name == "xAOD::Jet_v1") {
+        method_info mi;
+
+        mi.name = "getAttribute";
+        mi.return_type = "U";
+        
+        method_arg attr_name;
+        attr_name.name = "name";
+        attr_name.full_typename = "string";
+        attr_name.raw_typename = "string";
+        mi.arguments.push_back(attr_name);
+
+        method_arg attr_type;
+        attr_type.name = "attribute_type";
+        attr_type.full_typename = "cpp_type<U>";
+        attr_type.raw_typename = "cpp_type<U>";
+        mi.parameter_arguments.push_back(attr_type);
+
+        mi.parameter_type_helper = "index_type_forwarder";
+
+        mi.param_method_callback = "lambda (s, a, param_1): cpp_generic_1arg_callback('getAttribute', s, a, param_1)";
+
+        result.methods.push_back(mi);
+    }
+
     return result;
 }

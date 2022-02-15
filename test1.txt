@@ -1,0 +1,4109 @@
+collections:
+  - collection_name: SlowMuons
+    cpp_item_type: xAOD::SlowMuon_v1
+    python_item_type: xAOD.SlowMuon_v1
+    cpp_container_type: DataVector<xAOD::SlowMuon_v1>
+    python_container_type: Iterable[xAOD.SlowMuon_v1]
+    include_file: xAODMuon/SlowMuonContainer.h
+    link_libraries:
+      - xAODMuon
+  - collection_name: MuonSegments
+    cpp_item_type: xAOD::MuonSegment_v1
+    python_item_type: xAOD.MuonSegment_v1
+    cpp_container_type: DataVector<xAOD::MuonSegment_v1>
+    python_container_type: Iterable[xAOD.MuonSegment_v1]
+    include_file: xAODMuon/MuonSegmentContainer.h
+    link_libraries:
+      - xAODMuon
+  - collection_name: Muons
+    cpp_item_type: xAOD::Muon_v1
+    python_item_type: xAOD.Muon_v1
+    cpp_container_type: DataVector<xAOD::Muon_v1>
+    python_container_type: Iterable[xAOD.Muon_v1]
+    include_file: xAODMuon/MuonContainer.h
+    link_libraries:
+      - xAODMuon
+    extra_parameters:
+      - name: calibration
+        type: str
+        default_value: "'NOSYS'"
+        actions:
+          - value: "'*None*'"
+            metadata_names:
+              []
+            bank_rename: "{bank_name}"
+          - value: "'*Any*'"
+            metadata_names:
+              - sys_error_tool
+              - pileup_tool
+              - muon_corrections
+              - add_calibration_to_job
+            bank_rename: "{bank_name}Calib_{working_point}{isolation}_{calibration}"
+      - name: working_point
+        type: str
+        default_value: "'Medium'"
+        actions:
+          []
+      - name: isolation
+        type: str
+        default_value: "'NonIso'"
+        actions:
+          []
+  - collection_name: TauJets
+    cpp_item_type: xAOD::TauJet_v3
+    python_item_type: xAOD.TauJet_v3
+    cpp_container_type: DataVector<xAOD::TauJet_v3>
+    python_container_type: Iterable[xAOD.TauJet_v3]
+    include_file: xAODTau/TauJetContainer.h
+    link_libraries:
+      - xAODTau
+    extra_parameters:
+      - name: calibration
+        type: str
+        default_value: "'NOSYS'"
+        actions:
+          - value: "'*None*'"
+            metadata_names:
+              []
+            bank_rename: "{bank_name}"
+          - value: "'*Any*'"
+            metadata_names:
+              - sys_error_tool
+              - pileup_tool
+              - tau_corrections
+              - add_calibration_to_job
+            bank_rename: "{bank_name}_{working_point}_{calibration}"
+      - name: working_point
+        type: str
+        default_value: "'Tight'"
+        actions:
+          []
+  - collection_name: TauTracks
+    cpp_item_type: xAOD::TauTrack_v1
+    python_item_type: xAOD.TauTrack_v1
+    cpp_container_type: DataVector<xAOD::TauTrack_v1>
+    python_container_type: Iterable[xAOD.TauTrack_v1]
+    include_file: xAODTau/TauTrackContainer.h
+    link_libraries:
+      - xAODTau
+  - collection_name: DiTauJets
+    cpp_item_type: xAOD::DiTauJet_v1
+    python_item_type: xAOD.DiTauJet_v1
+    cpp_container_type: DataVector<xAOD::DiTauJet_v1>
+    python_container_type: Iterable[xAOD.DiTauJet_v1]
+    include_file: xAODTau/DiTauJetContainer.h
+    link_libraries:
+      - xAODTau
+    extra_parameters:
+      - name: calibration
+        type: str
+        default_value: "'NOSYS'"
+        actions:
+          - value: "'*None*'"
+            metadata_names:
+              []
+            bank_rename: "{bank_name}"
+          - value: "'*Any*'"
+            metadata_names:
+              - sys_error_tool
+              - pileup_tool
+              - ditau_corrections
+              - add_calibration_to_job
+            bank_rename: "{bank_name}_{working_point}_{calibration}"
+      - name: working_point
+        type: str
+        default_value: "'Tight'"
+        actions:
+          []
+  - collection_name: CaloClusters
+    cpp_item_type: xAOD::CaloCluster_v1
+    python_item_type: xAOD.CaloCluster_v1
+    cpp_container_type: DataVector<xAOD::CaloCluster_v1>
+    python_container_type: Iterable[xAOD.CaloCluster_v1]
+    include_file: xAODCaloEvent/CaloClusterContainer.h
+    link_libraries:
+      - xAODCaloEvent
+  - collection_name: CaloTowers
+    cpp_item_type: xAOD::CaloTower_v1
+    python_item_type: xAOD.CaloTower_v1
+    cpp_container_type: xAOD::CaloTowerContainer_v1
+    python_container_type: Iterable[xAOD.CaloTower_v1]
+    include_file: xAODCaloEvent/CaloTowerContainer.h
+    link_libraries:
+      - xAODCaloEvent
+  - collection_name: TrackCaloClusters
+    cpp_item_type: xAOD::TrackCaloCluster_v1
+    python_item_type: xAOD.TrackCaloCluster_v1
+    cpp_container_type: DataVector<xAOD::TrackCaloCluster_v1>
+    python_container_type: Iterable[xAOD.TrackCaloCluster_v1]
+    include_file: xAODPFlow/TrackCaloClusterContainer.h
+    link_libraries:
+      - xAODPFlow
+  - collection_name: PFOs
+    cpp_item_type: xAOD::PFO_v1
+    python_item_type: xAOD.PFO_v1
+    cpp_container_type: DataVector<xAOD::PFO_v1>
+    python_container_type: Iterable[xAOD.PFO_v1]
+    include_file: xAODPFlow/PFOContainer.h
+    link_libraries:
+      - xAODPFlow
+  - collection_name: TruthMetaDatas
+    cpp_item_type: xAOD::TruthMetaData_v1
+    python_item_type: xAOD.TruthMetaData_v1
+    cpp_container_type: DataVector<xAOD::TruthMetaData_v1>
+    python_container_type: Iterable[xAOD.TruthMetaData_v1]
+    include_file: xAODTruth/TruthMetaDataContainer.h
+    link_libraries:
+      - xAODTruth
+  - collection_name: TruthParticles
+    cpp_item_type: xAOD::TruthParticle_v1
+    python_item_type: xAOD.TruthParticle_v1
+    cpp_container_type: DataVector<xAOD::TruthParticle_v1>
+    python_container_type: Iterable[xAOD.TruthParticle_v1]
+    include_file: xAODTruth/TruthParticleContainer.h
+    link_libraries:
+      - xAODTruth
+  - collection_name: TruthVertices
+    cpp_item_type: xAOD::TruthVertex_v1
+    python_item_type: xAOD.TruthVertex_v1
+    cpp_container_type: DataVector<xAOD::TruthVertex_v1>
+    python_container_type: Iterable[xAOD.TruthVertex_v1]
+    include_file: xAODTruth/TruthVertexContainer.h
+    link_libraries:
+      - xAODTruth
+  - collection_name: TruthEvents
+    cpp_item_type: xAOD::TruthEvent_v1
+    python_item_type: xAOD.TruthEvent_v1
+    cpp_container_type: DataVector<xAOD::TruthEvent_v1>
+    python_container_type: Iterable[xAOD.TruthEvent_v1]
+    include_file: xAODTruth/TruthEventContainer.h
+    link_libraries:
+      - xAODTruth
+  - collection_name: BTagVertices
+    cpp_item_type: xAOD::BTagVertex_v1
+    python_item_type: xAOD.BTagVertex_v1
+    cpp_container_type: DataVector<xAOD::BTagVertex_v1>
+    python_container_type: Iterable[xAOD.BTagVertex_v1]
+    include_file: xAODBTagging/BTagVertexContainer.h
+    link_libraries:
+      - xAODBTagging
+  - collection_name: BTaggings
+    cpp_item_type: xAOD::BTagging_v1
+    python_item_type: xAOD.BTagging_v1
+    cpp_container_type: DataVector<xAOD::BTagging_v1>
+    python_container_type: Iterable[xAOD.BTagging_v1]
+    include_file: xAODBTagging/BTaggingContainer.h
+    link_libraries:
+      - xAODBTagging
+  - collection_name: MissingET
+    cpp_item_type: xAOD::MissingET_v1
+    python_item_type: xAOD.MissingET_v1
+    cpp_container_type: xAOD::MissingETContainer_v1
+    python_container_type: Iterable[xAOD.MissingET_v1]
+    include_file: xAODMissingET/MissingETContainer.h
+    link_libraries:
+      - xAODMissingET
+  - collection_name: Jets
+    cpp_item_type: xAOD::Jet_v1
+    python_item_type: xAOD.Jet_v1
+    cpp_container_type: DataVector<xAOD::Jet_v1>
+    python_container_type: Iterable[xAOD.Jet_v1]
+    include_file: xAODJet/JetContainer.h
+    link_libraries:
+      - xAODJet
+    extra_parameters:
+      - name: calibration
+        type: str
+        default_value: "'NOSYS'"
+        actions:
+          - value: "'*None*'"
+            metadata_names:
+              []
+            bank_rename: "{bank_name}"
+          - value: "'*Any*'"
+            metadata_names:
+              - sys_error_tool
+              - pileup_tool
+              - jet_corrections
+              - add_calibration_to_job
+            bank_rename: "{bank_name}Calib_{calibration}"
+      - name: truth_jets
+        type: str
+        default_value: "'AntiKt4TruthDressedWZJets'"
+        actions:
+          []
+  - collection_name: IParticles
+    cpp_item_type: xAOD::IParticle
+    python_item_type: xAOD.IParticle
+    cpp_container_type: DataVector<xAOD::IParticle>
+    python_container_type: Iterable[xAOD.IParticle]
+    include_file: xAODBase/IParticleContainer.h
+    link_libraries:
+      - xAODBase
+  - collection_name: Electrons
+    cpp_item_type: xAOD::Electron_v1
+    python_item_type: xAOD.Electron_v1
+    cpp_container_type: DataVector<xAOD::Electron_v1>
+    python_container_type: Iterable[xAOD.Electron_v1]
+    include_file: xAODEgamma/ElectronContainer.h
+    link_libraries:
+      - xAODEgamma
+    extra_parameters:
+      - name: calibration
+        type: str
+        default_value: "'NOSYS'"
+        actions:
+          - value: "'*None*'"
+            metadata_names:
+              []
+            bank_rename: "{bank_name}"
+          - value: "'*Any*'"
+            metadata_names:
+              - sys_error_tool
+              - pileup_tool
+              - electron_corrections
+              - add_calibration_to_job
+            bank_rename: "{bank_name}_{working_point}_{isolation}_{calibration}"
+      - name: working_point
+        type: str
+        default_value: "'MediumLHElectron'"
+        actions:
+          []
+      - name: isolation
+        type: str
+        default_value: "'NonIso'"
+        actions:
+          []
+  - collection_name: Photons
+    cpp_item_type: xAOD::Photon_v1
+    python_item_type: xAOD.Photon_v1
+    cpp_container_type: DataVector<xAOD::Photon_v1>
+    python_container_type: Iterable[xAOD.Photon_v1]
+    include_file: xAODEgamma/PhotonContainer.h
+    link_libraries:
+      - xAODEgamma
+    extra_parameters:
+      - name: calibration
+        type: str
+        default_value: "'NOSYS'"
+        actions:
+          - value: "'*None*'"
+            metadata_names:
+              []
+            bank_rename: "{bank_name}"
+          - value: "'*Any*'"
+            metadata_names:
+              - sys_error_tool
+              - pileup_tool
+              - photon_corrections
+              - add_calibration_to_job
+            bank_rename: "{bank_name}_{working_point}_{isolation}_{calibration}"
+      - name: working_point
+        type: str
+        default_value: "'Tight'"
+        actions:
+          []
+      - name: isolation
+        type: str
+        default_value: "'NonIso'"
+        actions:
+          []
+  - collection_name: Egammas
+    cpp_item_type: xAOD::Egamma_v1
+    python_item_type: xAOD.Egamma_v1
+    cpp_container_type: DataVector<xAOD::Egamma_v1>
+    python_container_type: Iterable[xAOD.Egamma_v1]
+    include_file: xAODEgamma/EgammaContainer.h
+    link_libraries:
+      - xAODEgamma
+  - collection_name: EventInfos
+    cpp_item_type: xAOD::EventInfo_v1
+    python_item_type: xAOD.EventInfo_v1
+    cpp_container_type: DataVector<xAOD::EventInfo_v1>
+    python_container_type: Iterable[xAOD.EventInfo_v1]
+    include_file: xAODEventInfo/EventInfoContainer.h
+    link_libraries:
+      - xAODEventInfo
+  - collection_name: NeutralParticles
+    cpp_item_type: xAOD::NeutralParticle_v1
+    python_item_type: xAOD.NeutralParticle_v1
+    cpp_container_type: DataVector<xAOD::NeutralParticle_v1>
+    python_container_type: Iterable[xAOD.NeutralParticle_v1]
+    include_file: xAODTracking/NeutralParticleContainer.h
+    link_libraries:
+      - xAODTracking
+  - collection_name: TrackParticles
+    cpp_item_type: xAOD::TrackParticle_v1
+    python_item_type: xAOD.TrackParticle_v1
+    cpp_container_type: DataVector<xAOD::TrackParticle_v1>
+    python_container_type: Iterable[xAOD.TrackParticle_v1]
+    include_file: xAODTracking/TrackParticleContainer.h
+    link_libraries:
+      - xAODTracking
+  - collection_name: Vertices
+    cpp_item_type: xAOD::Vertex_v1
+    python_item_type: xAOD.Vertex_v1
+    cpp_container_type: DataVector<xAOD::Vertex_v1>
+    python_container_type: Iterable[xAOD.Vertex_v1]
+    include_file: xAODTracking/VertexContainer.h
+    link_libraries:
+      - xAODTracking
+  - collection_name: EventInfo
+    cpp_item_type: xAOD::EventInfo_v1
+    python_item_type: xAOD.EventInfo_v1
+    cpp_container_type: xAOD::EventInfo_v1
+    python_container_type: xAOD.EventInfo_v1
+    include_file: xAODEventInfo/versions/EventInfo_v1.h
+    link_libraries:
+      - xAODEventInfo
+classes:
+  - python_name: ElementLink_DataVector_xAOD_BTagging_v1__
+    cpp_name: ElementLink<DataVector<xAOD::BTagging_v1> >
+    also_behaves_like:
+      - xAOD::BTagging_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_CaloCluster_v1__
+    cpp_name: ElementLink<DataVector<xAOD::CaloCluster_v1> >
+    also_behaves_like:
+      - xAOD::CaloCluster_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_EventInfo_v1__
+    cpp_name: ElementLink<DataVector<xAOD::EventInfo_v1> >
+    also_behaves_like:
+      - xAOD::EventInfo_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_IParticle__
+    cpp_name: ElementLink<DataVector<xAOD::IParticle> >
+    also_behaves_like:
+      - xAOD::IParticle**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_Jet_v1__
+    cpp_name: ElementLink<DataVector<xAOD::Jet_v1> >
+    also_behaves_like:
+      - xAOD::Jet_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_MuonSegment_v1__
+    cpp_name: ElementLink<DataVector<xAOD::MuonSegment_v1> >
+    also_behaves_like:
+      - xAOD::MuonSegment_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_Muon_v1__
+    cpp_name: ElementLink<DataVector<xAOD::Muon_v1> >
+    also_behaves_like:
+      - xAOD::Muon_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_NeutralParticle_v1__
+    cpp_name: ElementLink<DataVector<xAOD::NeutralParticle_v1> >
+    also_behaves_like:
+      - xAOD::NeutralParticle_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_PFO_v1__
+    cpp_name: ElementLink<DataVector<xAOD::PFO_v1> >
+    also_behaves_like:
+      - xAOD::PFO_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_TauTrack_v1__
+    cpp_name: ElementLink<DataVector<xAOD::TauTrack_v1> >
+    also_behaves_like:
+      - xAOD::TauTrack_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_TrackParticle_v1__
+    cpp_name: ElementLink<DataVector<xAOD::TrackParticle_v1> >
+    also_behaves_like:
+      - xAOD::TrackParticle_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_TruthParticle_v1__
+    cpp_name: ElementLink<DataVector<xAOD::TruthParticle_v1> >
+    also_behaves_like:
+      - xAOD::TruthParticle_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_TruthVertex_v1__
+    cpp_name: ElementLink<DataVector<xAOD::TruthVertex_v1> >
+    also_behaves_like:
+      - xAOD::TruthVertex_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ElementLink_DataVector_xAOD_Vertex_v1__
+    cpp_name: ElementLink<DataVector<xAOD::Vertex_v1> >
+    also_behaves_like:
+      - xAOD::Vertex_v1**
+    methods:
+      - name: isValid
+        return_type: bool
+  - python_name: ROOT.Detail.TSchemaRuleSet
+    cpp_name: ROOT::Detail::TSchemaRuleSet
+    methods:
+      - name: GetClassVersion
+        return_type: int
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: ROOT.Detail.TSchemaRuleSet.TMatches
+    cpp_name: ROOT::Detail::TSchemaRuleSet::TMatches
+    is_container_of_cpp: __gnu_cxx::__normal_iterator<const ROOT::TSchemaRule**,vector<const ROOT::TSchemaRule*> >
+    is_container_of_python: __gnu_cxx.__normal_iterator_ROOT_TSchemaRule_vector_ROOT_TSchemaRule__
+    methods:
+      - name: empty
+        return_type: bool
+      - name: data
+        return_type: const ROOT::TSchemaRule*
+  - python_name: ROOT.Fit.BinData
+    cpp_name: ROOT::Fit::BinData
+    methods:
+      - name: HaveCoordErrors
+        return_type: bool
+      - name: HaveAsymErrors
+        return_type: bool
+      - name: LogTransform
+        return_type: ROOT::Fit::BinData
+      - name: Value
+        return_type: double
+        arguments:
+          - name: ipoint
+            type: int
+      - name: ValuePtr
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+      - name: ErrorPtr
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+      - name: Error
+        return_type: double
+        arguments:
+          - name: ipoint
+            type: int
+      - name: InvError
+        return_type: double
+        arguments:
+          - name: ipoint
+            type: int
+      - name: GetPoint
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+          - name: value
+            type: float
+      - name: GetCoordErrorComponent
+        return_type: double
+        arguments:
+          - name: ipoint
+            type: int
+          - name: icoord
+            type: int
+      - name: CoordErrors
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+      - name: GetPointError
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+          - name: errvalue
+            type: float
+      - name: GetBinUpEdgeComponent
+        return_type: double
+        arguments:
+          - name: ipoint
+            type: int
+          - name: icoord
+            type: int
+      - name: BinUpEdge
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+      - name: HasBinEdges
+        return_type: bool
+      - name: RefVolume
+        return_type: double
+      - name: SumOfContent
+        return_type: double
+      - name: SumOfError2
+        return_type: double
+      - name: IsWeighted
+        return_type: bool
+      - name: GetCoordComponent
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+          - name: icoord
+            type: int
+      - name: Coords
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+      - name: NPoints
+        return_type: unsigned int
+      - name: Size
+        return_type: unsigned int
+      - name: NDim
+        return_type: unsigned int
+      - name: Range
+        return_type: const ROOT::Fit::DataRange
+  - python_name: ROOT.Fit.DataRange
+    cpp_name: ROOT::Fit::DataRange
+    methods:
+      - name: NDim
+        return_type: unsigned int
+      - name: Size
+        return_type: unsigned int
+        arguments:
+          - name: icoord
+            type: int
+      - name: IsSet
+        return_type: bool
+      - name: IsInside
+        return_type: bool
+        arguments:
+          - name: x
+            type: float
+          - name: icoord
+            type: int
+  - python_name: ROOT.Fit.FitConfig
+    cpp_name: ROOT::Fit::FitConfig
+    methods:
+      - name: ParSettings
+        return_type: const ROOT::Fit::ParameterSettings
+        arguments:
+          - name: i
+            type: int
+      - name: ParamsSettings
+        return_type: const vector<ROOT::Fit::ParameterSettings>
+      - name: NPar
+        return_type: unsigned int
+      - name: ParamsValues
+        return_type: vector<double>
+      - name: CreateMinimizer
+        return_type: ROOT::Math::Minimizer*
+      - name: MinimizerOptions
+        return_type: ROOT::Math::MinimizerOptions
+      - name: MinimizerType
+        return_type: const string
+      - name: MinimizerAlgoType
+        return_type: const string
+      - name: MinimizerName
+        return_type: string
+      - name: NormalizeErrors
+        return_type: bool
+      - name: ParabErrors
+        return_type: bool
+      - name: MinosErrors
+        return_type: bool
+      - name: UpdateAfterFit
+        return_type: bool
+      - name: UseWeightCorrection
+        return_type: bool
+  - python_name: ROOT.Fit.FitData
+    cpp_name: ROOT::Fit::FitData
+    methods:
+      - name: GetCoordComponent
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+          - name: icoord
+            type: int
+      - name: Coords
+        return_type: const double*
+        arguments:
+          - name: ipoint
+            type: int
+      - name: NPoints
+        return_type: unsigned int
+      - name: Size
+        return_type: unsigned int
+      - name: NDim
+        return_type: unsigned int
+      - name: Range
+        return_type: const ROOT::Fit::DataRange
+  - python_name: ROOT.Fit.FitResult
+    cpp_name: ROOT::Fit::FitResult
+    methods:
+      - name: MinimizerType
+        return_type: const string
+      - name: IsValid
+        return_type: bool
+      - name: IsEmpty
+        return_type: bool
+      - name: MinFcnValue
+        return_type: double
+      - name: NCalls
+        return_type: unsigned int
+      - name: Edm
+        return_type: double
+      - name: NTotalParameters
+        return_type: unsigned int
+      - name: NPar
+        return_type: unsigned int
+      - name: NFreeParameters
+        return_type: unsigned int
+      - name: Status
+        return_type: int
+      - name: CovMatrixStatus
+        return_type: int
+      - name: FittedBinData
+        return_type: const ROOT::Fit::BinData*
+      - name: Chi2
+        return_type: double
+      - name: Ndf
+        return_type: unsigned int
+      - name: Prob
+        return_type: double
+      - name: Errors
+        return_type: const vector<double>
+      - name: GetErrors
+        return_type: const double*
+      - name: Parameters
+        return_type: const vector<double>
+      - name: GetParams
+        return_type: const double*
+      - name: Value
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: Parameter
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: Error
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: ParError
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: ParName
+        return_type: string
+        arguments:
+          - name: i
+            type: int
+      - name: HasMinosError
+        return_type: bool
+        arguments:
+          - name: i
+            type: int
+      - name: LowerError
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: UpperError
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: GlobalCC
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+      - name: CovMatrix
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+          - name: j
+            type: int
+      - name: Correlation
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+          - name: j
+            type: int
+      - name: Scan
+        return_type: bool
+        arguments:
+          - name: ipar
+            type: int
+          - name: npoints
+            type: int
+          - name: pntsx
+            type: float
+          - name: pntsy
+            type: float
+          - name: xmin
+            type: float
+          - name: xmax
+            type: float
+      - name: Contour
+        return_type: bool
+        arguments:
+          - name: ipar
+            type: int
+          - name: jpar
+            type: int
+          - name: npoints
+            type: int
+          - name: pntsx
+            type: float
+          - name: pntsy
+            type: float
+          - name: confLevel
+            type: float
+      - name: Index
+        return_type: int
+        arguments:
+          - name: name
+            type: str
+      - name: NormalizedErrors
+        return_type: bool
+      - name: IsParameterBound
+        return_type: bool
+        arguments:
+          - name: ipar
+            type: int
+      - name: IsParameterFixed
+        return_type: bool
+        arguments:
+          - name: ipar
+            type: int
+      - name: ParameterBounds
+        return_type: bool
+        arguments:
+          - name: ipar
+            type: int
+          - name: lower
+            type: float
+          - name: upper
+            type: float
+      - name: GetParameterName
+        return_type: string
+        arguments:
+          - name: ipar
+            type: int
+  - python_name: ROOT.Fit.ParameterSettings
+    cpp_name: ROOT::Fit::ParameterSettings
+    methods:
+      - name: Value
+        return_type: double
+      - name: StepSize
+        return_type: double
+      - name: LowerLimit
+        return_type: double
+      - name: UpperLimit
+        return_type: double
+      - name: IsFixed
+        return_type: bool
+      - name: HasLowerLimit
+        return_type: bool
+      - name: HasUpperLimit
+        return_type: bool
+      - name: IsBound
+        return_type: bool
+      - name: IsDoubleBound
+        return_type: bool
+      - name: Name
+        return_type: const string
+  - python_name: ROOT.Math.IBaseParam
+    cpp_name: ROOT::Math::IBaseParam
+    methods:
+      - name: Parameters
+        return_type: const double*
+      - name: NPar
+        return_type: unsigned int
+      - name: ParameterName
+        return_type: string
+        arguments:
+          - name: i
+            type: int
+  - python_name: ROOT.Math.IOptions
+    cpp_name: ROOT::Math::IOptions
+    methods:
+      - name: Clone
+        return_type: ROOT::Math::IOptions*
+  - python_name: ROOT.Math.Minimizer
+    cpp_name: ROOT::Math::Minimizer
+    methods:
+      - name: SetVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: name
+            type: str
+          - name: val
+            type: float
+          - name: step
+            type: float
+      - name: SetLowerLimitedVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: name
+            type: str
+          - name: val
+            type: float
+          - name: step
+            type: float
+          - name: lower
+            type: float
+      - name: SetUpperLimitedVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: name
+            type: str
+          - name: val
+            type: float
+          - name: step
+            type: float
+          - name: upper
+            type: float
+      - name: SetLimitedVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: name
+            type: str
+          - name: val
+            type: float
+          - name: step
+            type: float
+          - name: lower
+            type: float
+          - name: upper
+            type: float
+      - name: SetFixedVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: name
+            type: str
+          - name: val
+            type: float
+      - name: SetVariableValue
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: value
+            type: float
+      - name: SetVariableValues
+        return_type: bool
+        arguments:
+          - name: x
+            type: float
+      - name: SetVariableStepSize
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: value
+            type: float
+      - name: SetVariableLowerLimit
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: lower
+            type: float
+      - name: SetVariableUpperLimit
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: upper
+            type: float
+      - name: SetVariableLimits
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: lower
+            type: float
+          - name: upper
+            type: float
+      - name: FixVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+      - name: ReleaseVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+      - name: IsFixedVariable
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+      - name: GetVariableSettings
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: pars
+            type: ROOT.Fit.ParameterSettings
+      - name: SetVariableInitialRange
+        return_type: bool
+        arguments:
+          - name: noname_arg
+            type: int
+          - name: noname_arg_1
+            type: float
+          - name: noname_arg_2
+            type: float
+      - name: Minimize
+        return_type: bool
+      - name: MinValue
+        return_type: double
+      - name: X
+        return_type: const double*
+      - name: Edm
+        return_type: double
+      - name: MinGradient
+        return_type: const double*
+      - name: NCalls
+        return_type: unsigned int
+      - name: NIterations
+        return_type: unsigned int
+      - name: NDim
+        return_type: unsigned int
+      - name: NFree
+        return_type: unsigned int
+      - name: ProvidesError
+        return_type: bool
+      - name: Errors
+        return_type: const double*
+      - name: CovMatrix
+        return_type: double
+        arguments:
+          - name: ivar
+            type: int
+          - name: jvar
+            type: int
+      - name: GetCovMatrix
+        return_type: bool
+        arguments:
+          - name: covMat
+            type: float
+      - name: GetHessianMatrix
+        return_type: bool
+        arguments:
+          - name: hMat
+            type: float
+      - name: CovMatrixStatus
+        return_type: int
+      - name: Correlation
+        return_type: double
+        arguments:
+          - name: i
+            type: int
+          - name: j
+            type: int
+      - name: GlobalCC
+        return_type: double
+        arguments:
+          - name: ivar
+            type: int
+      - name: GetMinosError
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: errLow
+            type: float
+          - name: errUp
+            type: float
+          - name: option
+            type: int
+      - name: Hesse
+        return_type: bool
+      - name: Scan
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: nstep
+            type: int
+          - name: x
+            type: float
+          - name: y
+            type: float
+          - name: xmin
+            type: float
+          - name: xmax
+            type: float
+      - name: Contour
+        return_type: bool
+        arguments:
+          - name: ivar
+            type: int
+          - name: jvar
+            type: int
+          - name: npoints
+            type: int
+          - name: xi
+            type: float
+          - name: xj
+            type: float
+      - name: VariableName
+        return_type: string
+        arguments:
+          - name: ivar
+            type: int
+      - name: VariableIndex
+        return_type: int
+        arguments:
+          - name: name
+            type: str
+      - name: PrintLevel
+        return_type: int
+      - name: MaxFunctionCalls
+        return_type: unsigned int
+      - name: MaxIterations
+        return_type: unsigned int
+      - name: Tolerance
+        return_type: double
+      - name: Precision
+        return_type: double
+      - name: Strategy
+        return_type: int
+      - name: Status
+        return_type: int
+      - name: ErrorDef
+        return_type: double
+      - name: IsValidError
+        return_type: bool
+      - name: Options
+        return_type: ROOT::Math::MinimizerOptions
+  - python_name: ROOT.Math.MinimizerOptions
+    cpp_name: ROOT::Math::MinimizerOptions
+    methods:
+      - name: DefaultMinimizerType
+        return_type: const string
+      - name: DefaultMinimizerAlgo
+        return_type: const string
+      - name: DefaultErrorDef
+        return_type: double
+      - name: DefaultTolerance
+        return_type: double
+      - name: DefaultPrecision
+        return_type: double
+      - name: DefaultMaxFunctionCalls
+        return_type: int
+      - name: DefaultMaxIterations
+        return_type: int
+      - name: DefaultStrategy
+        return_type: int
+      - name: DefaultPrintLevel
+        return_type: int
+      - name: DefaultExtraOptions
+        return_type: ROOT::Math::IOptions*
+      - name: PrintLevel
+        return_type: int
+      - name: MaxFunctionCalls
+        return_type: unsigned int
+      - name: MaxIterations
+        return_type: unsigned int
+      - name: Strategy
+        return_type: int
+      - name: Tolerance
+        return_type: double
+      - name: Precision
+        return_type: double
+      - name: ErrorDef
+        return_type: double
+      - name: ExtraOptions
+        return_type: const ROOT::Math::IOptions*
+      - name: MinimizerType
+        return_type: const string
+      - name: MinimizerAlgorithm
+        return_type: const string
+  - python_name: ROOT.TSchemaRule
+    cpp_name: ROOT::TSchemaRule
+    methods:
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TComplex
+    cpp_name: TComplex
+    methods:
+      - name: I
+        return_type: TComplex
+      - name: One
+        return_type: TComplex
+      - name: Sqrt
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Exp
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Log
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Log2
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Log10
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Sin
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Cos
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Tan
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: ASin
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: ACos
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: ATan
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: SinH
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: CosH
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: TanH
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: ASinH
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: ACosH
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: ATanH
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Power
+        return_type: TComplex
+        arguments:
+          - name: x
+            type: TComplex
+          - name: y
+            type: TComplex
+      - name: Finite
+        return_type: int
+        arguments:
+          - name: c
+            type: TComplex
+      - name: IsNaN
+        return_type: int
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Min
+        return_type: TComplex
+        arguments:
+          - name: a
+            type: TComplex
+          - name: b
+            type: TComplex
+      - name: Max
+        return_type: TComplex
+        arguments:
+          - name: a
+            type: TComplex
+          - name: b
+            type: TComplex
+      - name: Normalize
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Conjugate
+        return_type: TComplex
+        arguments:
+          - name: c
+            type: TComplex
+      - name: Range
+        return_type: TComplex
+        arguments:
+          - name: lb
+            type: TComplex
+          - name: ub
+            type: TComplex
+          - name: c
+            type: TComplex
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+  - python_name: TLorentzVector
+    cpp_name: TLorentzVector
+    methods:
+      - name: Vect
+        return_type: TVector3
+      - name: EtaPhiVector
+        return_type: TVector2
+      - name: BoostVector
+        return_type: TVector3
+      - name: Transform
+        return_type: TLorentzVector
+        arguments:
+          - name: noname_arg
+            type: TRotation
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TRotation
+    cpp_name: TRotation
+    methods:
+      - name: Transform
+        return_type: TRotation
+        arguments:
+          - name: noname_arg
+            type: TRotation
+      - name: Inverse
+        return_type: TRotation
+      - name: Invert
+        return_type: TRotation
+      - name: RotateAxes
+        return_type: TRotation
+        arguments:
+          - name: newX
+            type: TVector3
+          - name: newY
+            type: TVector3
+          - name: newZ
+            type: TVector3
+      - name: SetToIdentity
+        return_type: TRotation
+      - name: SetXAxis
+        return_type: TRotation
+        arguments:
+          - name: axis
+            type: TVector3
+      - name: SetYAxis
+        return_type: TRotation
+        arguments:
+          - name: axis
+            type: TVector3
+      - name: SetZAxis
+        return_type: TRotation
+        arguments:
+          - name: axis
+            type: TVector3
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TSQLResult
+    cpp_name: TSQLResult
+    methods:
+      - name: GetFieldCount
+        return_type: int
+      - name: GetRowCount
+        return_type: int
+      - name: Next
+        return_type: TSQLRow*
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TSQLRow
+    cpp_name: TSQLRow
+    methods:
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TThread
+    cpp_name: TThread
+    methods:
+      - name: Kill
+        return_type: int
+      - name: Exists
+        return_type: int
+      - name: Lock
+        return_type: int
+      - name: TryLock
+        return_type: int
+      - name: UnLock
+        return_type: int
+      - name: Self
+        return_type: TThread*
+      - name: SetCancelOn
+        return_type: int
+      - name: SetCancelOff
+        return_type: int
+      - name: SetCancelAsynchronous
+        return_type: int
+      - name: SetCancelDeferred
+        return_type: int
+      - name: CancelPoint
+        return_type: int
+      - name: CleanUpPop
+        return_type: int
+        arguments:
+          - name: exe
+            type: int
+      - name: CleanUp
+        return_type: int
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: Sizeof
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TVector2
+    cpp_name: TVector2
+    methods:
+      - name: Unit
+        return_type: TVector2
+      - name: Ort
+        return_type: TVector2
+      - name: Proj
+        return_type: TVector2
+        arguments:
+          - name: v
+            type: TVector2
+      - name: Norm
+        return_type: TVector2
+        arguments:
+          - name: v
+            type: TVector2
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: TVector3
+    cpp_name: TVector3
+    methods:
+      - name: EtaPhiVector
+        return_type: TVector2
+      - name: Unit
+        return_type: TVector3
+      - name: Orthogonal
+        return_type: TVector3
+      - name: Cross
+        return_type: TVector3
+        arguments:
+          - name: noname_arg
+            type: TVector3
+      - name: Transform
+        return_type: TVector3
+        arguments:
+          - name: noname_arg
+            type: TRotation
+      - name: XYvector
+        return_type: TVector2
+      - name: ImplFileLine
+        return_type: int
+      - name: DeclFileLine
+        return_type: int
+      - name: DistancetoPrimitive
+        return_type: int
+        arguments:
+          - name: px
+            type: int
+          - name: py
+            type: int
+  - python_name: mutex
+    cpp_name: mutex
+    methods:
+      - name: try_lock
+        return_type: bool
+  - python_name: std.vector_float_
+    cpp_name: std::vector<double>
+    is_container_of_cpp: double
+    is_container_of_python: float
+    methods:
+      - name: size
+        return_type: int
+  - python_name: std.vector_int_
+    cpp_name: std::vector<int>
+    is_container_of_cpp: int
+    is_container_of_python: int
+    methods:
+      - name: size
+        return_type: int
+  - python_name: str
+    cpp_name: string
+    is_container_of_cpp: __gnu_cxx::__normal_iterator<char*,string>
+    is_container_of_python: __gnu_cxx.__normal_iterator_char_str_
+    methods:
+      - name: empty
+        return_type: bool
+      - name: append
+        return_type: string
+        arguments:
+          - name: __str
+            type: str
+      - name: assign
+        return_type: string
+        arguments:
+          - name: __str
+            type: str
+      - name: compare
+        return_type: int
+        arguments:
+          - name: __str
+            type: str
+  - python_name: vector_ElementLink_DataVector_xAOD_CaloCluster_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::CaloCluster_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::CaloCluster_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_CaloCluster_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_IParticle___
+    cpp_name: vector<ElementLink<DataVector<xAOD::IParticle> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::IParticle>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_IParticle__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_MuonSegment_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::MuonSegment_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::MuonSegment_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_MuonSegment_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_NeutralParticle_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::NeutralParticle_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::NeutralParticle_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_NeutralParticle_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_PFO_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::PFO_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_PFO_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_TauTrack_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::TauTrack_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::TauTrack_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_TauTrack_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_TrackParticle_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::TrackParticle_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_TrackParticle_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_TruthParticle_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::TruthParticle_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::TruthParticle_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_TruthParticle_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_TruthVertex_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::TruthVertex_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::TruthVertex_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_TruthVertex_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ElementLink_DataVector_xAOD_Vertex_v1___
+    cpp_name: vector<ElementLink<DataVector<xAOD::Vertex_v1> > >
+    is_container_of_cpp: ElementLink<DataVector<xAOD::Vertex_v1>  >
+    is_container_of_python: ElementLink_DataVector_xAOD_Vertex_v1__
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_ROOT_Fit_ParameterSettings_
+    cpp_name: vector<ROOT::Fit::ParameterSettings>
+    is_container_of_cpp: ROOT::Fit::ParameterSettings
+    is_container_of_python: ROOT.Fit.ParameterSettings
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_float_
+    cpp_name: vector<double>
+    is_container_of_cpp: double
+    is_container_of_python: float
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_float_
+    cpp_name: vector<float>
+    is_container_of_cpp: float
+    is_container_of_python: float
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_int_
+    cpp_name: vector<int>
+    is_container_of_cpp: int
+    is_container_of_python: int
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_pair_float_float__
+    cpp_name: vector<pair<double,double> >
+    is_container_of_cpp: pair<double,double>
+    is_container_of_python: pair_float_float_
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_pair_str_str__
+    cpp_name: vector<pair<string,string> >
+    is_container_of_cpp: pair<string,string>
+    is_container_of_python: pair_str_str_
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_str_
+    cpp_name: vector<string>
+    is_container_of_cpp: string
+    is_container_of_python: str
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_vector_float__
+    cpp_name: vector<vector<float> >
+    is_container_of_cpp: vector<float>
+    is_container_of_python: vector_float_
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_xAOD_CaloClusterBadChannelData_v1_
+    cpp_name: vector<xAOD::CaloClusterBadChannelData_v1>
+    is_container_of_cpp: xAOD::CaloClusterBadChannelData_v1
+    is_container_of_python: xAOD.CaloClusterBadChannelData_v1
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_xAOD_EventInfo_v1_StreamTag_
+    cpp_name: vector<xAOD::EventInfo_v1::StreamTag>
+    is_container_of_cpp: xAOD::EventInfo_v1::StreamTag
+    is_container_of_python: xAOD.EventInfo_v1.StreamTag
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_xAOD_EventInfo_v1_SubEvent_
+    cpp_name: vector<xAOD::EventInfo_v1::SubEvent>
+    is_container_of_cpp: xAOD::EventInfo_v1::SubEvent
+    is_container_of_python: xAOD.EventInfo_v1.SubEvent
+    methods:
+      - name: size
+        return_type: int
+  - python_name: vector_xAOD_JetConstituent_
+    cpp_name: vector<xAOD::JetConstituent>
+    is_container_of_cpp: xAOD::JetConstituent
+    is_container_of_python: xAOD.JetConstituent
+    methods:
+      - name: size
+        return_type: int
+  - python_name: xAOD.BTagVertex_v1
+    cpp_name: xAOD::BTagVertex_v1
+    include_file: xAODBTagging/versions/BTagVertex_v1.h
+    methods:
+      - name: chi2
+        return_type: float
+      - name: NDF
+        return_type: float
+      - name: pv_compatibility
+        return_type: float
+      - name: compToOtherSV
+        return_type: const vector<float>
+      - name: track_chi2
+        return_type: const vector<float>
+      - name: track_NDF
+        return_type: const vector<float>
+      - name: track_refPx
+        return_type: const vector<float>
+      - name: track_refPy
+        return_type: const vector<float>
+      - name: track_refPz
+        return_type: const vector<float>
+      - name: track_links
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.BTagging_v1
+    cpp_name: xAOD::BTagging_v1
+    include_file: xAODBTagging/versions/BTagging_v1.h
+    methods:
+      - name: SV0_significance3D
+        return_type: double
+      - name: SV0_TrackParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: SV0_TrackParticle
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nSV0_TrackParticles
+        return_type: int
+      - name: SV1_pb
+        return_type: double
+      - name: SV1_pc
+        return_type: double
+      - name: SV1_pu
+        return_type: double
+      - name: SV1_loglikelihoodratio
+        return_type: double
+      - name: SV1_TrackParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: SV1_TrackParticle
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nSV1_TrackParticles
+        return_type: int
+      - name: IP2D_pb
+        return_type: double
+      - name: IP2D_pc
+        return_type: double
+      - name: IP2D_pu
+        return_type: double
+      - name: IP2D_loglikelihoodratio
+        return_type: double
+      - name: IP2D_TrackParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: IP2D_TrackParticle
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nIP2D_TrackParticles
+        return_type: int
+      - name: IP3D_pb
+        return_type: double
+      - name: IP3D_pc
+        return_type: double
+      - name: IP3D_pu
+        return_type: double
+      - name: IP3D_loglikelihoodratio
+        return_type: double
+      - name: IP3D_TrackParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: IP3D_TrackParticle
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nIP3D_TrackParticles
+        return_type: int
+      - name: SV1plusIP3D_discriminant
+        return_type: double
+      - name: JetFitter_pb
+        return_type: double
+      - name: JetFitter_pc
+        return_type: double
+      - name: JetFitter_pu
+        return_type: double
+      - name: JetFitter_loglikelihoodratio
+        return_type: double
+      - name: MV1_discriminant
+        return_type: double
+      - name: loglikelihoodratio
+        return_type: bool
+        arguments:
+          - name: taggername
+            type: str
+          - name: value
+            type: float
+          - name: signal
+            type: str
+          - name: bckgd
+            type: str
+      - name: MVx_discriminant
+        return_type: bool
+        arguments:
+          - name: taggername
+            type: str
+          - name: value
+            type: float
+      - name: pu
+        return_type: bool
+        arguments:
+          - name: taggername
+            type: str
+          - name: value
+            type: float
+      - name: pb
+        return_type: bool
+        arguments:
+          - name: taggername
+            type: str
+          - name: value
+            type: float
+      - name: pc
+        return_type: bool
+        arguments:
+          - name: taggername
+            type: str
+          - name: value
+            type: float
+      - name: calcLLR
+        return_type: double
+        arguments:
+          - name: num
+            type: float
+          - name: den
+            type: float
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.CaloClusterBadChannelData_v1
+    cpp_name: xAOD::CaloClusterBadChannelData_v1
+    include_file: xAODCaloEvent/versions/CaloClusterBadChannelData_v1.h
+    methods:
+      - name: eta
+        return_type: float
+      - name: phi
+        return_type: float
+      - name: badChannel
+        return_type: unsigned int
+  - python_name: xAOD.CaloCluster_v1
+    cpp_name: xAOD::CaloCluster_v1
+    include_file: xAODCaloEvent/versions/CaloCluster_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: et
+        return_type: double
+      - name: energyBE
+        return_type: float
+        arguments:
+          - name: layer
+            type: int
+      - name: etaBE
+        return_type: float
+        arguments:
+          - name: layer
+            type: int
+      - name: phiBE
+        return_type: float
+        arguments:
+          - name: layer
+            type: int
+      - name: samplingPattern
+        return_type: unsigned int
+      - name: nSamples
+        return_type: unsigned int
+      - name: inBarrel
+        return_type: bool
+      - name: inEndcap
+        return_type: bool
+      - name: getClusterEtaSize
+        return_type: unsigned int
+      - name: getClusterPhiSize
+        return_type: unsigned int
+      - name: badChannelList
+        return_type: const vector<xAOD::CaloClusterBadChannelData_v1>
+      - name: getSisterCluster
+        return_type: const xAOD::CaloCluster_v1*
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.CaloTower_v1
+    cpp_name: xAOD::CaloTower_v1
+    include_file: xAODCaloEvent/versions/CaloTower_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.DiTauJet_v1
+    cpp_name: xAOD::DiTauJet_v1
+    include_file: xAODTau/versions/DiTauJet_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: e
+        return_type: double
+      - name: m
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: jetLink
+        return_type: const ElementLink<DataVector<xAOD::Jet_v1> >
+      - name: jet
+        return_type: const xAOD::Jet_v1*
+      - name: subjetPt
+        return_type: float
+        arguments:
+          - name: numSubjet
+            type: int
+      - name: subjetEta
+        return_type: float
+        arguments:
+          - name: numSubjet
+            type: int
+      - name: subjetPhi
+        return_type: float
+        arguments:
+          - name: numSubjet
+            type: int
+      - name: subjetE
+        return_type: float
+        arguments:
+          - name: numSubjet
+            type: int
+      - name: nSubjets
+        return_type: float
+      - name: fCore
+        return_type: float
+        arguments:
+          - name: numSubjet
+            type: int
+      - name: vertexLink
+        return_type: const ElementLink<DataVector<xAOD::Vertex_v1> >
+      - name: vertex
+        return_type: const xAOD::Vertex_v1*
+      - name: trackLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: track
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nTracks
+        return_type: int
+      - name: otherTrackLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: otherTrack
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nOtherTracks
+        return_type: int
+      - name: isoTrackLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: isoTrack
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nIsoTracks
+        return_type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.Egamma_v1
+    cpp_name: xAOD::Egamma_v1
+    include_file: xAODEgamma/versions/Egamma_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: nCaloClusters
+        return_type: int
+      - name: caloCluster
+        return_type: const xAOD::CaloCluster_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: caloClusterLink
+        return_type: const ElementLink<DataVector<xAOD::CaloCluster_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: caloClusterLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::CaloCluster_v1> > >
+      - name: ambiguousObject
+        return_type: const xAOD::Egamma_v1*
+      - name: isGoodOQ
+        return_type: bool
+        arguments:
+          - name: mask
+            type: int
+      - name: OQ
+        return_type: unsigned int
+      - name: likelihoodValue
+        return_type: bool
+        arguments:
+          - name: value
+            type: float
+          - name: LHValue
+            type: str
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.Electron_v1
+    cpp_name: xAOD::Electron_v1
+    include_file: xAODEgamma/versions/Electron_v1.h
+    methods:
+      - name: charge
+        return_type: float
+      - name: nTrackParticles
+        return_type: int
+      - name: trackParticle
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: trackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: trackParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: nCaloClusters
+        return_type: int
+      - name: caloCluster
+        return_type: const xAOD::CaloCluster_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: caloClusterLink
+        return_type: const ElementLink<DataVector<xAOD::CaloCluster_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: caloClusterLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::CaloCluster_v1> > >
+      - name: ambiguousObject
+        return_type: const xAOD::Egamma_v1*
+      - name: isGoodOQ
+        return_type: bool
+        arguments:
+          - name: mask
+            type: int
+      - name: OQ
+        return_type: unsigned int
+      - name: likelihoodValue
+        return_type: bool
+        arguments:
+          - name: value
+            type: float
+          - name: LHValue
+            type: str
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.EventInfo_v1
+    cpp_name: xAOD::EventInfo_v1
+    include_file: xAODEventInfo/versions/EventInfo_v1.h
+    methods:
+      - name: runNumber
+        return_type: unsigned int
+      - name: eventNumber
+        return_type: unsigned long long
+      - name: lumiBlock
+        return_type: unsigned int
+      - name: timeStamp
+        return_type: unsigned int
+      - name: timeStampNSOffset
+        return_type: unsigned int
+      - name: bcid
+        return_type: unsigned int
+      - name: detectorMask0
+        return_type: unsigned int
+      - name: detectorMask1
+        return_type: unsigned int
+      - name: detectorMask2
+        return_type: unsigned int
+      - name: detectorMask3
+        return_type: unsigned int
+      - name: mcChannelNumber
+        return_type: unsigned int
+      - name: mcEventNumber
+        return_type: unsigned long long
+      - name: mcEventWeights
+        return_type: const vector<float>
+      - name: mcEventWeight
+        return_type: float
+        arguments:
+          - name: i
+            type: int
+      - name: hasMCEventWeights
+        return_type: bool
+      - name: eventTypeBitmask
+        return_type: unsigned int
+      - name: statusElement
+        return_type: unsigned int
+      - name: extendedLevel1ID
+        return_type: unsigned int
+      - name: streamTags
+        return_type: const vector<xAOD::EventInfo_v1::StreamTag>
+      - name: actualInteractionsPerCrossing
+        return_type: float
+      - name: averageInteractionsPerCrossing
+        return_type: float
+      - name: subEvents
+        return_type: const vector<xAOD::EventInfo_v1::SubEvent>
+      - name: beamPosX
+        return_type: float
+      - name: beamPosY
+        return_type: float
+      - name: beamPosZ
+        return_type: float
+      - name: beamPosSigmaX
+        return_type: float
+      - name: beamPosSigmaY
+        return_type: float
+      - name: beamPosSigmaZ
+        return_type: float
+      - name: beamPosSigmaXY
+        return_type: float
+      - name: beamTiltXZ
+        return_type: float
+      - name: beamTiltYZ
+        return_type: float
+      - name: beamStatus
+        return_type: unsigned int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.EventInfo_v1.StreamTag
+    cpp_name: xAOD::EventInfo_v1::StreamTag
+    methods:
+      - name: name
+        return_type: const string
+      - name: type
+        return_type: const string
+      - name: obeysLumiblock
+        return_type: bool
+  - python_name: xAOD.EventInfo_v1.SubEvent
+    cpp_name: xAOD::EventInfo_v1::SubEvent
+    methods:
+      - name: typeName
+        return_type: const string
+      - name: link
+        return_type: const ElementLink<DataVector<xAOD::EventInfo_v1> >
+      - name: ptr
+        return_type: const xAOD::EventInfo_v1*
+  - python_name: xAOD.IParticle
+    cpp_name: xAOD::IParticle
+    include_file: xAODBase/IParticle.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.JetConstituent
+    cpp_name: xAOD::JetConstituent
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: rawConstituent
+        return_type: const xAOD::IParticle*
+      - name: isTimelike
+        return_type: bool
+      - name: isSpacelike
+        return_type: bool
+  - python_name: xAOD.JetConstituentVector
+    cpp_name: xAOD::JetConstituentVector
+    is_container_of_cpp: xAOD::JetConstituent*
+    is_container_of_python: xAOD.JetConstituent
+    methods:
+      - name: isValid
+        return_type: bool
+      - name: empty
+        return_type: bool
+      - name: size
+        return_type: int
+      - name: at
+        return_type: xAOD::JetConstituent
+        arguments:
+          - name: i
+            type: int
+      - name: front
+        return_type: xAOD::JetConstituent
+      - name: back
+        return_type: xAOD::JetConstituent
+      - name: asSTLVector
+        return_type: vector<xAOD::JetConstituent>
+  - python_name: xAOD.Jet_v1
+    cpp_name: xAOD::Jet_v1
+    include_file: xAODJet/versions/Jet_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: px
+        return_type: float
+      - name: py
+        return_type: float
+      - name: pz
+        return_type: float
+      - name: getConstituents
+        return_type: xAOD::JetConstituentVector
+      - name: numConstituents
+        return_type: int
+      - name: rawConstituent
+        return_type: const xAOD::IParticle*
+        arguments:
+          - name: i
+            type: int
+      - name: constituentLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::IParticle> > >
+      - name: btagging
+        return_type: const xAOD::BTagging_v1*
+      - name: btaggingLink
+        return_type: const ElementLink<DataVector<xAOD::BTagging_v1> >
+      - name: getSizeParameter
+        return_type: float
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+      - name: getAttribute
+        return_type: U
+        arguments:
+          - name: name
+            type: str
+        parameter_arguments:
+          - name: attribute_type
+            type: cpp_type[U]
+        param_helper: index_type_forwarder
+        param_type_callback: "lambda (s, a, param_1): cpp_generic_1arg_callback('getAttribute', s, a, param_1)"
+  - python_name: xAOD.MissingET_v1
+    cpp_name: xAOD::MissingET_v1
+    include_file: xAODMissingET/versions/MissingET_v1.h
+    methods:
+      - name: mpx
+        return_type: double
+      - name: mpy
+        return_type: double
+      - name: met
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: sumet
+        return_type: double
+      - name: name
+        return_type: const string
+      - name: nameHash
+        return_type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.MuonSegment_v1
+    cpp_name: xAOD::MuonSegment_v1
+    include_file: xAODMuon/versions/MuonSegment_v1.h
+    methods:
+      - name: x
+        return_type: float
+      - name: y
+        return_type: float
+      - name: z
+        return_type: float
+      - name: px
+        return_type: float
+      - name: py
+        return_type: float
+      - name: pz
+        return_type: float
+      - name: t0
+        return_type: float
+      - name: t0error
+        return_type: float
+      - name: chiSquared
+        return_type: float
+      - name: numberDoF
+        return_type: float
+      - name: sector
+        return_type: int
+      - name: etaIndex
+        return_type: int
+      - name: nPrecisionHits
+        return_type: int
+      - name: nPhiLayers
+        return_type: int
+      - name: nTrigEtaLayers
+        return_type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.Muon_v1
+    cpp_name: xAOD::Muon_v1
+    include_file: xAODMuon/versions/Muon_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: charge
+        return_type: float
+      - name: passesIDCuts
+        return_type: bool
+      - name: passesHighPtCuts
+        return_type: bool
+      - name: primaryTrackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: primaryTrackParticle
+        return_type: const xAOD::TrackParticle_v1*
+      - name: inDetTrackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: muonSpectrometerTrackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: combinedTrackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: extrapolatedMuonSpectrometerTrackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: msOnlyExtrapolatedMuonSpectrometerTrackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: clusterLink
+        return_type: const ElementLink<DataVector<xAOD::CaloCluster_v1> >
+      - name: cluster
+        return_type: const xAOD::CaloCluster_v1*
+      - name: muonSegmentLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::MuonSegment_v1> > >
+      - name: nMuonSegments
+        return_type: int
+      - name: muonSegment
+        return_type: const xAOD::MuonSegment_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: muonSegmentLink
+        return_type: const ElementLink<DataVector<xAOD::MuonSegment_v1> >
+        arguments:
+          - name: i
+            type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.NeutralParticle_v1
+    cpp_name: xAOD::NeutralParticle_v1
+    include_file: xAODTracking/versions/NeutralParticle_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: d0
+        return_type: float
+      - name: z0
+        return_type: float
+      - name: phi0
+        return_type: float
+      - name: theta
+        return_type: float
+      - name: oneOverP
+        return_type: float
+      - name: definingParametersCovMatrixVec
+        return_type: const vector<float>
+      - name: vx
+        return_type: float
+      - name: vy
+        return_type: float
+      - name: vz
+        return_type: float
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.PFO_v1
+    cpp_name: xAOD::PFO_v1
+    include_file: xAODPFlow/versions/PFO_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: p4EM
+        return_type: const TLorentzVector
+      - name: ptEM
+        return_type: double
+      - name: etaEM
+        return_type: double
+      - name: phiEM
+        return_type: double
+      - name: mEM
+        return_type: double
+      - name: eEM
+        return_type: double
+      - name: bdtPi0Score
+        return_type: float
+      - name: centerMag
+        return_type: float
+      - name: isCharged
+        return_type: bool
+      - name: charge
+        return_type: float
+      - name: cluster
+        return_type: const xAOD::CaloCluster_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: track
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: vertex
+        return_type: const xAOD::Vertex_v1*
+      - name: setVertexLink
+        return_type: bool
+        arguments:
+          - name: theVertexLink
+            type: ElementLink_DataVector_xAOD_Vertex_v1__
+      - name: setTrackLink
+        return_type: bool
+        arguments:
+          - name: theTrack
+            type: ElementLink_DataVector_xAOD_TrackParticle_v1__
+      - name: setClusterLink
+        return_type: bool
+        arguments:
+          - name: theCluster
+            type: ElementLink_DataVector_xAOD_CaloCluster_v1__
+      - name: addClusterLink
+        return_type: bool
+        arguments:
+          - name: theCluster
+            type: ElementLink_DataVector_xAOD_CaloCluster_v1__
+      - name: GetVertexCorrectedFourVec
+        return_type: TLorentzVector
+        arguments:
+          - name: vertexToCorrectTo
+            type: xAOD.Vertex_v1
+      - name: GetVertexCorrectedEMFourVec
+        return_type: TLorentzVector
+        arguments:
+          - name: vertexToCorrectTo
+            type: xAOD.Vertex_v1
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.Photon_v1
+    cpp_name: xAOD::Photon_v1
+    include_file: xAODEgamma/versions/Photon_v1.h
+    methods:
+      - name: vertex
+        return_type: const xAOD::Vertex_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: vertexLink
+        return_type: const ElementLink<DataVector<xAOD::Vertex_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: vertexLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::Vertex_v1> > >
+      - name: nVertices
+        return_type: int
+      - name: conversionRadius
+        return_type: float
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: nCaloClusters
+        return_type: int
+      - name: caloCluster
+        return_type: const xAOD::CaloCluster_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: caloClusterLink
+        return_type: const ElementLink<DataVector<xAOD::CaloCluster_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: caloClusterLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::CaloCluster_v1> > >
+      - name: ambiguousObject
+        return_type: const xAOD::Egamma_v1*
+      - name: isGoodOQ
+        return_type: bool
+        arguments:
+          - name: mask
+            type: int
+      - name: OQ
+        return_type: unsigned int
+      - name: likelihoodValue
+        return_type: bool
+        arguments:
+          - name: value
+            type: float
+          - name: LHValue
+            type: str
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.SlowMuon_v1
+    cpp_name: xAOD::SlowMuon_v1
+    include_file: xAODMuon/versions/SlowMuon_v1.h
+    methods:
+      - name: beta
+        return_type: float
+      - name: betaT
+        return_type: float
+      - name: ann
+        return_type: float
+      - name: nRpcHits
+        return_type: int
+      - name: nTileCells
+        return_type: int
+      - name: rpcBetaAvg
+        return_type: float
+      - name: rpcBetaRms
+        return_type: float
+      - name: rpcBetaChi2
+        return_type: float
+      - name: rpcBetaDof
+        return_type: int
+      - name: mdtBetaAvg
+        return_type: float
+      - name: mdtBetaRms
+        return_type: float
+      - name: mdtBetaChi2
+        return_type: float
+      - name: mdtBetaDof
+        return_type: int
+      - name: caloBetaAvg
+        return_type: float
+      - name: caloBetaRms
+        return_type: float
+      - name: caloBetaChi2
+        return_type: float
+      - name: caloBetaDof
+        return_type: int
+      - name: dEdxPixel
+        return_type: float
+      - name: dEdxCalo
+        return_type: float
+      - name: dEdxNClusters
+        return_type: int
+      - name: muonLink
+        return_type: const ElementLink<DataVector<xAOD::Muon_v1> >
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TauJet_v3
+    cpp_name: xAOD::TauJet_v3
+    include_file: xAODTau/versions/TauJet_v3.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: e
+        return_type: double
+      - name: m
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: ptJetSeed
+        return_type: double
+      - name: etaJetSeed
+        return_type: double
+      - name: phiJetSeed
+        return_type: double
+      - name: mJetSeed
+        return_type: double
+      - name: ptDetectorAxis
+        return_type: double
+      - name: etaDetectorAxis
+        return_type: double
+      - name: phiDetectorAxis
+        return_type: double
+      - name: mDetectorAxis
+        return_type: double
+      - name: ptIntermediateAxis
+        return_type: double
+      - name: etaIntermediateAxis
+        return_type: double
+      - name: phiIntermediateAxis
+        return_type: double
+      - name: mIntermediateAxis
+        return_type: double
+      - name: ptTauEnergyScale
+        return_type: double
+      - name: etaTauEnergyScale
+        return_type: double
+      - name: phiTauEnergyScale
+        return_type: double
+      - name: mTauEnergyScale
+        return_type: double
+      - name: ptTauEtaCalib
+        return_type: double
+      - name: etaTauEtaCalib
+        return_type: double
+      - name: phiTauEtaCalib
+        return_type: double
+      - name: mTauEtaCalib
+        return_type: double
+      - name: ptPanTauCellBasedProto
+        return_type: double
+      - name: etaPanTauCellBasedProto
+        return_type: double
+      - name: phiPanTauCellBasedProto
+        return_type: double
+      - name: mPanTauCellBasedProto
+        return_type: double
+      - name: ptPanTauCellBased
+        return_type: double
+      - name: etaPanTauCellBased
+        return_type: double
+      - name: phiPanTauCellBased
+        return_type: double
+      - name: mPanTauCellBased
+        return_type: double
+      - name: ptTrigCaloOnly
+        return_type: double
+      - name: etaTrigCaloOnly
+        return_type: double
+      - name: phiTrigCaloOnly
+        return_type: double
+      - name: mTrigCaloOnly
+        return_type: double
+      - name: ptFinalCalib
+        return_type: double
+      - name: etaFinalCalib
+        return_type: double
+      - name: phiFinalCalib
+        return_type: double
+      - name: mFinalCalib
+        return_type: double
+      - name: charge
+        return_type: float
+      - name: ROIWord
+        return_type: unsigned int
+      - name: jetLink
+        return_type: const ElementLink<DataVector<xAOD::Jet_v1> >
+      - name: jet
+        return_type: const xAOD::Jet_v1*
+      - name: vertexLink
+        return_type: const ElementLink<DataVector<xAOD::Vertex_v1> >
+      - name: vertex
+        return_type: const xAOD::Vertex_v1*
+      - name: secondaryVertexLink
+        return_type: const ElementLink<DataVector<xAOD::Vertex_v1> >
+      - name: secondaryVertex
+        return_type: const xAOD::Vertex_v1*
+      - name: tauTrackLinksWithMask
+        return_type: const vector<ElementLink<DataVector<xAOD::TauTrack_v1> > >
+        arguments:
+          - name: noname_arg
+            type: int
+      - name: allTauTrackLinksNonConst
+        return_type: vector<ElementLink<DataVector<xAOD::TauTrack_v1> > >
+      - name: allTauTrackLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TauTrack_v1> > >
+      - name: trackWithMask
+        return_type: const xAOD::TauTrack_v1*
+        arguments:
+          - name: i
+            type: int
+          - name: mask
+            type: int
+          - name: container_index
+            type: int
+      - name: nTracksCharged
+        return_type: int
+      - name: nTracksIsolation
+        return_type: int
+      - name: nTracksWithMask
+        return_type: int
+        arguments:
+          - name: classification
+            type: int
+      - name: nAllTracks
+        return_type: int
+      - name: clusterLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::IParticle> > >
+      - name: cluster
+        return_type: const xAOD::IParticle*
+        arguments:
+          - name: i
+            type: int
+      - name: nClusters
+        return_type: int
+      - name: pi0Links
+        return_type: const vector<ElementLink<DataVector<xAOD::IParticle> > >
+      - name: pi0
+        return_type: const xAOD::IParticle*
+        arguments:
+          - name: i
+            type: int
+      - name: nPi0s
+        return_type: int
+      - name: trackFilterProngs
+        return_type: int
+      - name: trackFilterQuality
+        return_type: int
+      - name: pi0ConeDR
+        return_type: float
+      - name: hadronicPFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: hadronicPFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nHadronicPFOs
+        return_type: int
+      - name: shotPFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: shotPFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nShotPFOs
+        return_type: int
+      - name: chargedPFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: chargedPFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nChargedPFOs
+        return_type: int
+      - name: neutralPFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: neutralPFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nNeutralPFOs
+        return_type: int
+      - name: pi0PFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: pi0PFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nPi0PFOs
+        return_type: int
+      - name: protoChargedPFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: protoChargedPFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nProtoChargedPFOs
+        return_type: int
+      - name: protoNeutralPFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: protoNeutralPFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nProtoNeutralPFOs
+        return_type: int
+      - name: protoPi0PFOLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::PFO_v1> > >
+      - name: protoPi0PFO
+        return_type: const xAOD::PFO_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nProtoPi0PFOs
+        return_type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TauTrack_v1
+    cpp_name: xAOD::TauTrack_v1
+    include_file: xAODTau/versions/TauTrack_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: e
+        return_type: double
+      - name: m
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: flagWithMask
+        return_type: bool
+        arguments:
+          - name: noname_arg
+            type: int
+      - name: z0sinThetaTJVA
+        return_type: float
+        arguments:
+          - name: noname_arg
+            type: xAOD.IParticle
+      - name: rConv
+        return_type: float
+        arguments:
+          - name: noname_arg
+            type: xAOD.IParticle
+      - name: rConvII
+        return_type: float
+        arguments:
+          - name: noname_arg
+            type: xAOD.IParticle
+      - name: dRJetSeedAxis
+        return_type: float
+        arguments:
+          - name: noname_arg
+            type: xAOD.IParticle
+      - name: bdtScores
+        return_type: const vector<float>
+      - name: bdtScore
+        return_type: float
+        arguments:
+          - name: i
+            type: int
+      - name: nBdtScores
+        return_type: int
+      - name: trackLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: track
+        return_type: const xAOD::TrackParticle_v1*
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TrackCaloCluster_v1
+    cpp_name: xAOD::TrackCaloCluster_v1
+    include_file: xAODPFlow/versions/TrackCaloCluster_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: taste
+        return_type: int
+      - name: p4
+        return_type: const TLorentzVector
+      - name: trackParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TrackParticle_v1> >
+      - name: trackParticle
+        return_type: const xAOD::TrackParticle_v1*
+      - name: iparticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::IParticle> > >
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TrackParticle_v1
+    cpp_name: xAOD::TrackParticle_v1
+    include_file: xAODTracking/versions/TrackParticle_v1.h
+    methods:
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: charge
+        return_type: float
+      - name: d0
+        return_type: float
+      - name: z0
+        return_type: float
+      - name: phi0
+        return_type: float
+      - name: theta
+        return_type: float
+      - name: qOverP
+        return_type: float
+      - name: definingParametersCovMatrixVec
+        return_type: const vector<float>
+      - name: vx
+        return_type: float
+      - name: vy
+        return_type: float
+      - name: vz
+        return_type: float
+      - name: numberOfParameters
+        return_type: int
+      - name: parameterX
+        return_type: float
+        arguments:
+          - name: index
+            type: int
+      - name: parameterY
+        return_type: float
+        arguments:
+          - name: index
+            type: int
+      - name: parameterZ
+        return_type: float
+        arguments:
+          - name: index
+            type: int
+      - name: parameterPX
+        return_type: float
+        arguments:
+          - name: index
+            type: int
+      - name: parameterPY
+        return_type: float
+        arguments:
+          - name: index
+            type: int
+      - name: parameterPZ
+        return_type: float
+        arguments:
+          - name: index
+            type: int
+      - name: radiusOfFirstHit
+        return_type: float
+      - name: beamlineTiltX
+        return_type: float
+      - name: beamlineTiltY
+        return_type: float
+      - name: hitPattern
+        return_type: unsigned int
+      - name: chiSquared
+        return_type: float
+      - name: numberDoF
+        return_type: float
+      - name: vertexLink
+        return_type: const ElementLink<DataVector<xAOD::Vertex_v1> >
+      - name: vertex
+        return_type: const xAOD::Vertex_v1*
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TruthEventBase_v1
+    cpp_name: xAOD::TruthEventBase_v1
+    include_file: xAODTruth/versions/TruthEventBase_v1.h
+    methods:
+      - name: truthParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TruthParticle_v1> > >
+      - name: nTruthParticles
+        return_type: int
+      - name: truthParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TruthParticle_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: truthParticle
+        return_type: const xAOD::TruthParticle_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: truthVertexLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TruthVertex_v1> > >
+      - name: nTruthVertices
+        return_type: int
+      - name: truthVertexLink
+        return_type: const ElementLink<DataVector<xAOD::TruthVertex_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: truthVertex
+        return_type: const xAOD::TruthVertex_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TruthEvent_v1
+    cpp_name: xAOD::TruthEvent_v1
+    include_file: xAODTruth/versions/TruthEvent_v1.h
+    methods:
+      - name: weights
+        return_type: const vector<float>
+      - name: crossSection
+        return_type: float
+      - name: crossSectionError
+        return_type: float
+      - name: pdfInfo
+        return_type: xAOD::TruthEvent_v1::PdfInfo
+      - name: signalProcessVertex
+        return_type: const xAOD::TruthVertex_v1*
+      - name: signalProcessVertexLink
+        return_type: const ElementLink<DataVector<xAOD::TruthVertex_v1> >
+      - name: beamParticle1Link
+        return_type: const ElementLink<DataVector<xAOD::TruthParticle_v1> >
+      - name: beamParticle2Link
+        return_type: const ElementLink<DataVector<xAOD::TruthParticle_v1> >
+      - name: truthParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TruthParticle_v1> > >
+      - name: nTruthParticles
+        return_type: int
+      - name: truthParticleLink
+        return_type: const ElementLink<DataVector<xAOD::TruthParticle_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: truthParticle
+        return_type: const xAOD::TruthParticle_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: truthVertexLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TruthVertex_v1> > >
+      - name: nTruthVertices
+        return_type: int
+      - name: truthVertexLink
+        return_type: const ElementLink<DataVector<xAOD::TruthVertex_v1> >
+        arguments:
+          - name: index
+            type: int
+      - name: truthVertex
+        return_type: const xAOD::TruthVertex_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TruthEvent_v1.PdfInfo
+    cpp_name: xAOD::TruthEvent_v1::PdfInfo
+    include_file: xAODTruth/versions/TruthEvent_v1.h
+    methods:
+      - name: valid
+        return_type: bool
+  - python_name: xAOD.TruthMetaData_v1
+    cpp_name: xAOD::TruthMetaData_v1
+    include_file: xAODTruth/versions/TruthMetaData_v1.h
+    methods:
+      - name: mcChannelNumber
+        return_type: unsigned int
+      - name: weightNames
+        return_type: const vector<string>
+      - name: lhefGenerator
+        return_type: const string
+      - name: generators
+        return_type: const string
+      - name: evgenProcess
+        return_type: const string
+      - name: evgenTune
+        return_type: const string
+      - name: hardPDF
+        return_type: const string
+      - name: softPDF
+        return_type: const string
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TruthParticle_v1
+    cpp_name: xAOD::TruthParticle_v1
+    include_file: xAODTruth/versions/TruthParticle_v1.h
+    methods:
+      - name: pdgId
+        return_type: int
+      - name: absPdgId
+        return_type: int
+      - name: barcode
+        return_type: int
+      - name: status
+        return_type: int
+      - name: hasProdVtx
+        return_type: bool
+      - name: prodVtx
+        return_type: const xAOD::TruthVertex_v1*
+      - name: prodVtxLink
+        return_type: const ElementLink<DataVector<xAOD::TruthVertex_v1> >
+      - name: hasDecayVtx
+        return_type: bool
+      - name: decayVtx
+        return_type: const xAOD::TruthVertex_v1*
+      - name: decayVtxLink
+        return_type: const ElementLink<DataVector<xAOD::TruthVertex_v1> >
+      - name: nParents
+        return_type: int
+      - name: parent
+        return_type: const xAOD::TruthParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: nChildren
+        return_type: int
+      - name: child
+        return_type: const xAOD::TruthParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: pt
+        return_type: double
+      - name: eta
+        return_type: double
+      - name: phi
+        return_type: double
+      - name: m
+        return_type: double
+      - name: e
+        return_type: double
+      - name: rapidity
+        return_type: double
+      - name: p4
+        return_type: const TLorentzVector
+      - name: abseta
+        return_type: double
+      - name: absrapidity
+        return_type: double
+      - name: px
+        return_type: float
+      - name: py
+        return_type: float
+      - name: pz
+        return_type: float
+      - name: charge
+        return_type: double
+      - name: threeCharge
+        return_type: int
+      - name: isCharged
+        return_type: bool
+      - name: isNeutral
+        return_type: bool
+      - name: isPhoton
+        return_type: bool
+      - name: isLepton
+        return_type: bool
+      - name: isChLepton
+        return_type: bool
+      - name: isElectron
+        return_type: bool
+      - name: isMuon
+        return_type: bool
+      - name: isTau
+        return_type: bool
+      - name: isNeutrino
+        return_type: bool
+      - name: isHadron
+        return_type: bool
+      - name: isMeson
+        return_type: bool
+      - name: isBaryon
+        return_type: bool
+      - name: hasStrange
+        return_type: bool
+      - name: hasCharm
+        return_type: bool
+      - name: hasBottom
+        return_type: bool
+      - name: isLightMeson
+        return_type: bool
+      - name: isLightBaryon
+        return_type: bool
+      - name: isLightHadron
+        return_type: bool
+      - name: isHeavyMeson
+        return_type: bool
+      - name: isHeavyBaryon
+        return_type: bool
+      - name: isHeavyHadron
+        return_type: bool
+      - name: isBottomMeson
+        return_type: bool
+      - name: isBottomBaryon
+        return_type: bool
+      - name: isBottomHadron
+        return_type: bool
+      - name: isCharmMeson
+        return_type: bool
+      - name: isCharmBaryon
+        return_type: bool
+      - name: isCharmHadron
+        return_type: bool
+      - name: isStrangeMeson
+        return_type: bool
+      - name: isStrangeBaryon
+        return_type: bool
+      - name: isStrangeHadron
+        return_type: bool
+      - name: isQuark
+        return_type: bool
+      - name: isParton
+        return_type: bool
+      - name: isTop
+        return_type: bool
+      - name: isW
+        return_type: bool
+      - name: isZ
+        return_type: bool
+      - name: isHiggs
+        return_type: bool
+      - name: isResonance
+        return_type: bool
+      - name: isGenSpecific
+        return_type: bool
+      - name: isBSM
+        return_type: bool
+      - name: polarization
+        return_type: xAOD::TruthParticle_v1::Polarization
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.TruthParticle_v1.Polarization
+    cpp_name: xAOD::TruthParticle_v1::Polarization
+    include_file: xAODTruth/versions/TruthParticle_v1.h
+    methods:
+      - name: valid
+        return_type: bool
+  - python_name: xAOD.TruthVertex_v1
+    cpp_name: xAOD::TruthVertex_v1
+    include_file: xAODTruth/versions/TruthVertex_v1.h
+    methods:
+      - name: id
+        return_type: int
+      - name: barcode
+        return_type: int
+      - name: incomingParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TruthParticle_v1> > >
+      - name: nIncomingParticles
+        return_type: int
+      - name: incomingParticle
+        return_type: const xAOD::TruthParticle_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: outgoingParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TruthParticle_v1> > >
+      - name: nOutgoingParticles
+        return_type: int
+      - name: outgoingParticle
+        return_type: const xAOD::TruthParticle_v1*
+        arguments:
+          - name: index
+            type: int
+      - name: x
+        return_type: float
+      - name: y
+        return_type: float
+      - name: z
+        return_type: float
+      - name: perp
+        return_type: float
+      - name: eta
+        return_type: float
+      - name: phi
+        return_type: float
+      - name: t
+        return_type: float
+      - name: v4
+        return_type: const TLorentzVector
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+  - python_name: xAOD.Vertex_v1
+    cpp_name: xAOD::Vertex_v1
+    include_file: xAODTracking/versions/Vertex_v1.h
+    methods:
+      - name: x
+        return_type: float
+      - name: y
+        return_type: float
+      - name: z
+        return_type: float
+      - name: covariance
+        return_type: const vector<float>
+      - name: chiSquared
+        return_type: float
+      - name: numberDoF
+        return_type: float
+      - name: trackParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::TrackParticle_v1> > >
+      - name: trackWeights
+        return_type: const vector<float>
+      - name: neutralParticleLinks
+        return_type: const vector<ElementLink<DataVector<xAOD::NeutralParticle_v1> > >
+      - name: neutralWeights
+        return_type: const vector<float>
+      - name: trackParticle
+        return_type: const xAOD::TrackParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: trackWeight
+        return_type: float
+        arguments:
+          - name: i
+            type: int
+      - name: nTrackParticles
+        return_type: int
+      - name: neutralParticle
+        return_type: const xAOD::NeutralParticle_v1*
+        arguments:
+          - name: i
+            type: int
+      - name: neutralWeight
+        return_type: float
+        arguments:
+          - name: i
+            type: int
+      - name: nNeutralParticles
+        return_type: int
+      - name: index
+        return_type: int
+      - name: usingPrivateStore
+        return_type: bool
+      - name: usingStandaloneStore
+        return_type: bool
+      - name: hasStore
+        return_type: bool
+      - name: hasNonConstStore
+        return_type: bool
+      - name: clearDecorations
+        return_type: bool
+files:
+  - name: trigger.py
+    init_lines:
+      - from .trigger import tdt_chain_fired
+      - from .trigger import tmt_match_object
+    contents:
+      - "# Temp file to develop the code we need to run as the TDT"
+      - "from typing import Tuple, TypeVar"
+      - "from func_adl import func_adl_callable, ObjectStream"
+      - "import ast"
+      - ""
+      - "T = TypeVar(\"T\")"
+      - ""
+      - ""
+      - "def _add_decision_tool(s: ObjectStream[T]) -> ObjectStream[T]:"
+      - "    'Add code block for a decision tool initialization'"
+      - "    return s.MetaData("
+      - "        {"
+      - "            \"metadata_type\": \"inject_code\","
+      - "            \"name\": \"trigger_decision_tool\","
+      - "            \"header_includes\": ["
+      - "                \"TrigConfInterfaces/ITrigConfigTool.h\","
+      - "                \"TrigDecisionTool/TrigDecisionTool.h\","
+      - "                \"AsgTools/AnaToolHandle.h\","
+      - "            ],"
+      - "            \"private_members\": ["
+      - "                \"asg::AnaToolHandle<TrigConf::ITrigConfigTool> m_trigConf;\","
+      - "                \"asg::AnaToolHandle<Trig::TrigDecisionTool> m_trigDec;\","
+      - "            ],"
+      - "            \"instance_initialization\": ["
+      - "                'm_trigConf(\"TrigConf::xAODConfigTool/xAODConfigTool\")',"
+      - "                'm_trigDec(\"Trig::TrigDecisionTool/TrigDecisionTool\")',"
+      - "            ],"
+      - "            \"initialize_lines\": ["
+      - "                \"ANA_CHECK (m_trigConf.initialize());\","
+      - "                'ANA_CHECK (m_trigDec.setProperty(\"ConfigTool\", m_trigConf.getHandle()));',"
+      - "                'ANA_CHECK (m_trigDec.setProperty(\"TrigDecisionKey\", \"xTrigDecision\"));',"
+      - "                \"ANA_CHECK (m_trigDec.initialize());\","
+      - "            ],"
+      - "            \"link_libraries\": [\"TrigDecisionToolLib\", \"TrigConfInterfaces\"],"
+      - "        }"
+      - "    )"
+      - ""
+      - ""
+      - "def _add_match_tool(s: ObjectStream[T]) -> ObjectStream[T]:"
+      - "    new_s = s.MetaData("
+      - "            {"
+      - "                \"metadata_type\": \"inject_code\","
+      - "                \"name\": \"trigger_match_tool\","
+      - "                \"private_members\": ["
+      - "                    \"asg::AnaToolHandle<Trig::IMatchingTool> m_tmt;\","
+      - "                ],"
+      - "                \"header_includes\": ["
+      - "                    \"TriggerMatchingTool/MatchFromCompositeTool.h\","
+      - "                ],"
+      - "                \"instance_initialization\": ["
+      - "                    'm_tmt(\"Trig::MatchFromCompositeTool\")',"
+      - "                ],"
+      - "                \"initialize_lines\": ["
+      - "                    'ANA_CHECK(m_tmt.initialize());',"
+      - "                ],"
+      - "                \"link_libraries\": [\"TriggerMatchingToolLib\"],"
+      - "            }"
+      - "    )"
+      - "    return _add_decision_tool(new_s)"
+      - ""
+      - ""
+      - "def _tdt_chain_fired_processor("
+      - "    s: ObjectStream[T], a: ast.Call"
+      - ") -> Tuple[ObjectStream[T], ast.Call]:"
+      - "    \"\"\"Configure the backend to run the Trigger Decision Tool!"
+      - ""
+      - "    Args:"
+      - "        s (ObjectStream[T]): The stream func_adl is working on - and we can add meta data to.Tuple"
+      - "        a (ast.Call): The callsite in case we need to modify it"
+      - ""
+      - "    Returns:"
+      - "        Tuple[ObjectStream[T], ast.Call]: Update stream and call site."
+      - "    \"\"\""
+      - "    # Make sure the TDT is declared and send the code"
+      - "    # for this particular function"
+      - "    new_s = s.MetaData("
+      - "        {"
+      - "            \"metadata_type\": \"add_cpp_function\","
+      - "            \"name\": \"tdt_chain_fired\","
+      - "            \"include_files\": [],"
+      - "            \"arguments\": [\"triggers\"],"
+      - "            \"code\": [\"auto result = m_trigDec->isPassed(triggers,TrigDefs::Physics);\"],"
+      - "            \"result_name\": \"result\","
+      - "            \"return_type\": \"bool\","
+      - "        }"
+      - "    )"
+      - ""
+      - "    return _add_decision_tool(new_s), a"
+      - ""
+      - ""
+      - "def _tmt_match_object_processor(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream[T], ast.Call]:"
+      - "    new_s = s.MetaData("
+      - "        {"
+      - "            \"metadata_type\": \"add_cpp_function\","
+      - "            \"name\": \"tmt_match_object\","
+      - "            \"include_files\": [],"
+      - "            \"arguments\": [\"trigger\", \"offline_object\", \"dr\"],"
+      - "            \"code\": ["
+      - "                \"std::vector<const xAOD::IParticle*> myParticles\","
+      - "                \"myParticles.push_back(offline_object);\","
+      - "                \"auto result = m_tmt->match(myParticles, trigger , dr);\","
+      - "                ],"
+      - "            \"result_name\": \"result\","
+      - "            \"return_type\": \"bool\","
+      - "        })"
+      - ""
+      - "    return (_add_match_tool(new_s), a)"
+      - ""
+      - ""
+      - "@func_adl_callable(_tdt_chain_fired_processor)"
+      - "def tdt_chain_fired(triggers: str) -> bool:"
+      - "    \"\"\"Returns true if the event has any of the trigger chain names that have"
+      - "    fired. Uses the ATLAS Trigger Decision Tool to query the event."
+      - ""
+      - "    Args:"
+      - "        triggers (str): String specifying the triggers to check for. This is passed directly to the"
+      - "        ATLAS TriggerDecisionTool, so can include any valid wildcards."
+      - ""
+      - "    Returns:"
+      - "        bool: True if the TDT says this chain has fired on this event, false other wise."
+      - "    \"\"\""
+      - "    ..."
+      - ""
+      - "@func_adl_callable(_tmt_match_object_processor)"
+      - "def tmt_match_object(trigger: str, offline_object, dr: float = 0.7) -> bool:"
+      - "    '''Returns true if the `offline_object` is a close match to the trigger"
+      - "    object. Close match is done as a function of $\\Delta R < `dr`$."
+      - ""
+      - "    Args:"
+      - "        trigger (str): Trigger name"
+      - "        offline_object ([type]): The offline object (like an electron)"
+      - ""
+      - "    Returns:"
+      - "        bool: True if the match is good."
+      - "    '''"
+      - "    ..."
+  - "name": "type_support.py"
+    "init_lines":
+      - "from .type_support import cpp_float, cpp_double"
+    "contents":
+      - "from typing import Callable, Generic, Iterable, Optional, Tuple, Type, TypeVar"
+      - "from func_adl import ObjectStream"
+      - "import ast"
+      - ""
+      - "T = TypeVar('T')"
+      - ""
+      - "class cpp_type(Generic[T]):"
+      - "    'Used to indicate C++ types in template arguments'"
+      - "    def __init__ (self, cpp_base_type: str, python_base_type: Type, cpp_collection_type: Optional[str] = None):"
+      - "        '''For a particular type"
+      - "        '''"
+      - "        self._cpp_type = cpp_base_type"
+      - "        self._python_type = python_base_type"
+      - "        self._cpp_collection_type = cpp_collection_type"
+      - ""
+      - "    @property"
+      - "    def cpp_type(self) -> str:"
+      - "        return self._cpp_type"
+      - ""
+      - "    @property"
+      - "    def python_type(self) -> Type:"
+      - "        return self._python_type"
+      - ""
+      - "    @property"
+      - "    def is_collection(self) -> bool:"
+      - "        return self._cpp_collection_type is not None"
+      - ""
+      - "    @property"
+      - "    def actual_cpp_type(self) -> str:"
+      - "        if self._cpp_collection_type is None:"
+      - "            return self.cpp_type"
+      - "        else:"
+      - "            return self._cpp_collection_type"
+      - ""
+      - "    @property"
+      - "    def actual_cpp_type_norm(self) -> str:"
+      - "        return self.actual_cpp_type.replace('::', '_').replace('<', '_').replace('>', '_')"
+      - ""
+      - ""
+      - "cpp_float = cpp_type[float](\"float\", float)"
+      - "cpp_double = cpp_type[float](\"double\", float)"
+      - "cpp_vfloat = cpp_type[Iterable[float]](\"float\", float, \"std::vector<float>\")"
+      - ""
+      - ""
+      - "# TODO: 3.10 and this should be a ParamSpec, not a TypeVar."
+      - "ParamValue = TypeVar('ParamValue')"
+      - ""
+      - ""
+      - "class index_type_forwarder(Generic[ParamValue]):"
+      - "    def __getitem__(self, typ: cpp_type[T]) -> Callable[[ParamValue], T]:"
+      - "        ..."
+      - ""
+      - "    def __call__(self, typ: cpp_type[T]) -> Callable[[ParamValue], T]:"
+      - "        ..."
+      - ""
+      - ""
+      - "def cpp_generic_1arg_callback(method_name: str, s: ObjectStream[T], a: ast.Call, param_1: cpp_type) -> Tuple[ObjectStream[T], ast.Call, Type]:"
+      - "    'We deal with generic function return types'"
+      - ""
+      - "    new_s = s.MetaData({"
+      - "        'metadata_type': \"add_cpp_function\","
+      - "        'name': f'{method_name}_{param_1.actual_cpp_type_norm}',"
+      - "        'arguments': ['moment_name'],"
+      - "        'code': [f'auto result = obj_j->{method_name}<{param_1.actual_cpp_type}>(moment_name);'],"
+      - "        'instance_object': 'xAOD::Jet_v1',"
+      - "        'method_object': 'obj_j',"
+      - "        'return_type': param_1.cpp_type,"
+      - "        'return_is_collection': param_1.is_collection,"
+      - "        'include_files': [],"
+      - "    })"
+      - ""
+      - "    import copy"
+      - "    new_a = copy.copy(a)"
+      - "    new_a.func = ast.Attribute(a.func.value, f'{method_name}_{param_1.actual_cpp_type_norm}', a.func.ctx)"
+      - ""
+      - "    return new_s, new_a, param_1.python_type"
+metadata:
+  - name: sys_error_tool
+    data:
+      - metadata_type: add_job_script
+        name: sys_error_tool
+        script:
+          - "# pulled from:https://gitlab.cern.ch/atlas/athena/-/blob/21.2/PhysicsAnalysis/Algorithms/JetAnalysisAlgorithms/python/JetAnalysisAlgorithmsTest.py "
+          - "# Set up the systematics loader/handler service:"
+          - "from AnaAlgorithm.DualUseConfig import createService"
+          - "from AnaAlgorithm.AlgSequence import AlgSequence"
+          - "calibrationAlgSeq = AlgSequence()"
+          - "sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )"
+          - "sysService.systematicsList = ['{calibration}']"
+          - "# Add sequence to job"
+  - name: pileup_tool
+    data:
+      - metadata_type: add_job_script
+        name: pileup_tool
+        script:
+          - "from AsgAnalysisAlgorithms.PileupAnalysisSequence import makePileupAnalysisSequence"
+          - "from AsgAnalysisAlgorithms.AsgAnalysisAlgorithmsTest import pileupConfigFiles"
+          - "prwfiles, lumicalcfiles = pileupConfigFiles('mc')"
+          - "# Can't use pwrfiles, lumicalcfiles b.c. they are on cvms and docker does not have those."
+          - "# pileupSequence = makePileupAnalysisSequence( 'mc', userPileupConfigs=prwfiles, userLumicalcFiles=lumicalcfiles)"
+          - "pileupSequence = makePileupAnalysisSequence( 'mc' )"
+          - "pileupSequence.configure( inputName = {}, outputName = {} )"
+          - "# print( pileupSequence ) # For debugging"
+          - "calibrationAlgSeq += pileupSequence"
+        depends_on: 
+          - sys_error_tool
+  - name: jet_corrections
+    data:
+      - metadata_type: add_job_script
+        name: jet_corrections
+        script:
+          - "jetContainer = '{bank_name}'"
+          - "from JetAnalysisAlgorithms.JetAnalysisSequence import makeJetAnalysisSequence"
+          - "jetSequence = makeJetAnalysisSequence( 'mc', jetContainer)"
+          - "jetSequence.configure( inputName = jetContainer, outputName = '{bank_name}_Base_%SYS%' )"
+          - "jetSequence.JvtEfficiencyAlg.truthJetCollection = '{truth_jets}'"
+          - "jetSequence.ForwardJvtEfficiencyAlg.truthJetCollection = '{truth_jets}'"
+          - "calibrationAlgSeq += jetSequence"
+          - "print( jetSequence ) # For debugging"
+          - ""
+          - "# Include, and then set up the jet analysis algorithm sequence:"
+          - "from JetAnalysisAlgorithms.JetJvtAnalysisSequence import makeJetJvtAnalysisSequence"
+          - "jvtSequence = makeJetJvtAnalysisSequence( 'mc', jetContainer, enableCutflow=True )"
+          - "jvtSequence.configure( inputName = {'jets'      : '{bank_name}_Base_%SYS%' },"
+          - "                       outputName = { 'jets'      : '{bank_name}Calib_%SYS%' },"
+          - "                       )"
+          - "calibrationAlgSeq += jvtSequence"
+          - "print( jvtSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: muon_corrections
+    data:
+      - metadata_type: add_job_script
+        name: muon_corrections
+        script:
+          - "muon_container = '{bank_name}'"
+          - "from MuonAnalysisAlgorithms.MuonAnalysisSequence import makeMuonAnalysisSequence"
+          - "muonSequence = makeMuonAnalysisSequence('mc', workingPoint='{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
+          - "muonSequence.configure( inputName = muon_container,"
+          - "                        outputName = muon_container + 'Calib_{working_point}{isolation}_%SYS%' )"
+          - "calibrationAlgSeq += muonSequence"
+          - "print( muonSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: photon_corrections
+    data:
+      - metadata_type: add_job_script
+        name: electron_corrections
+        script:
+          - "from EgammaAnalysisAlgorithms.PhotonAnalysisSequence import makePhotonAnalysisSequence"
+          - "photonSequence = makePhotonAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
+          - "photonSequence.configure( inputName = '{bank_name}',"
+          - "                            outputName = '{bank_name}_{working_point}_{isolation}_%SYS%' )"
+          - "calibrationAlgSeq += photonSequence"
+          - "print( photonSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: electron_corrections
+    data:
+      - metadata_type: add_job_script
+        name: electron_corrections
+        script:
+          - "from EgammaAnalysisAlgorithms.ElectronAnalysisSequence import makeElectronAnalysisSequence"
+          - "electronSequence = makeElectronAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
+          - "electronSequence.configure( inputName = '{bank_name}',"
+          - "                            outputName = '{bank_name}_{working_point}_{isolation}_%SYS%' )"
+          - "calibrationAlgSeq += electronSequence"
+          - "print( electronSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: tau_corrections
+    data:
+      - metadata_type: add_job_script
+        name: tau_corrections
+        script:
+          - "from TauAnalysisAlgorithms.TauAnalysisSequence import makeTauAnalysisSequence"
+          - "tauSequence = makeTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}', rerunTruthMatching=False)"
+          - "tauSequence.configure( inputName = '{bank_name}',"
+          - "                       outputName = '{bank_name}_{working_point}_%SYS%' )"
+          - "calibrationAlgSeq += tauSequence"
+          - "print( tauSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: ditau_corrections
+    data:
+      - metadata_type: add_job_script
+        name: ditau_corrections
+        script:
+          - "from TauAnalysisAlgorithms.DiTauAnalysisSequence import makeDiTauAnalysisSequence"
+          - "diTauSequence = makeDiTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}')"
+          - "diTauSequence.configure( inputName = '{bank_name}',"
+          - "                       outputName = '{bank_name}_{working_point}_%SYS%' )"
+          - "calibrationAlgSeq += diTauSequence"
+          - "print( diTauSequence ) # For debugging"
+        depends_on:
+          - 'pileup_tool'
+  - name: add_calibration_to_job
+    data:
+      - metadata_type: add_job_script
+        name: add_calibration_to_job
+        script:
+          - "calibrationAlgSeq.addSelfToJob( job )"
+          - "print(job) # for debugging"
+        depends_on:
+          - '*PREVIOUS*'

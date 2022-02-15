@@ -345,9 +345,9 @@ string normalized_type_name(const typename_info &ti)
     full_name << ti;
     string result(full_name.str());
 
-    // Iterable should not be touched as it is understood as a python template
+    // Iterable and cpp_type should not be touched as it is understood as a python template
     // (the only template that is understood).
-    if (ti.type_name == "Iterable") {
+    if (ti.type_name == "Iterable" || ti.type_name == "cpp_type") {
         return result;
     }
 
@@ -542,6 +542,41 @@ bool is_understood_type(const typename_info &t, const set<std::string> &known_ty
     }
 
     return false;
+}
+
+// Are all types attached to this class known - is it safe to work with this method?
+bool is_understood_method(const method_info &meth, const set<string> &classes_to_emit) {
+    // Make sure returns something.
+    if (meth.return_type.size() == 0) {
+        return false;
+    }
+
+    // Get all referenced types, and make sure we know about those types.
+    auto method_types = referenced_types(meth);
+    set<string> method_types_set(method_types.begin(), method_types.end());
+
+    // Next, look at the template arguments and see if they define any special
+    // types that we should "allow" for just this method.
+    set<string> known_classes(classes_to_emit);
+    for (auto &&t_arg : meth.parameter_arguments)
+    {
+        auto t_parsed = parse_typename(t_arg.full_typename);
+        if (t_parsed.type_name == "cpp_type") {
+            if (t_parsed.template_arguments.size() != 1) {
+                throw runtime_error("Method " + meth.name + " uses a template argument of cpp_type and doesn't have exactly one template argument");
+            }
+            
+            known_classes.insert(t_parsed.template_arguments[0].nickname);
+        }
+    }
+    
+
+    for (auto &&m_type: method_types_set) {
+        if (!is_understood_type(m_type, known_classes)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 // Convert C++ types into python types for return

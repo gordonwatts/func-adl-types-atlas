@@ -16,7 +16,8 @@ struct helper_file {
 
 // Files to add in!
 vector<helper_file> _g_helper_files {
-    { "trigger.py", {"from .trigger import tdt_chain_fired", "from .trigger import tmt_match_object"} }
+    { "trigger.py", {"from .trigger import tdt_chain_fired", "from .trigger import tmt_match_object"} },
+    { "type_support.py", {"from .type_support import cpp_float, cpp_double"}}
 };
 
 const std::string WHITESPACE = " \n\r\t\f\v";

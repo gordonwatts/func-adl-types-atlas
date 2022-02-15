@@ -47,31 +47,11 @@ bool can_emit_class(const class_info &c_info) {
     return true;
 }
 
-// Return true if this method can actually be emitted.
-bool can_emit_method(const method_info &meth, const set<string> &classes_to_emit) {
-    // Make sure returns something.
-    if (meth.return_type.size() == 0) {
-        return false;
-    }
-
-    // Get all referenced methods, and make sure we know about those objects.
-    // Or we can't support this guy.
-    auto method_types = referenced_types(meth);
-    set<string> method_types_set(method_types.begin(), method_types.end());
-
-    for (auto &&m_type: method_types_set) {
-        if (!is_understood_type(m_type, classes_to_emit)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 // Return true if any method can be emitted
 bool can_emit_any_methods(const vector<method_info> &methods, const set<string> &classes_to_emit) {
     for (auto &&m : methods)
     {
-        if (can_emit_method(m, classes_to_emit)) {
+        if (is_understood_method(m, classes_to_emit)) {
             return true;
         }
     }
@@ -173,6 +153,27 @@ bool class_name_is_good(const string &c_name) {
         && (c_name.find("Eigen") == c_name.npos)
         && (c_name.find("SG::") == c_name.npos)
        );
+}
+
+// Given a list of arguments, dump them out.
+void dump_arguments(const string &arg_list_name, const vector<method_arg> &arguments, YAML::Emitter &out) {
+    bool first_argument = true;
+    for (auto &&arg : arguments)
+    {
+        if (first_argument) {
+            first_argument = false;
+            out << YAML::Key << arg_list_name
+                << YAML::Value
+                << YAML::BeginSeq;
+        }
+        out << YAML::BeginMap
+            << YAML::Key << "name" << YAML::Value << arg.name
+            << YAML::Key << "type" << YAML::Value << normalized_type_name(arg.full_typename)
+            << YAML::EndMap;
+    }
+    if (!first_argument) {
+        out << YAML::EndSeq;
+    }
 }
 
 int main(int argc, char**argv) {
@@ -329,6 +330,7 @@ int main(int argc, char**argv) {
     classes_to_emit.insert("unsigned long");
     classes_to_emit.insert("long long");
     classes_to_emit.insert("unsigned long long");
+    classes_to_emit.insert("string");
 
     // Now, we need to loop through all of these things until we get a stable set of classes that we can emit.
     // This is painful, because there could be classes that look good, but contain no valid methods - so no need
@@ -483,7 +485,7 @@ int main(int argc, char**argv) {
         bool first_method = true;
         for (auto &&meth : c_info->second.methods)
         {
-            if (can_emit_method(meth, classes_to_emit)) {
+            if (is_understood_method(meth, classes_to_emit)) {
                 if (first_method) {
                     out << YAML::Key << "methods"
                         << YAML::Value
@@ -496,23 +498,17 @@ int main(int argc, char**argv) {
                     << YAML::Key << "name" << YAML::Value << meth.name
                     << YAML::Key << "return_type" << YAML::Value << rtn_type.nickname;
 
-                bool first_argument = true;
-                for (auto &&arg : meth.arguments)
-                {
-                    if (first_argument) {
-                        first_argument = false;
-                        out << YAML::Key << "arguments"
-                            << YAML::Value
-                            << YAML::BeginSeq;
-                    }
-                    out << YAML::BeginMap
-                        << YAML::Key << "name" << YAML::Value << arg.name
-                        << YAML::Key << "type" << YAML::Value << normalized_type_name(arg.full_typename)
-                        << YAML::EndMap;
+                dump_arguments("arguments", meth.arguments, out);
+                dump_arguments("parameter_arguments", meth.parameter_arguments, out);
+
+                if (meth.parameter_type_helper.size() > 0) {
+                    out << YAML::Key << "param_helper" << YAML::Value << meth.parameter_type_helper;
                 }
-                if (!first_argument) {
-                    out << YAML::EndSeq;
+
+                if (meth.param_method_callback.size() > 0) {
+                    out << YAML::Key << "param_type_callback" << YAML::Value << meth.param_method_callback;
                 }
+
                 out << YAML::EndMap;
             }
         }

@@ -44,6 +44,18 @@ struct method_info {
 
     // Arguments
     std::vector<method_arg> arguments;
+
+    // Parameterized callback arguments
+    std::vector<method_arg> parameter_arguments;
+
+    // The helper class if there are template arguments - otherwise it should
+    // be empty. It is used as the method return type in order to
+    // allow type-checking to proceed.
+    std::string parameter_type_helper;
+
+    // What should be the parameter method callback to process this if
+    // template arguments are present?
+    std::string param_method_callback;
 };
 
 struct class_info {
