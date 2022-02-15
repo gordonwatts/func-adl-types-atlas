@@ -310,9 +310,9 @@ class_info translate_class(const std::string &class_name)
         attr_type.raw_typename = "cpp_type<U>";
         mi.parameter_arguments.push_back(attr_type);
 
-        mi.parameter_type_helper = "index_type_forwarder";
+        mi.parameter_type_helper = "type_support.index_type_forwarder";
 
-        mi.param_method_callback = "lambda (s, a, param_1): cpp_generic_1arg_callback('getAttribute', s, a, param_1)";
+        mi.param_method_callback = "lambda s, a, param_1: {{package_name}}.type_support.cpp_generic_1arg_callback('getAttribute', s, a, param_1)";
 
         result.methods.push_back(mi);
     }
