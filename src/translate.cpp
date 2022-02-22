@@ -116,7 +116,11 @@ vector<string> inherited_public_classes(TClass *c_info) {
 
 vector<string> inherited_public_classes(const std::string &cls_name) {
     auto c_info = TClass::GetClass(cls_name.c_str());
-    return inherited_public_classes(c_info);
+    if (c_info != nullptr) {
+        return inherited_public_classes(c_info);
+    } else {
+        return vector<string>();
+    }
 }
 
 ///
@@ -315,6 +319,60 @@ class_info translate_class(const std::string &class_name)
         mi.param_method_callback = "lambda s, a, param_1: {{package_name}}.type_support.cpp_generic_1arg_callback('getAttribute', s, a, param_1)";
 
         result.methods.push_back(mi);
+    }
+
+    auto all_inherited = all_inherited_classes(result.name);
+    if (all_inherited.find("SG::AuxElement") != all_inherited.end()) {
+        {
+            method_info mi;
+
+            // Get auxData
+            mi.name = "auxdataConst";
+            mi.return_type = "U";
+            
+            method_arg attr_name;
+            attr_name.name = "name";
+            attr_name.full_typename = "string";
+            attr_name.raw_typename = "string";
+            mi.arguments.push_back(attr_name);
+
+            method_arg attr_type;
+            attr_type.name = "auxdata_type";
+            attr_type.full_typename = "cpp_type<U>";
+            attr_type.raw_typename = "cpp_type<U>";
+            mi.parameter_arguments.push_back(attr_type);
+
+            mi.parameter_type_helper = "type_support.index_type_forwarder";
+
+            mi.param_method_callback = "lambda s, a, param_1: {{package_name}}.type_support.cpp_generic_1arg_callback('auxdataConst', s, a, param_1)";
+
+            result.methods.push_back(mi);
+        }
+
+        // See if the aux data is present
+        {
+            method_info mi;
+            mi.name = "isAvailable";
+            mi.return_type = "bool";
+
+            method_arg attr_name;
+            attr_name.name = "name";
+            attr_name.full_typename = "string";
+            attr_name.raw_typename = "string";
+            mi.arguments.push_back(attr_name);
+
+            method_arg attr_type;
+            attr_type.name = "auxdata_type";
+            attr_type.full_typename = "cpp_type<U>";
+            attr_type.raw_typename = "cpp_type<U>";
+            mi.parameter_arguments.push_back(attr_type);
+
+            mi.parameter_type_helper = "type_support.index_type_forwarder";
+
+            mi.param_method_callback = "lambda s, a, param_1: {{package_name}}.type_support.cpp_generic_1arg_callback('isAvailable', s, a, param_1)";
+
+            result.methods.push_back(mi);
+        }
     }
 
     return result;
