@@ -371,8 +371,8 @@ int main(int argc, char**argv) {
     copy_if(all_collections.begin(), all_collections.end(), back_insert_iterator(collections),
         [&classes_to_emit](const collection_info &c_info) {
             string collection_iterator_typename(extract_container_iterator_type(c_info));
-            return find_if(classes_to_emit.begin(), classes_to_emit.end(), [&collection_iterator_typename](const string &cl_info){
-                return cl_info == collection_iterator_typename;
+            return find_if(classes_to_emit.begin(), classes_to_emit.end(), [&collection_iterator_typename](const string &cl_name){
+                return cl_name == collection_iterator_typename;
             }) != classes_to_emit.end();
         });
 
