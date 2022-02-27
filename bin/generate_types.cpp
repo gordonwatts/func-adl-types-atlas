@@ -404,7 +404,7 @@ int main(int argc, char**argv) {
             auto &&meta_data = meta_data_itr->second;
             out << YAML::Key << "extra_parameters" << YAML::Value;
             out << YAML::BeginSeq;
-            for (auto &&p : meta_data.parameters)
+            for (auto &&p : meta_data.extra_parameters)
             {
                 out << YAML::BeginMap;
                 out << YAML::Key << "name" << YAML::Value << p.name;

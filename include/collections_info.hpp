@@ -42,7 +42,7 @@ struct collection_extra {
     std::string name;
 
     // List of extra parameters
-    std::vector<parameter_info> parameters;
+    std::vector<parameter_info> extra_parameters;
 };
 
 
