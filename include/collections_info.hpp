@@ -49,21 +49,24 @@ struct collection_extra {
 
     // List of extra parameters
     std::vector<parameter_info_extra> extra_parameters;
+
+    // method decoration/callback
+    std::string method_callback;
 };
 
 
 // Hardcode the config for ATLAS R21
 std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
-        {"name", "str", ""}        
+        // {"name", "str", ""}        
     }, {
-        {"calibration", "str", "'NOSYS'", {
-            {"'*None*'", {}, "{bank_name}"},
-            {"'*Any*'", {"sys_error_tool", "pileup_tool", "jet_corrections", "add_calibration_to_job"}, "{bank_name}Calib_{calibration}"}
-            }
-        },
-        {"truth_jets", "str", "'AntiKt4TruthDressedWZJets'"},
-    }}},
+        // {"calibration", "str", "'NOSYS'", {
+        //     {"'*None*'", {}, "{bank_name}"},
+        //     {"'*Any*'", {"sys_error_tool", "pileup_tool", "jet_corrections", "add_calibration_to_job"}, "{bank_name}Calib_{calibration}"}
+        //     }
+        // },
+        // {"truth_jets", "str", "'AntiKt4TruthDressedWZJets'"},
+    }, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a)"}},
     {"Muons", {"Muons", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
@@ -72,7 +75,7 @@ std::map<std::string, collection_extra> _g_collection_config {
         },
         {"working_point", "str", "'Medium'", {}},
         {"isolation", "str", "'NonIso'", {}}
-    }}},
+    }, ""}},
     {"Electrons", {"Electrons", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
@@ -81,7 +84,7 @@ std::map<std::string, collection_extra> _g_collection_config {
         },
         {"working_point", "str", "'MediumLHElectron'", {}},
         {"isolation", "str", "'NonIso'", {}}
-    }}},
+    }, ""}},
     {"Photons", {"Photons", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
@@ -90,7 +93,7 @@ std::map<std::string, collection_extra> _g_collection_config {
         },
         {"working_point", "str", "'Tight'", {}},
         {"isolation", "str", "'NonIso'", {}}
-    }}},
+    }, ""}},
     {"TauJets", {"TauJets", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
@@ -98,7 +101,7 @@ std::map<std::string, collection_extra> _g_collection_config {
             }
         },
         {"working_point", "str", "'Tight'", {}},
-    }}},
+    }, ""}},
     {"DiTauJets", {"DiTauJets", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
@@ -106,7 +109,7 @@ std::map<std::string, collection_extra> _g_collection_config {
             }
         },
         {"working_point", "str", "'Tight'", {}},
-    }}}
+    }, ""}}
 };
 
 #endif

@@ -15,6 +15,7 @@ jvtSequence.configure( inputName = {'jets'      : jetContainer + '_Base_%SYS%' }
                        )
 calibrationAlgSeq += jvtSequence
 print( jvtSequence ) # For debugging
+# Output jet_collection = {{calib.jet_collection}}Calib_NOSYS
 #
 muon_container = '{{calib.muon_collection}}'
 from MuonAnalysisAlgorithms.MuonAnalysisSequence import makeMuonAnalysisSequence
@@ -23,6 +24,7 @@ muonSequence.configure( inputName = muon_container,
                         outputName = muon_container + 'Calib_{{calib.muon_working_point}}{{calib.muon_isolation}}_%SYS%' )
 calibrationAlgSeq += muonSequence
 print( muonSequence ) # For debugging
+# Output muon_collection = {{calib.jet_collection}}Calib_{{calib.muon_working_point}}{{calib.muon_isolation}}_NOSYS
 #
 from EgammaAnalysisAlgorithms.ElectronAnalysisSequence import makeElectronAnalysisSequence
 electronSequence = makeElectronAnalysisSequence( 'mc', '{{calib.electron_working_point}}.{{calib.electron_isolation}}', postfix = '{{calib.electron_working_point}}_{{calib.electron_isolation}}')
@@ -30,6 +32,7 @@ electronSequence.configure( inputName = '{{calib.electron_collection}}',
                             outputName = '{{calib.electron_collection}}_{{working_point}}_{{isolation}}_%SYS%' )
 calibrationAlgSeq += electronSequence
 print( electronSequence ) # For debugging
+# Output electron_collection = {{calib.electron_collection}}_{{working_point}}_{{isolation}}_NOSYS
 #TODO: Get photon corrections working. It does not seem possible in R21 and on PHYS_DAOD.
 # If you remove the fudge tool, then the photon eff tool has trouble.
 # If you remove that, then the sequence has trouble. Needs more work.
@@ -43,10 +46,12 @@ print( electronSequence ) # For debugging
 # del photonSequence.PhotonShowerShapeFudgeAlg_Tight_FixedCutTight
 # del photonSequence.PhotonIsolationCorrectionAlg_Tight_FixedCutTight
 # calibrationAlgSeq += photonSequence
-#
+# TODO: THis needs to be fixed as well!!
+# Output photon_collection = {{calib.jet_collection}}
 from TauAnalysisAlgorithms.TauAnalysisSequence import makeTauAnalysisSequence
 tauSequence = makeTauAnalysisSequence( 'mc', '{{calib.tau_working_point}}', postfix = '{{calib.tau_working_point}}', rerunTruthMatching=False)
 tauSequence.configure( inputName = '{{calib.tau_collection}}',
                        outputName = '{{calib.tau_collection}}_{{calib.tau_working_point}}_%SYS%' )
 calibrationAlgSeq += tauSequence
 print( tauSequence ) # For debugging
+# Output tau_collection = {{calib.tau_collection}}_{{calib.tau_working_point}}_NOSYS

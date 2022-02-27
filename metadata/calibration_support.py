@@ -1,11 +1,14 @@
 import ast
 import copy
-from pathlib import Path
-import jinja2
+import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional, Tuple, TypeVar
-from func_adl.ast.meta_data import lookup_query_metadata
+
+import jinja2
 from func_adl import ObjectStream
+from func_adl.ast.meta_data import lookup_query_metadata
+
 
 @dataclass
 class CalibrationEventConfig:
@@ -104,6 +107,7 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
     new_s = s
     j_env = template_configure()
     dependent_md_name = None
+    output_collection_name = None
     for md_name in metadata_names:
         md_template = j_env.get_template(f"{md_name}.py")
         text = md_template.render(calib=calibration_info)
@@ -119,9 +123,17 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
 
         dependent_md_name = md_name
 
+        # Have we found the output collection name?
+        found = re.search(f"# Output {collection_attr_name} = (.+)\\s", text)
+        if found is not None:
+            output_collection_name = found.group(1)
+
+    if output_collection_name is None:
+        raise RuntimeError(f"Could not find output collection name in templates for collection '{collection_attr_name} - xAOD job options templates are malformed.")
+
     # Finally, rewrite the call to fetch the collection with the actual collection name we want
     # to fetch.
     new_call = copy.copy(a)
-    new_call.args.append(ast.parse(f"'{collection_name}'").body[0].value)  # type: ignore
+    new_call.args.append(ast.parse(f"'{output_collection_name}'").body[0].value)  # type: ignore
 
     return new_s, new_call

@@ -403,6 +403,10 @@ int main(int argc, char**argv) {
         if (meta_data_itr != _g_collection_config.end()) {
             auto &&meta_data = meta_data_itr->second;
 
+            if (meta_data.method_callback.size() > 0) {
+                out << YAML::Key << "method_callback" << meta_data.method_callback;
+            }
+
             if (meta_data.parameters.size() > 0) {
                 out << YAML::Key << "parameters" << YAML::Value;
                 out << YAML::BeginSeq;
@@ -447,6 +451,18 @@ int main(int argc, char**argv) {
                 
                 out << YAML::EndSeq;
             }
+        } else {
+            // Write out the default name parameter for collections that have no actions associated
+            // with them.
+            out << YAML::Key << "parameters" << YAML::Value;
+            out << YAML::BeginSeq;
+
+            out << YAML::BeginMap;
+            out << YAML::Key << "name" << YAML::Value << "name";
+            out << YAML::Key << "type" << YAML::Value << "str";
+            out << YAML::EndMap;
+
+            out << YAML::EndSeq;
         }
 
         out << YAML::EndMap;
