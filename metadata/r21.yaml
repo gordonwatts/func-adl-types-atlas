@@ -28,79 +28,55 @@ metadata:
           - "calibrationAlgSeq += pileupSequence"
         depends_on: 
           - sys_error_tool
-  - name: jet_corrections
+  - name: common_corrections
     data:
       - metadata_type: add_job_script
-        name: jet_corrections
+        name: common_corrections
         script:
-          - "jetContainer = '{bank_name}'"
+          - "jetContainer = '{calib.jet_collection}'"
           - "from JetAnalysisAlgorithms.JetAnalysisSequence import makeJetAnalysisSequence"
           - "jetSequence = makeJetAnalysisSequence( 'mc', jetContainer)"
-          - "jetSequence.configure( inputName = jetContainer, outputName = '{bank_name}_Base_%SYS%' )"
-          - "jetSequence.JvtEfficiencyAlg.truthJetCollection = '{truth_jets}'"
-          - "jetSequence.ForwardJvtEfficiencyAlg.truthJetCollection = '{truth_jets}'"
+          - "jetSequence.configure( inputName = jetContainer, outputName = jetContainer + '_Base_%SYS%' )"
+          - "jetSequence.JvtEfficiencyAlg.truthJetCollection = '{calib.jet_calib_truth_collection}'"
+          - "jetSequence.ForwardJvtEfficiencyAlg.truthJetCollection = '{calib.jet_calib_truth_collection}'"
           - "calibrationAlgSeq += jetSequence"
           - "print( jetSequence ) # For debugging"
           - ""
           - "# Include, and then set up the jet analysis algorithm sequence:"
           - "from JetAnalysisAlgorithms.JetJvtAnalysisSequence import makeJetJvtAnalysisSequence"
           - "jvtSequence = makeJetJvtAnalysisSequence( 'mc', jetContainer, enableCutflow=True )"
-          - "jvtSequence.configure( inputName = {'jets'      : '{bank_name}_Base_%SYS%' },"
-          - "                       outputName = { 'jets'      : '{bank_name}Calib_%SYS%' },"
+          - "jvtSequence.configure( inputName = {'jets'      : jetContainer + '_Base_%SYS%' },"
+          - "                       outputName = { 'jets'      : jetContainer + 'Calib_%SYS%' },"
           - "                       )"
           - "calibrationAlgSeq += jvtSequence"
           - "print( jvtSequence ) # For debugging"
-        depends_on:
-          - 'pileup_tool'
-  - name: muon_corrections
-    data:
-      - metadata_type: add_job_script
-        name: muon_corrections
-        script:
-          - "muon_container = '{bank_name}'"
+          - "#"
+          - "muon_container = '{calib.muon_collection}'"
           - "from MuonAnalysisAlgorithms.MuonAnalysisSequence import makeMuonAnalysisSequence"
-          - "muonSequence = makeMuonAnalysisSequence('mc', workingPoint='{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
+          - "muonSequence = makeMuonAnalysisSequence('mc', workingPoint='{calib.muon_working_point}.{calib.muon_isolation}', postfix = '{calib.muon_working_point}_{calib.muon_isolation}')"
           - "muonSequence.configure( inputName = muon_container,"
-          - "                        outputName = muon_container + 'Calib_{working_point}{isolation}_%SYS%' )"
+          - "                        outputName = muon_container + 'Calib_{calib.muon_working_point}{calib.muon_isolation}_%SYS%' )"
           - "calibrationAlgSeq += muonSequence"
           - "print( muonSequence ) # For debugging"
-        depends_on:
-          - 'pileup_tool'
-  - name: photon_corrections
-    data:
-      - metadata_type: add_job_script
-        name: electron_corrections
-        script:
-          - "from EgammaAnalysisAlgorithms.PhotonAnalysisSequence import makePhotonAnalysisSequence"
-          - "photonSequence = makePhotonAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
-          - "photonSequence.configure( inputName = '{bank_name}',"
-          - "                            outputName = '{bank_name}_{working_point}_{isolation}_%SYS%' )"
-          - "calibrationAlgSeq += photonSequence"
-          - "print( photonSequence ) # For debugging"
-        depends_on:
-          - 'pileup_tool'
-  - name: electron_corrections
-    data:
-      - metadata_type: add_job_script
-        name: electron_corrections
-        script:
+          - "#"
           - "from EgammaAnalysisAlgorithms.ElectronAnalysisSequence import makeElectronAnalysisSequence"
           - "electronSequence = makeElectronAnalysisSequence( 'mc', '{working_point}.{isolation}', postfix = '{working_point}_{isolation}')"
-          - "electronSequence.configure( inputName = '{bank_name}',"
-          - "                            outputName = '{bank_name}_{working_point}_{isolation}_%SYS%' )"
+          - "electronSequence.configure( inputName = '{calib.electron_collection}',"
+          - "                            outputName = '{calib.electron_collection}_{working_point}_{isolation}_%SYS%' )"
           - "calibrationAlgSeq += electronSequence"
           - "print( electronSequence ) # For debugging"
-        depends_on:
-          - 'pileup_tool'
-  - name: tau_corrections
-    data:
-      - metadata_type: add_job_script
-        name: tau_corrections
-        script:
+          - "#"
+          - "from EgammaAnalysisAlgorithms.PhotonAnalysisSequence import makePhotonAnalysisSequence"
+          - "photonSequence = makePhotonAnalysisSequence( 'mc', '{calib.photon_working_point}.{calib.photon_isolation}', postfix = '{calib.photon_working_point}_{calib.photon_isolation}')"
+          - "photonSequence.configure( inputName = '{calib.photon_collection}',"
+          - "                            outputName = '{calib.photon_collection}_{calib.photon_working_point}_{calib.photon_isolation}_%SYS%' )"
+          - "calibrationAlgSeq += photonSequence"
+          - "print( photonSequence ) # For debugging"
+          - "#"
           - "from TauAnalysisAlgorithms.TauAnalysisSequence import makeTauAnalysisSequence"
-          - "tauSequence = makeTauAnalysisSequence( 'mc', '{working_point}', postfix = '{working_point}', rerunTruthMatching=False)"
-          - "tauSequence.configure( inputName = '{bank_name}',"
-          - "                       outputName = '{bank_name}_{working_point}_%SYS%' )"
+          - "tauSequence = makeTauAnalysisSequence( 'mc', '{calib.tau_working_point}', postfix = '{calib.tau_working_point}', rerunTruthMatching=False)"
+          - "tauSequence.configure( inputName = '{calib.tau_collection}',"
+          - "                       outputName = '{calib.tau_collection}_{calib.tau_working_point}_%SYS%' )"
           - "calibrationAlgSeq += tauSequence"
           - "print( tauSequence ) # For debugging"
         depends_on:
