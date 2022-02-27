@@ -10,14 +10,22 @@ struct helper_file {
     // Name of the file
     string name;
 
+    // Name it should be written to in the resulting output. If empty then the same thing.
+    string layout_name;
+
     // Lines to add to the init
     vector<string> init_lines;
 };
 
 // Files to add in!
 vector<helper_file> _g_helper_files {
-    { "trigger.py", {"from .trigger import tdt_chain_fired", "from .trigger import tmt_match_object"} },
-    { "type_support.py", {"from .type_support import cpp_float, cpp_double, cpp_vfloat", "from . import type_support"}}
+    { "trigger.py", "", {"from .trigger import tdt_chain_fired", "from .trigger import tmt_match_object"} },
+    { "type_support.py", "", {"from .type_support import cpp_float, cpp_double, cpp_vfloat, cpp_string", "from . import type_support"}},
+    { "calibration_support.py", "", {"from .calibration_support import CalibrationEventConfig, default_calibration"}},
+    { "r21/sys_error_tool.py", "templates/sys_error_tool.py", {}},
+    { "r21/pileup_tool.py", "templates/pileup_tool.py", {}},
+    { "r21/common_corrections.py", "templates/common_corrections.py", {}},
+    { "r21/add_calibration_to_job.py", "templates/add_calibration_to_job.py", {}},
 };
 
 const std::string WHITESPACE = " \n\r\t\f\v";
@@ -41,8 +49,14 @@ void emit_helper_files(YAML::Emitter &out)
 
         out << YAML::BeginMap;
 
+        // Name to write this as
+        auto out_name = hf.name;
+        if (hf.layout_name.size() > 0) {
+            out_name = hf.layout_name;
+        }
+
         // Header info
-        out << YAML::Key << "name" << YAML::Value << hf.name;
+        out << YAML::Key << "name" << YAML::Value << out_name;
         out << YAML::Key << "init_lines" << YAML::Value << YAML::BeginSeq;
         for (auto &&line : hf.init_lines) {
             out << line;
