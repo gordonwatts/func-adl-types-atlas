@@ -98,6 +98,27 @@ class calib_tools:
         'Return a copy of the current default calibration configuration'
         cls._setup()
         return copy.copy(cls._default_calibration)
+    
+    @classmethod
+    def query_update(cls, query: ObjectStream[T], calib_config: Optional[CalibrationEventConfig] = None, **kwargs) -> ObjectStream[T]:
+        # Get a base calibration config we can modify (e.g. a copy)
+        config = calib_config
+        if config is None:
+            config = copy.copy(lookup_query_metadata(query, 'calibration'))
+        if config is None:
+            config = cls.default_config
+
+        # Now, modify by any arguments we were given
+        for k, v in kwargs.items():
+            if hasattr(config, k):
+                setattr(config, k, v)
+            else:
+                raise ValueError(f'Unknown calibration config option: {k} in `query_update`')
+
+        # Place it in the query stream for later use
+        return query.QMetaData({
+            'calibration': config
+        })
 
 _g_jinja2_env: Optional[jinja2.Environment] = None
 
@@ -120,7 +141,9 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
     metadata_names = ["sys_error_tool", "pileup_tool", "common_corrections", "add_calibration_to_job"]
 
     # Get the most up to date configuration for this run.
-    calibration_info = calib_tools.default_config
+    calibration_info = lookup_query_metadata(s, "calibration")
+    if calibration_info is None:
+        calibration_info = calib_tools.default_config
 
     # Add an argument for the proper bank name.
     collection_name = getattr(calibration_info, collection_attr_name)
@@ -259,6 +282,27 @@ class calib_tools:
         'Return a copy of the current default calibration configuration'
         cls._setup()
         return copy.copy(cls._default_calibration)
+    
+    @classmethod
+    def query_update(cls, query: ObjectStream[T], calib_config: Optional[CalibrationEventConfig] = None, **kwargs) -> ObjectStream[T]:
+        # Get a base calibration config we can modify (e.g. a copy)
+        config = calib_config
+        if config is None:
+            config = copy.copy(lookup_query_metadata(query, 'calibration'))
+        if config is None:
+            config = cls.default_config
+
+        # Now, modify by any arguments we were given
+        for k, v in kwargs.items():
+            if hasattr(config, k):
+                setattr(config, k, v)
+            else:
+                raise ValueError(f'Unknown calibration config option: {k} in `query_update`')
+
+        # Place it in the query stream for later use
+        return query.QMetaData({
+            'calibration': config
+        })
 
 _g_jinja2_env: Optional[jinja2.Environment] = None
 
@@ -281,7 +325,9 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
     metadata_names = ["sys_error_tool", "pileup_tool", "common_corrections", "add_calibration_to_job"]
 
     # Get the most up to date configuration for this run.
-    calibration_info = calib_tools.default_config
+    calibration_info = lookup_query_metadata(s, "calibration")
+    if calibration_info is None:
+        calibration_info = calib_tools.default_config
 
     # Add an argument for the proper bank name.
     collection_name = getattr(calibration_info, collection_attr_name)
