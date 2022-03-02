@@ -4,5 +4,5 @@ from AnaAlgorithm.DualUseConfig import createService
 from AnaAlgorithm.AlgSequence import AlgSequence
 calibrationAlgSeq = AlgSequence()
 sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )
-sysService.systematicsList = ['NOSYS']
+sysService.systematicsList = ['{{ sys_error }}']
 # Add sequence to job

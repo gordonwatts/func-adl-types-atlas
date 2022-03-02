@@ -58,6 +58,8 @@ struct collection_extra {
 // Hardcode the config for ATLAS R21
 std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
+        {"calibrated_collection", "Optional[str]", "None"},
+        {"uncalibrated_collection", "Optional[str]", "None"},
         // {"name", "str", ""}        
     }, {
         // {"calibration", "str", "'NOSYS'", {
