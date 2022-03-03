@@ -55,6 +55,9 @@ class CalibrationEventConfig:
     # The working point (e.g. xxxx)
     tau_working_point: str
 
+    ###### Other Config Options
+    perform_overlap_removal: bool
+
 
 T = TypeVar('T')
 
@@ -81,6 +84,7 @@ class calib_tools:
         muon_isolation="NonIso",
         tau_collection="TauJets",
         tau_working_point="Tight",
+        perform_overlap_removal=True,
     )
 
     @classmethod
@@ -162,7 +166,8 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
     'Apply all the fixes to the collection call'
 
     collection_attr_name = "jet_collection"
-    metadata_names = ["sys_error_tool", "pileup_tool", "common_corrections", "add_calibration_to_job"]
+    metadata_names_no_overlap = ["sys_error_tool", "pileup_tool", "corrections_jet", "add_calibration_to_job"]
+    metadata_names_overlap = ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"]
 
     # Find the two arguments
     uncalibrated_bank_name = None
@@ -202,14 +207,12 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
         if calibration_info is None:
             calibration_info = calib_tools.default_config
 
-        # Add an argument for the proper bank name.
-        collection_name = getattr(calibration_info, collection_attr_name)
-
-        # Next, load up all the data for this collection.
+        # Next, load up all the meta-data for this collection.
         j_env = template_configure()
         dependent_md_name = None
         output_collection_name = None
-        for md_name in metadata_names:
+        md_to_transmit = metadata_names_overlap if calibration_info.perform_overlap_removal else metadata_names_no_overlap
+        for md_name in md_to_transmit:
             md_template = j_env.get_template(f"{md_name}.py")
             text = md_template.render(calib=calibration_info, sys_error=sys_error)
             md_text = {
@@ -225,7 +228,7 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
             dependent_md_name = md_name
 
             # Have we found the output collection name?
-            found = re.search(f"# Output {collection_attr_name} = (.+)\\s", text)
+            found = re.search(f"# Output {collection_attr_name} = (.+)(\\s|$)", text)
             if found is not None:
                 output_collection_name = found.group(1)
 

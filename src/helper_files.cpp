@@ -24,7 +24,12 @@ vector<helper_file> _g_helper_files {
     { "calibration_support.py", "", {"from .calibration_support import CalibrationEventConfig, calib_tools"}},
     { "r21/sys_error_tool.py", "templates/sys_error_tool.py", {}},
     { "r21/pileup_tool.py", "templates/pileup_tool.py", {}},
-    { "r21/common_corrections.py", "templates/common_corrections.py", {}},
+    { "r21/corrections_jet.py", "templates/corrections_jet.py", {}},
+    { "r21/corrections_electron.py", "templates/corrections_electron.py", {}},
+    { "r21/corrections_photon.py", "templates/corrections_photon.py", {}},
+    { "r21/corrections_muon.py", "templates/corrections_muon.py", {}},
+    { "r21/corrections_tau.py", "templates/corrections_tau.py", {}},
+    { "r21/corrections_overlap.py", "templates/corrections_overlap.py", {}},
     { "r21/add_calibration_to_job.py", "templates/add_calibration_to_job.py", {}},
 };
 
