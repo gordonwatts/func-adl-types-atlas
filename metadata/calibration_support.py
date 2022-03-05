@@ -63,13 +63,19 @@ T = TypeVar('T')
 
 
 class calib_tools:
-    # Define the default config for DAOD_PHYS and PHYSLITE
+    '''Helper functions to work with a query's calibration configuration.'''
+
     _default_calibration: Optional[CalibrationEventConfig] = None
+
     _default_sys_error: Optional[str] = 'NOSYS'
 
     @classmethod
     def reset_config(cls):
-        'Reset calibration config to base state'
+        '''Reset calibration config to the default.
+
+        * This is configured for working with R21 DAOD_PHYS samples.
+
+        '''
         cls._default_calibration = CalibrationEventConfig(
         jet_collection="AntiKt4EMPFlowJets",
         jet_calib_truth_collection="AntiKt4TruthDressedWZJets",
@@ -94,19 +100,40 @@ class calib_tools:
 
     @classmethod
     def set_default_config(cls, config: CalibrationEventConfig):
-        'Store a copy of a new default config for future use'
+        'Store a copy of a new default config for use in all future queries.'
         cls._default_calibration = copy.copy(config)
 
     @classmethod
     @property
     def default_config(cls) -> CalibrationEventConfig:
-        'Return a copy of the current default calibration configuration'
+        'Return a copy of the current default calibration configuration.'
         cls._setup()
         assert cls._default_calibration is not None
         return copy.copy(cls._default_calibration)
 
     @classmethod
     def query_update(cls, query: ObjectStream[T], calib_config: Optional[CalibrationEventConfig] = None, **kwargs) -> ObjectStream[T]:
+        '''Add metadata to a query to indicate a change in the calibration configuration for the query.
+
+        Args:
+            query (ObjectStream[T]): The query to update.
+
+            calib_config (Optional[CalibrationEventConfig]): The new calibration configuration to use. If specified
+                will override all calibration configuration options in the query.
+            
+            jet_collection, ...: Use any property name from the `CalibrationEventConfig` class to override that particular
+                options for this query. You may specify as many of them as you like.
+
+        Returns:
+            ObjectStream[T]: The updated query.
+
+        Notes:
+
+            * This function can be chained - resolution works by looking at the most recent `query_update` in the query.
+            * This function works by storing a complete `CalibrationEventConfig` object, updated as requested, in the query. So
+                even if you just update `jet_collection`, changing the `default_config` after calling this will have no effect.
+        '''
+
         # Get a base calibration config we can modify (e.g. a copy)
         config = calib_config
         if config is None:
@@ -129,20 +156,38 @@ class calib_tools:
     @classmethod
     @property
     def default_sys_error(cls) -> str:
+        '''Return the default systematic error'''
         if cls._default_sys_error is None:
             return 'NOSYS'
         return cls._default_sys_error
 
     @classmethod
     def set_default_sys_error(cls, value: str):
+        '''Set the default systematic error'''
         cls._default_sys_error = value
 
     @classmethod
     def reset_sys_error(cls):
+        '''Reset to 'NOSYS' the default systematic error'''
         cls._default_sys_error = 'NOSYS'
 
     @classmethod
     def query_sys_error(cls, query: ObjectStream[T], sys_error: str) -> ObjectStream[T]:
+        '''Add metadata to a query to indicate a change in the systematic error for the events.
+
+        Args:
+            query (ObjectStream[T]): The query to update.
+
+            sys_error (str): The systematic error to fetch. Only a single one is possible at any time. The sys error names
+                are the same as used by the common CP algorithms.
+            
+        Returns:
+            ObjectStream[T]: The updated query.
+
+        Notes:
+
+            * This function can be chained - resolution works by looking at the most recent `query_sys_error` in the query.
+        '''
         return query.QMetaData({
             'calibration_sys_error': sys_error
         })
