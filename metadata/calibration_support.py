@@ -120,7 +120,7 @@ class calib_tools:
 
             calib_config (Optional[CalibrationEventConfig]): The new calibration configuration to use. If specified
                 will override all calibration configuration options in the query.
-            
+
             jet_collection, ...: Use any property name from the `CalibrationEventConfig` class to override that particular
                 options for this query. You may specify as many of them as you like.
 
@@ -137,9 +137,7 @@ class calib_tools:
         # Get a base calibration config we can modify (e.g. a copy)
         config = calib_config
         if config is None:
-            config = copy.copy(lookup_query_metadata(query, 'calibration'))
-        if config is None:
-            config = cls.default_config
+            config = calib_tools.query_get(query)
 
         # Now, modify by any arguments we were given
         for k, v in kwargs.items():
@@ -152,6 +150,23 @@ class calib_tools:
         return query.QMetaData({
             'calibration': config
         })
+
+
+    @classmethod
+    def query_get(cls, query:ObjectStream[T]) -> CalibrationEventConfig:
+        '''Return a copy of the calibration if the query were issued at this point.
+
+        Args:
+            query (ObjectStream[T]): The query to inspect.
+
+        Returns:
+            CalibrationEventConfig: The calibration configuration for the query.
+        '''
+        r = lookup_query_metadata(query, 'calibration')
+        if r is None:
+            return calib_tools.default_config
+        else:
+            return copy.copy(r)
 
     @classmethod
     @property
@@ -180,7 +195,7 @@ class calib_tools:
 
             sys_error (str): The systematic error to fetch. Only a single one is possible at any time. The sys error names
                 are the same as used by the common CP algorithms.
-            
+
         Returns:
             ObjectStream[T]: The updated query.
 
@@ -260,9 +275,7 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call, collection_attr_name:
     else:
 
         # Get the most up to date configuration for this run.
-        calibration_info = lookup_query_metadata(new_s, "calibration")
-        if calibration_info is None:
-            calibration_info = calib_tools.default_config
+        calibration_info = calib_tools.query_get(new_s)
 
         # Next, load up all the meta-data for this collection.
         j_env = template_configure()
