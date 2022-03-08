@@ -60,50 +60,23 @@ std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
         {"calibrated_collection", "Optional[str]", "None"},
         {"uncalibrated_collection", "Optional[str]", "None"},
-        // {"name", "str", ""}        
-    }, {
-        // {"calibration", "str", "'NOSYS'", {
-        //     {"'*None*'", {}, "{bank_name}"},
-        //     {"'*Any*'", {"sys_error_tool", "pileup_tool", "jet_corrections", "add_calibration_to_job"}, "{bank_name}Calib_{calibration}"}
-        //     }
-        // },
-        // {"truth_jets", "str", "'AntiKt4TruthDressedWZJets'"},
-    }, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a)"}},
-    {"Muons", {"Muons", {}, {
-        {"calibration", "str", "'NOSYS'", {
-            {"'*None*'", {}, "{bank_name}"},
-            {"'*Any*'", {"sys_error_tool", "pileup_tool", "muon_corrections", "add_calibration_to_job"}, "{bank_name}Calib_{working_point}{isolation}_{calibration}"}
-            }
-        },
-        {"working_point", "str", "'Medium'", {}},
-        {"isolation", "str", "'NonIso'", {}}
-    }, ""}},
-    {"Electrons", {"Electrons", {}, {
-        {"calibration", "str", "'NOSYS'", {
-            {"'*None*'", {}, "{bank_name}"},
-            {"'*Any*'", {"sys_error_tool", "pileup_tool", "electron_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}_{isolation}_{calibration}"}
-            }
-        },
-        {"working_point", "str", "'MediumLHElectron'", {}},
-        {"isolation", "str", "'NonIso'", {}}
-    }, ""}},
-    {"Photons", {"Photons", {}, {
-        {"calibration", "str", "'NOSYS'", {
-            {"'*None*'", {}, "{bank_name}"},
-            {"'*Any*'", {"sys_error_tool", "pileup_tool", "photon_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}_{isolation}_{calibration}"}
-            }
-        },
-        {"working_point", "str", "'Tight'", {}},
-        {"isolation", "str", "'NonIso'", {}}
-    }, ""}},
-    {"TauJets", {"TauJets", {}, {
-        {"calibration", "str", "'NOSYS'", {
-            {"'*None*'", {}, "{bank_name}"},
-            {"'*Any*'", {"sys_error_tool", "pileup_tool", "tau_corrections", "add_calibration_to_job"}, "{bank_name}_{working_point}_{calibration}"}
-            }
-        },
-        {"working_point", "str", "'Tight'", {}},
-    }, ""}},
+    }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'jet_collection')"}},
+    {"Electrons", {"Electrons", {
+        {"calibrated_collection", "Optional[str]", "None"},
+        {"uncalibrated_collection", "Optional[str]", "None"},
+    }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'electron_collection')"}},
+    {"Muons", {"Muons", {
+        {"calibrated_collection", "Optional[str]", "None"},
+        {"uncalibrated_collection", "Optional[str]", "None"},
+    }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'muon_collection')"}},
+    {"Photons", {"Photons", {
+        {"calibrated_collection", "Optional[str]", "None"},
+        {"uncalibrated_collection", "Optional[str]", "None"},
+    }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'photon_collection')"}},
+    {"TauJets", {"TauJets", {
+        {"calibrated_collection", "Optional[str]", "None"},
+        {"uncalibrated_collection", "Optional[str]", "None"},
+    }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'tau_collection')"}},
     {"DiTauJets", {"DiTauJets", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},
