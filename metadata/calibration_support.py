@@ -207,12 +207,24 @@ def template_configure() -> jinja2.Environment:
     return _g_jinja2_env
 
 
-def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream[T], ast.Call]:
-    'Apply all the fixes to the collection call'
+_g_metadata_names_no_overlap = {
+    'jet_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "add_calibration_to_job"],
+    'electron_collection': ["sys_error_tool", "pileup_tool", "corrections_electron", "add_calibration_to_job"],
+    'muon_collection': ["sys_error_tool", "pileup_tool", "corrections_muon", "add_calibration_to_job"],
+    'photon_collection': ["sys_error_tool", "pileup_tool", "corrections_photon", "add_calibration_to_job"],
+    'tau_collection': ["sys_error_tool", "pileup_tool", "corrections_tau", "add_calibration_to_job"],
+}
 
-    collection_attr_name = "jet_collection"
-    metadata_names_no_overlap = ["sys_error_tool", "pileup_tool", "corrections_jet", "add_calibration_to_job"]
-    metadata_names_overlap = ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"]
+_g_metadata_names_overlap = {
+    'jet_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
+    'electron_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
+    'muon_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
+    'photon_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
+    'tau_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
+}
+
+def fixup_collection_call(s: ObjectStream[T], a: ast.Call, collection_attr_name: str) -> Tuple[ObjectStream[T], ast.Call]:
+    'Apply all the fixes to the collection call'
 
     # Find the two arguments
     uncalibrated_bank_name = None
@@ -256,7 +268,7 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call) -> Tuple[ObjectStream
         j_env = template_configure()
         dependent_md_name = None
         output_collection_name = None
-        md_to_transmit = metadata_names_overlap if calibration_info.perform_overlap_removal else metadata_names_no_overlap
+        md_to_transmit = _g_metadata_names_overlap[collection_attr_name] if calibration_info.perform_overlap_removal else _g_metadata_names_no_overlap[collection_attr_name]
         for md_name in md_to_transmit:
             md_template = j_env.get_template(f"{md_name}.py")
             text = md_template.render(calib=calibration_info, sys_error=sys_error)
