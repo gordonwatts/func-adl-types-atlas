@@ -77,6 +77,10 @@ std::map<std::string, collection_extra> _g_collection_config {
         {"calibrated_collection", "Optional[str]", "None"},
         {"uncalibrated_collection", "Optional[str]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'tau_collection')"}},
+    {"MissingET", {"MissingET", {
+        {"calibrated_collection", "Optional[str]", "None"},
+        {"uncalibrated_collection", "Optional[str]", "None"},
+    }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'met_collection')"}},
     {"DiTauJets", {"DiTauJets", {}, {
         {"calibration", "str", "'NOSYS'", {
             {"'*None*'", {}, "{bank_name}"},

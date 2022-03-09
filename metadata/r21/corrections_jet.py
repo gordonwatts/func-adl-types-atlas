@@ -14,4 +14,5 @@ jvtSequence.configure( inputName = {'jets'      : jetContainer + '_Base_%SYS%' }
                        )
 calibrationAlgSeq += jvtSequence
 print( jvtSequence ) # For debugging
+output_jet_container = "{{calib.jet_collection}}Calib_%SYS%"
 # Output jet_collection = {{calib.jet_collection}}Calib_{{ sys_error }}

@@ -5,4 +5,5 @@ muonSequence.configure( inputName = muon_container,
                         outputName = muon_container + 'Calib_{{calib.muon_working_point}}{{calib.muon_isolation}}_%SYS%' )
 calibrationAlgSeq += muonSequence
 print( muonSequence ) # For debugging
+output_muon_container = "{{calib.muon_collection}}Calib_{{calib.muon_working_point}}{{calib.muon_isolation}}_%SYS%"
 # Output muon_collection = {{calib.muon_collection}}Calib_{{calib.muon_working_point}}{{calib.muon_isolation}}_{{ sys_error }}

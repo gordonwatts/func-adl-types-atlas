@@ -30,6 +30,7 @@ vector<helper_file> _g_helper_files {
     { "r21/corrections_muon.py", "templates/corrections_muon.py", {}},
     { "r21/corrections_tau.py", "templates/corrections_tau.py", {}},
     { "r21/corrections_overlap.py", "templates/corrections_overlap.py", {}},
+    { "r21/corrections_met.py", "templates/corrections_met.py", {}},
     { "r21/add_calibration_to_job.py", "templates/add_calibration_to_job.py", {}},
 };
 

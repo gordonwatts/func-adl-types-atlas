@@ -228,6 +228,7 @@ _g_metadata_names_no_overlap = {
     'muon_collection': ["sys_error_tool", "pileup_tool", "corrections_muon", "add_calibration_to_job"],
     'photon_collection': ["sys_error_tool", "pileup_tool", "corrections_photon", "add_calibration_to_job"],
     'tau_collection': ["sys_error_tool", "pileup_tool", "corrections_tau", "add_calibration_to_job"],
+    'met_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_met", "add_calibration_to_job"],
 }
 
 _g_metadata_names_overlap = {
@@ -236,6 +237,7 @@ _g_metadata_names_overlap = {
     'muon_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
     'photon_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
     'tau_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_photon", "corrections_tau", "corrections_overlap", "add_calibration_to_job"],
+    'met_collection': ["sys_error_tool", "pileup_tool", "corrections_jet", "corrections_muon", "corrections_electron", "corrections_met", "add_calibration_to_job"],
 }
 
 def fixup_collection_call(s: ObjectStream[T], a: ast.Call, collection_attr_name: str) -> Tuple[ObjectStream[T], ast.Call]:
