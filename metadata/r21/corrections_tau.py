@@ -4,4 +4,5 @@ tauSequence.configure( inputName = '{{calib.tau_collection}}',
                        outputName = '{{calib.tau_collection}}_{{calib.tau_working_point}}_%SYS%' )
 calibrationAlgSeq += tauSequence
 print( tauSequence ) # For debugging
+output_tau_container = '{{calib.tau_collection}}_{{calib.tau_working_point}}_%SYS%'
 # Output tau_collection = {{calib.tau_collection}}_{{calib.tau_working_point}}_{{ sys_error }}
