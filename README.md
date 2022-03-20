@@ -13,6 +13,7 @@ As long as you have the `CMake` extension installed inside `vscode`, you'll want
 
 1. `CMake:Configure` the project
 1. `CMake:Build` the project. That last step you will need to do repeatedly. There is likely a way to automate that, but I do not know it.
+1. `CMake:Test` to run the tests. The tests tend to cover small unit tests, but you'll have to both run those and look at the output `yaml` to make sure it works as a system (see below).
 
 Running inside the container is very easy.
 
