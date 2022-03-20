@@ -1,6 +1,17 @@
 # func-adl-types-atlas
 Generate the Event Data Model and types for `func_adl` for ATLAS AnalysisBase software.
 
+## Usage
+
+Most of the time you will just want to run this on a new version of an `AnalysisBase` release. This can be done by doing the following steps:
+
+1. Clone this repo
+1. On Windows, run the PowerShell script found in the `scripts` directory: `<path-to-script>/build_xaod_edm.ps1 21.2.184 184.yaml`.
+
+The `yaml` file will be written out in your local directory and is ready for input into the `python` `func_adl` builder, `func_adl_servicex_type_generator`.
+
+The output will look very much like what you see below in the Development section, with a C++ `cmake` build preceding it.
+
 ## Development
 
 This repo is currently designed to be developed inside a container running on docker on your local machine. Everything was tailored to run under `vscode` and tested on Windows (though it should work fine for anything else).
@@ -41,3 +52,5 @@ ERROR: Cannot translate class 'mutex::native_handle_type': ROOT's type system do
 ```
 
 And you will have a giant `yaml` file containing the complete type system. That `yaml` file can be read by the type generator system.
+
+The above instructions and the Usage instructions should be enough to get you developing on platforms other than windows, with or without `vscode`. PR's welcome to add instructions on how to run on other OS's and development environments!
