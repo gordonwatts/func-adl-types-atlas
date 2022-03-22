@@ -558,6 +558,14 @@ int main(int argc, char**argv) {
     // Do the helper files
     emit_helper_files(out);
 
+    // Dump some parameters about the running.
+    out << YAML::Key << "config";
+    out << YAML::BeginMap;
+
+    out << YAML::Key << "atlas_release" << YAML::Value << getenv("AtlasVersion");
+
+    out << YAML::EndMap;
+
     out << YAML::EndMap;
 
     // Dump to the output
