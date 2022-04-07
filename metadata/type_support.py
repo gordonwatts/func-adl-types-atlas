@@ -38,6 +38,7 @@ class cpp_type(Generic[T]):
 
 
 cpp_float = cpp_type[float]("float", float)
+cpp_int = cpp_type[float]("int", int)
 cpp_double = cpp_type[float]("double", float)
 cpp_string = cpp_type[float]("std::string", float)
 cpp_vfloat = cpp_type[Iterable[float]]("float", float, "std::vector<float>")
