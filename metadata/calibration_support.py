@@ -104,7 +104,6 @@ class calib_tools:
         cls._default_calibration = copy.copy(config)
 
     @classmethod
-    @property
     def default_config(cls) -> CalibrationEventConfig:
         'Return a copy of the current default calibration configuration.'
         cls._setup()
@@ -164,12 +163,11 @@ class calib_tools:
         '''
         r = lookup_query_metadata(query, 'calibration')
         if r is None:
-            return calib_tools.default_config
+            return calib_tools.default_config()
         else:
             return copy.copy(r)
 
     @classmethod
-    @property
     def default_sys_error(cls) -> str:
         '''Return the default systematic error'''
         if cls._default_sys_error is None:
@@ -269,7 +267,7 @@ def fixup_collection_call(s: ObjectStream[T], a: ast.Call, collection_attr_name:
     # See if there is a systematic error we need to fetch
     sys_error = lookup_query_metadata(new_s, 'calibration_sys_error')
     if sys_error is None:
-        sys_error = calib_tools.default_sys_error
+        sys_error = calib_tools.default_sys_error()
 
     # Uncalibrated collection is pretty easy - nothing to do here!
     if uncalibrated_bank_name is not None:
