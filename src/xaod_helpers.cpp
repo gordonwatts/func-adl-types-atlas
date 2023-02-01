@@ -68,11 +68,11 @@ collection_info get_collection_info(const class_info &c, const vector<class_info
     // And we need to fetch the include file for the collections too.
     r.include_file = c.include_file;
 
-    // The library is just hte prefix on the include for the cpp item
+    // The library is just the prefix on the include for the cpp item
     auto cls_ptr = find_if(all_classes.begin(), all_classes.end(),
         [item](const class_info &a_class_item){return a_class_item.name == item.nickname;});
     if (cls_ptr == all_classes.end()) {
-        throw runtime_error("Cannot find class " + item.nickname + " in ROOT's class list");
+        throw runtime_error("Cannot find class " + item.nickname + " in ROOT's class list when trying to create collection " + c.name + ".");
     }
     r.link_libraries.push_back(cls_ptr->library_name);
 
@@ -87,6 +87,11 @@ collection_info get_collection_info(const class_info &c, const vector<class_info
 // See if this is a collection class or not
 bool is_xaod_collection_class(const class_info &c) {
     if (get_first_class(c, "DataVector").type_name.size() == 0)
+        return false;
+
+    // This is a xAOD collection, but not one we know how
+    // to expose.    
+    if (c.name == "DataVector<SG::AuxElement>")
         return false;
 
     return get_prefix_name(c, "Container").size() != 0;
