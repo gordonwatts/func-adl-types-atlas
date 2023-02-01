@@ -167,6 +167,14 @@ string get_include_file_for_class(const string &class_name)
         return "";
     }
     if ((c_info->GetDeclFileName() != nullptr) && c_info->GetSharedLibs() != nullptr) {
+        string shared_lib_name = clean_so_name(c_info->GetSharedLibs());
+        string decl_name = c_info->GetDeclFileName();
+        // Sometimes the library name is there already
+        //  ATLAS R21 - the library name is not in the decl name
+        //  ATLAS R22 - the library name is in the decl name
+        if (decl_name.rfind(shared_lib_name, 0) == 0) {
+            return decl_name;
+        }
         return string(clean_so_name(c_info->GetSharedLibs())) + "/" + c_info->GetDeclFileName();
     }
     return "";
@@ -275,8 +283,8 @@ class_info translate_class(const std::string &class_name)
     // Get include files associated with this class. This is quite messy, actually, because of the way
     // the modern root records where things are located, adn the fact we are dealing with typedef's.
     // In short - we have to use heuristics.
-    string include;
-    if ((include == "")) {
+    string include ("");
+    if (include == "") {
         auto dv_info = get_first_class(result, "DataVector");
         if (dv_info.nickname.size() > 0) {
             include = get_include_file_for_container(class_name, dv_info.nickname);

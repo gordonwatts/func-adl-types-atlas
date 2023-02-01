@@ -8,6 +8,7 @@ include(FetchContent)
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/075810f7a20405ea09a93f68847d6e963212fa62.zip
+#  DOWNLOAD_EXTRACT_TIMESTAMP TRUE - Needed to suppress warning in R21
 )
 FetchContent_MakeAvailable(googletest)
 
@@ -19,6 +20,7 @@ include(FetchContent)
 FetchContent_Declare(
   yaml-cpp
   URL https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip
+#  DOWNLOAD_EXTRACT_TIMESTAMP TRUE - Needed to suppress arning in R22
 )
 FetchContent_MakeAvailable(yaml-cpp)
 
