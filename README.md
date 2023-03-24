@@ -24,7 +24,9 @@ As long as you have the `CMake` extension installed inside `vscode`, you'll want
 
 1. `CMake:Configure` the project
 1. `CMake:Build` the project. That last step you will need to do repeatedly. There is likely a way to automate that, but I do not know it.
-1. `CMake:Test` to run the tests. The tests tend to cover small unit tests, but you'll have to both run those and look at the output `yaml` to make sure it works as a system (see below).
+1. `CMake:Run Tests` to run the tests. The tests tend to cover small unit tests, but you'll have to both run those and look at the output `yaml` to make sure it works as a system (see below).
+
+If you change docker containers, make sure to delete the folders `Testing` and `build` from the source directory structure! Otherwise, `cmake` will get very confused between releases!
 
 Running inside the container is very easy.
 
@@ -54,3 +56,9 @@ ERROR: Cannot translate class 'mutex::native_handle_type': ROOT's type system do
 And you will have a giant `yaml` file containing the complete type system. That `yaml` file can be read by the type generator system.
 
 The above instructions and the Usage instructions should be enough to get you developing on platforms other than windows, with or without `vscode`. PR's welcome to add instructions on how to run on other OS's and development environments!
+
+## Supported Releases
+
+* ATLAS AnalysisBase Containers
+    * R21 Series
+    * R22 Series

@@ -119,4 +119,6 @@ CPack*
 DartConfiguration.tcl
 test.txt
 test1.txt
+test1.yaml
+test.yaml
 Testing/
