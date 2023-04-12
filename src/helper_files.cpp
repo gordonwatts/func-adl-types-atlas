@@ -22,16 +22,16 @@ vector<helper_file> _g_helper_files {
     { "trigger.py", "", {"from .trigger import tdt_chain_fired", "from .trigger import tmt_match_object"} },
     { "type_support.py", "", {"from .type_support import cpp_float, cpp_double, cpp_vfloat, cpp_string, cpp_int", "from . import type_support"}},
     { "calibration_support.py", "", {"from .calibration_support import CalibrationEventConfig, calib_tools"}},
-    { "r21/sys_error_tool.py", "templates/sys_error_tool.py", {}},
-    { "r21/pileup_tool.py", "templates/pileup_tool.py", {}},
-    { "r21/corrections_jet.py", "templates/corrections_jet.py", {}},
-    { "r21/corrections_electron.py", "templates/corrections_electron.py", {}},
-    { "r21/corrections_photon.py", "templates/corrections_photon.py", {}},
-    { "r21/corrections_muon.py", "templates/corrections_muon.py", {}},
-    { "r21/corrections_tau.py", "templates/corrections_tau.py", {}},
-    { "r21/corrections_overlap.py", "templates/corrections_overlap.py", {}},
-    { "r21/corrections_met.py", "templates/corrections_met.py", {}},
-    { "r21/add_calibration_to_job.py", "templates/add_calibration_to_job.py", {}},
+    { "sys_error_tool.py", "templates/sys_error_tool.py", {}},
+    { "pileup_tool.py", "templates/pileup_tool.py", {}},
+    { "corrections_jet.py", "templates/corrections_jet.py", {}},
+    { "corrections_electron.py", "templates/corrections_electron.py", {}},
+    { "corrections_photon.py", "templates/corrections_photon.py", {}},
+    { "corrections_muon.py", "templates/corrections_muon.py", {}},
+    { "corrections_tau.py", "templates/corrections_tau.py", {}},
+    { "corrections_overlap.py", "templates/corrections_overlap.py", {}},
+    { "corrections_met.py", "templates/corrections_met.py", {}},
+    { "add_calibration_to_job.py", "templates/add_calibration_to_job.py", {}},
 };
 
 const std::string WHITESPACE = " \n\r\t\f\v";
@@ -43,7 +43,7 @@ std::string rtrim(const std::string &s)
 }
 
 // Write out all helper information.
-void emit_helper_files(YAML::Emitter &out)
+void emit_helper_files(YAML::Emitter &out, const metadata_file_finder &finder)
 {
     bool header_written = false;
     for (auto &&hf : _g_helper_files)
@@ -70,7 +70,7 @@ void emit_helper_files(YAML::Emitter &out)
         out << YAML::EndSeq;
 
         // Now file contents
-        ifstream file_contents("metadata/" + hf.name);
+        ifstream file_contents(finder(hf.name));
         string line;
         out << YAML::Key << "contents" << YAML::Value << YAML::BeginSeq;
         if (!file_contents.is_open()) {

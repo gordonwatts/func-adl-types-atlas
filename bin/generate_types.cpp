@@ -12,6 +12,7 @@
 #include "xaod_helpers.hpp"
 #include "collections_info.hpp"
 #include "helper_files.hpp"
+#include "metadata_file_finder.hpp"
 
 #include "TSystem.h"
 #include "TROOT.h"
@@ -556,7 +557,8 @@ int main(int argc, char**argv) {
     out << YAML::EndSeq;
 
     // Do the helper files
-    emit_helper_files(out);
+    metadata_file_finder m_finder ("21");
+    emit_helper_files(out, m_finder);
 
     // Dump some parameters about the running.
     out << YAML::Key << "config";
@@ -572,7 +574,7 @@ int main(int argc, char**argv) {
     cout << out.c_str() << endl;
 
     // Next, append the metadata file onto the end of this
-    fstream metadata_in("metadata/r21.yaml");
+    fstream metadata_in(m_finder("extra_metadata.yaml"));
     const int buf_size = 4096;
     char buf[buf_size];
     do {
