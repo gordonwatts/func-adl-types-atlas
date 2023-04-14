@@ -22,6 +22,7 @@ vector<helper_file> _g_helper_files {
     { "trigger.py", "", {"from .trigger import tdt_chain_fired", "from .trigger import tmt_match_object"} },
     { "type_support.py", "", {"from .type_support import cpp_float, cpp_double, cpp_vfloat, cpp_string, cpp_int", "from . import type_support"}},
     { "calibration_support.py", "", {"from .calibration_support import CalibrationEventConfig, calib_tools"}},
+    { "metadata_for_collections.py", "", {}},
     { "sys_error_tool.py", "templates/sys_error_tool.py", {}},
     { "pileup_tool.py", "templates/pileup_tool.py", {}},
     { "corrections_jet.py", "templates/corrections_jet.py", {}},

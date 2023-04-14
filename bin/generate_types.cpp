@@ -557,14 +557,15 @@ int main(int argc, char**argv) {
     out << YAML::EndSeq;
 
     // Do the helper files
-    metadata_file_finder m_finder ("21");
+    string atlas_release (getenv("AtlasVersion"));
+    metadata_file_finder m_finder (atlas_release);
     emit_helper_files(out, m_finder);
 
     // Dump some parameters about the running.
     out << YAML::Key << "config";
     out << YAML::BeginMap;
 
-    out << YAML::Key << "atlas_release" << YAML::Value << getenv("AtlasVersion");
+    out << YAML::Key << "atlas_release" << YAML::Value << atlas_release;
 
     out << YAML::EndMap;
 
