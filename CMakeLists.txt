@@ -42,27 +42,30 @@ add_library(wraper_generators
             src/metadata_file_finder.cpp
             src/translate.cpp
             )
-target_link_libraries(wraper_generators ROOT::Core yaml-cpp)
+target_link_libraries(wraper_generators ROOT::Core yaml-cpp stdc++fs)
 
 # Tests
 add_executable(t_type_helpers tests/t_type_helpers.cpp)
-target_link_libraries(t_type_helpers wraper_generators gtest_main)
+target_link_libraries(t_type_helpers wraper_generators gtest_main stdc++fs)
 add_executable(t_xaod_helpers tests/t_xaod_helpers.cpp)
-target_link_libraries(t_xaod_helpers wraper_generators gtest_main)
+target_link_libraries(t_xaod_helpers wraper_generators gtest_main stdc++fs)
 add_executable(t_class_info tests/t_class_info.cpp)
-target_link_libraries(t_class_info wraper_generators gtest_main)
+target_link_libraries(t_class_info wraper_generators gtest_main stdc++fs)
 add_executable(t_translate tests/t_translate.cpp)
-target_link_libraries(t_translate wraper_generators gtest_main)
+target_link_libraries(t_translate wraper_generators gtest_main stdc++fs)
+add_executable(t_metadata_file_finder tests/t_metadata_file_finder.cpp)
+target_link_libraries(t_metadata_file_finder wraper_generators gtest_main stdc++fs)
 
 include(GoogleTest)
 gtest_discover_tests(t_type_helpers)
 gtest_discover_tests(t_xaod_helpers)
 gtest_discover_tests(t_class_info)
 gtest_discover_tests(t_translate)
+gtest_discover_tests(t_metadata_file_finder)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)
-target_link_libraries(generate_types ROOT::Core wraper_generators Boost::program_options)
+target_link_libraries(generate_types ROOT::Core wraper_generators Boost::program_options stdc++fs)
 
 # Some definitions for CPACK (incase we need those eventually)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
