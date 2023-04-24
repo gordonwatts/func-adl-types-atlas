@@ -158,5 +158,6 @@
         "Virt",
         "Wbox",
         "Yvector"
-    ]
+    ],
+    "restructuredtext.preview.docutils.disabled": true
 }
