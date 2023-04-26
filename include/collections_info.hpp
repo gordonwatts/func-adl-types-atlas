@@ -59,27 +59,27 @@ struct collection_extra {
 std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
         {"collection", "Optional[str]", "None"},
-        {"calibrate", "Optional[bool]", "None"},
+        {"calibrate", "Optional[bool]", "True"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'jet_collection')"}},
     {"Electrons", {"Electrons", {
         {"collection", "Optional[str]", "None"},
-        {"calibrate", "Optional[bool]", "None"},
+        {"calibrate", "Optional[bool]", "True"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'electron_collection')"}},
     {"Muons", {"Muons", {
         {"collection", "Optional[str]", "None"},
-        {"calibrate", "Optional[bool]", "None"},
+        {"calibrate", "Optional[bool]", "True"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'muon_collection')"}},
     {"Photons", {"Photons", {
         {"collection", "Optional[str]", "None"},
-        {"calibrate", "Optional[bool]", "None"},
+        {"calibrate", "Optional[bool]", "True"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'photon_collection')"}},
     {"TauJets", {"TauJets", {
         {"collection", "Optional[str]", "None"},
-        {"calibrate", "Optional[bool]", "None"},
+        {"calibrate", "Optional[bool]", "True"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'tau_collection')"}},
     {"MissingET", {"MissingET", {
         {"collection", "Optional[str]", "None"},
-        {"calibrate", "Optional[bool]", "None"},
+        {"calibrate", "Optional[bool]", "True"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'met_collection')"}},
     {"DiTauJets", {"DiTauJets", {}, {
         {"calibration", "str", "'NOSYS'", {

@@ -262,14 +262,16 @@ def fixup_collection_call(
     if sys_error is None:
         sys_error = calib_tools.default_sys_error
 
+    # Make sure the bank name is set properly (or defaulted)
+    calibration_info = calib_tools.query_get(new_s)
+    if bank_name is None:
+        bank_name = calibration_info.jet_collection
+
     # Uncalibrated collection is pretty easy - nothing to do here!
     if not calibrate:
         output_collection_name = bank_name
     else:
-        # Going to have to run calibrations
-        calibration_info = calib_tools.query_get(new_s)
-
-        # Next, load up all the meta-data for this collection.
+        # Going to have to run calibrations, so load up the meta-data
         j_env = template_configure()
         dependent_md_name = None
         output_collection_name = None
@@ -301,7 +303,7 @@ def fixup_collection_call(
     if output_collection_name is None:
         raise RuntimeError(
             "Could not find output collection name in templates for collection"
-            f" '{collection_attr_name} - xAOD job options templates are malformed."
+            f" '{collection_attr_name}' - xAOD job options templates are malformed."
         )
 
     # Finally, rewrite the call to fetch the collection with the actual collection name
