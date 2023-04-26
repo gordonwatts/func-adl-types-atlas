@@ -9,7 +9,10 @@ import jinja2
 from func_adl import ObjectStream
 from func_adl.ast.meta_data import lookup_query_metadata
 
-from metadata_for_collections import g_metadata_names_no_overlap, g_metadata_names_overlap
+from .metadata_for_collections import (
+    g_metadata_names_no_overlap,
+    g_metadata_names_overlap,
+)
 
 
 @dataclass
@@ -227,6 +230,7 @@ def template_configure() -> jinja2.Environment:
         loader = jinja2.FileSystemLoader(str(template_path))
         _g_jinja2_env = jinja2.Environment(loader=loader)
     return _g_jinja2_env
+
 
 def fixup_collection_call(
     s: ObjectStream[T], a: ast.Call, collection_attr_name: str
