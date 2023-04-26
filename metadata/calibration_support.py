@@ -238,31 +238,24 @@ def fixup_collection_call(
     "Apply all the fixes to the collection call"
 
     # Find the two arguments
-    uncalibrated_bank_name = None
-    calibrated_bank_name = None
+    bank_name = None
+    calibrate = None
 
     if len(a.args) >= 1:
-        calibrated_bank_name = ast.literal_eval(a.args[0])
+        bank_name = ast.literal_eval(a.args[0])
 
     if len(a.args) >= 2:
-        uncalibrated_bank_name = ast.literal_eval(a.args[1])
+        calibrate = ast.literal_eval(a.args[1])
 
     for arg in a.keywords:
-        if arg.arg == "calibrated_collection":
-            calibrated_bank_name = ast.literal_eval(arg.value)
-        if arg.arg == "uncalibrated_collection":
-            uncalibrated_bank_name = ast.literal_eval(arg.value)
-
-    if uncalibrated_bank_name is not None and calibrated_bank_name is not None:
-        raise ValueError(
-            "Illegal to specify both `calibrated_collection` and `uncalibrated_collection` when accessing `collection_attr_name`."
-        )
+        if arg.arg == "collection":
+            bank_name = ast.literal_eval(arg.value)
+        if arg.arg == "calibrate":
+            calibrate = ast.literal_eval(arg.value)
 
     new_s = s
-    if calibrated_bank_name is not None:
-        new_s = calib_tools.query_update(
-            new_s, **{collection_attr_name: calibrated_bank_name}
-        )
+    if bank_name is not None:
+        new_s = calib_tools.query_update(new_s, **{collection_attr_name: bank_name})
 
     # See if there is a systematic error we need to fetch
     sys_error = lookup_query_metadata(new_s, "calibration_sys_error")
@@ -270,10 +263,10 @@ def fixup_collection_call(
         sys_error = calib_tools.default_sys_error
 
     # Uncalibrated collection is pretty easy - nothing to do here!
-    if uncalibrated_bank_name is not None:
-        output_collection_name = uncalibrated_bank_name
+    if not calibrate:
+        output_collection_name = bank_name
     else:
-        # Get the most up to date configuration for this run.
+        # Going to have to run calibrations
         calibration_info = calib_tools.query_get(new_s)
 
         # Next, load up all the meta-data for this collection.
@@ -307,11 +300,12 @@ def fixup_collection_call(
 
     if output_collection_name is None:
         raise RuntimeError(
-            f"Could not find output collection name in templates for collection '{collection_attr_name} - xAOD job options templates are malformed."
+            "Could not find output collection name in templates for collection"
+            f" '{collection_attr_name} - xAOD job options templates are malformed."
         )
 
-    # Finally, rewrite the call to fetch the collection with the actual collection name we want
-    # to fetch.
+    # Finally, rewrite the call to fetch the collection with the actual collection name
+    # we want to fetch.
     new_call = copy.copy(a)
     new_call.args = [ast.parse(f"'{output_collection_name}'").body[0].value]  # type: ignore
 

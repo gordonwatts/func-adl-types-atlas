@@ -58,28 +58,28 @@ struct collection_extra {
 // Hardcode the config for ATLAS R21
 std::map<std::string, collection_extra> _g_collection_config {
     {"Jets", {"Jets", {
-        {"calibrated_collection", "Optional[str]", "None"},
-        {"uncalibrated_collection", "Optional[str]", "None"},
+        {"collection", "Optional[str]", "None"},
+        {"calibrate", "Optional[bool]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'jet_collection')"}},
     {"Electrons", {"Electrons", {
-        {"calibrated_collection", "Optional[str]", "None"},
-        {"uncalibrated_collection", "Optional[str]", "None"},
+        {"collection", "Optional[str]", "None"},
+        {"calibrate", "Optional[bool]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'electron_collection')"}},
     {"Muons", {"Muons", {
-        {"calibrated_collection", "Optional[str]", "None"},
-        {"uncalibrated_collection", "Optional[str]", "None"},
+        {"collection", "Optional[str]", "None"},
+        {"calibrate", "Optional[bool]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'muon_collection')"}},
     {"Photons", {"Photons", {
-        {"calibrated_collection", "Optional[str]", "None"},
-        {"uncalibrated_collection", "Optional[str]", "None"},
+        {"collection", "Optional[str]", "None"},
+        {"calibrate", "Optional[bool]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'photon_collection')"}},
     {"TauJets", {"TauJets", {
-        {"calibrated_collection", "Optional[str]", "None"},
-        {"uncalibrated_collection", "Optional[str]", "None"},
+        {"collection", "Optional[str]", "None"},
+        {"calibrate", "Optional[bool]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'tau_collection')"}},
     {"MissingET", {"MissingET", {
-        {"calibrated_collection", "Optional[str]", "None"},
-        {"uncalibrated_collection", "Optional[str]", "None"},
+        {"collection", "Optional[str]", "None"},
+        {"calibrate", "Optional[bool]", "None"},
     }, {}, "lambda s, a: {{package_name}}.calibration_support.fixup_collection_call(s, a, 'met_collection')"}},
     {"DiTauJets", {"DiTauJets", {}, {
         {"calibration", "str", "'NOSYS'", {
