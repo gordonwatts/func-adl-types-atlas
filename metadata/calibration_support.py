@@ -1,71 +1,23 @@
 import ast
 import copy
+import logging
 import re
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Tuple, TypeVar
+from typing import Dict, Optional, Tuple, TypeVar
 
 import jinja2
 from func_adl import ObjectStream
 from func_adl.ast.meta_data import lookup_query_metadata
+from .default_calibration_config import (
+    default_calibration_config,
+    default_calibration_name,
+)
+from .calibration_event_config import CalibrationEventConfig
 
 from .metadata_for_collections import (
     g_metadata_names_no_overlap,
     g_metadata_names_overlap,
 )
-
-
-@dataclass
-class CalibrationEventConfig:
-    # Name of the jet collection to calibrate and use by default
-    jet_collection: str
-
-    # Name of the truth jets to be used for the jet calibration
-    jet_calib_truth_collection: str
-
-    ########### Electrons
-    # Name of the electron collection to calibrate and use by default
-    electron_collection: str
-
-    # The working point (e.g. xxx)
-    electron_working_point: str
-
-    # The isolation (e.g. xxxx)
-    electron_isolation: str
-
-    ########### Photons
-    # Name of the photon collection to calibrate and use by default.
-    photon_collection: str
-
-    # The working point (e.g. xxx)
-    photon_working_point: str
-
-    # The isolation (e.g. xxxx)
-    photon_isolation: str
-
-    ########### Muons
-    # Name of the muon collection to calibration and use by default.
-    muon_collection: str
-
-    # The working point (e.g. xxx)
-    muon_working_point: str
-
-    # The isolation (e.g. xxxx)
-    muon_isolation: str
-
-    ########### Taus
-    # Name of the tau collection to calibrate and use by default.
-    tau_collection: str
-
-    # The working point (e.g. xxxx)
-    tau_working_point: str
-
-    ###### Other Config Options
-    perform_overlap_removal: bool
-
-    ###### Data Type (data, MC, etc., used for pileup, jet corrections, etc.)
-    datatype: str
-
 
 T = TypeVar("T")
 
@@ -73,7 +25,7 @@ T = TypeVar("T")
 class calib_tools:
     """Helper functions to work with a query's calibration configuration."""
 
-    _default_calibration: Optional[CalibrationEventConfig] = None
+    _default_calibration: Optional[Dict[str, CalibrationEventConfig]] = None
 
     _default_sys_error: Optional[str] = "NOSYS"
 
@@ -81,26 +33,10 @@ class calib_tools:
     def reset_config(cls):
         """Reset calibration config to the default.
 
-        * This is configured for working with R21 DAOD_PHYS samples.
+        * This is configured by release default.
 
         """
-        cls._default_calibration = CalibrationEventConfig(
-            jet_collection="AntiKt4EMPFlowJets",
-            jet_calib_truth_collection="AntiKt4TruthDressedWZJets",
-            electron_collection="Electrons",
-            electron_working_point="MediumLHElectron",
-            electron_isolation="NonIso",
-            photon_collection="Photons",
-            photon_working_point="Tight",
-            photon_isolation="FixedCutTight",
-            muon_collection="Muons",
-            muon_working_point="Medium",
-            muon_isolation="NonIso",
-            tau_collection="TauJets",
-            tau_working_point="Tight",
-            perform_overlap_removal=True,
-            datatype="mc",
-        )
+        cls._default_calibration = default_calibration_config()
 
     @classmethod
     def _setup(cls):
@@ -108,17 +44,46 @@ class calib_tools:
             cls.reset_config()
 
     @classmethod
-    def set_default_config(cls, config: CalibrationEventConfig):
-        "Store a copy of a new default config for use in all future queries."
-        cls._default_calibration = copy.copy(config)
+    def set_default_config(
+        cls, config: CalibrationEventConfig, config_name: Optional[str] = None
+    ):
+        """Store a new default config. Will be used by everyone after this.
+        It can be named - but if not the default config is over-written.
+
+        Args:
+            config (CalibrationEventConfig): The configuration to store
+            config_name (Optional[str], optional): The configuration name to
+                store this in. If none, the default one is used. Defaults to None.
+        """
+        if config_name is None:
+            config_name = default_calibration_name()
+
+        assert cls._default_calibration is not None
+        cls._default_calibration[config_name] = copy.copy(config)
 
     @classmethod
-    @property
-    def default_config(cls) -> CalibrationEventConfig:
+    def default_config(
+        cls, config_name: Optional[str] = None
+    ) -> CalibrationEventConfig:
+        """Return a copy of the current default calibration configuration.
+
+        If no name is given, then the default data format is returned.
+
+        Args:
+            config_name (Optional[str], optional): The calibration config name.
+                        Defaults to None.
+
+        Returns:
+            CalibrationEventConfig: Config for the requested name (or default one).
+        """
         "Return a copy of the current default calibration configuration."
         cls._setup()
+
+        if config_name is None:
+            config_name = default_calibration_name()
+
         assert cls._default_calibration is not None
-        return copy.copy(cls._default_calibration)
+        return copy.copy(cls._default_calibration[config_name])
 
     @classmethod
     def query_update(
@@ -127,25 +92,31 @@ class calib_tools:
         calib_config: Optional[CalibrationEventConfig] = None,
         **kwargs,
     ) -> ObjectStream[T]:
-        """Add metadata to a query to indicate a change in the calibration configuration for the query.
+        """Add metadata to a query to indicate a change in the calibration
+        configuration for the query.
 
         Args:
             query (ObjectStream[T]): The query to update.
 
-            calib_config (Optional[CalibrationEventConfig]): The new calibration configuration to use. If specified
-                will override all calibration configuration options in the query.
+            calib_config (Optional[CalibrationEventConfig]): The new calibration
+                configuration to use. If specified will override all calibration
+                configuration options in the query.
 
-            jet_collection, ...: Use any property name from the `CalibrationEventConfig` class to override that particular
-                options for this query. You may specify as many of them as you like.
+            jet_collection, ...: Use any property name from the `CalibrationEventConfig`
+                class to override that particular options for this query. You may
+                specify as many of them as you like.
 
         Returns:
             ObjectStream[T]: The updated query.
 
         Notes:
 
-            * This function can be chained - resolution works by looking at the most recent `query_update` in the query.
-            * This function works by storing a complete `CalibrationEventConfig` object, updated as requested, in the query. So
-                even if you just update `jet_collection`, changing the `default_config` after calling this will have no effect.
+            * This function can be chained - resolution works by looking at the most
+              recent `query_update` in the query.
+            * This function works by storing a complete `CalibrationEventConfig` object,
+              updated as requested, in the query. So even if you just update
+              `jet_collection`, changing the `default_config` after calling this will
+              have no effect.
         """
 
         # Get a base calibration config we can modify (e.g. a copy)
@@ -177,7 +148,13 @@ class calib_tools:
         """
         r = lookup_query_metadata(query, "calibration")
         if r is None:
-            return calib_tools.default_config
+            # Really, a user needs to be more careful!
+            logging.warning(
+                "Fetched the default calibration configuration for a query. It should "
+                "have been intentionally configured - using configuration for data "
+                "format {default_calibration_name()}"
+            )
+            return calib_tools.default_config()
         else:
             return copy.copy(r)
 
@@ -201,20 +178,23 @@ class calib_tools:
 
     @classmethod
     def query_sys_error(cls, query: ObjectStream[T], sys_error: str) -> ObjectStream[T]:
-        """Add metadata to a query to indicate a change in the systematic error for the events.
+        """Add metadata to a query to indicate a change in the systematic error for the
+        events.
 
         Args:
             query (ObjectStream[T]): The query to update.
 
-            sys_error (str): The systematic error to fetch. Only a single one is possible at any time. The sys error names
-                are the same as used by the common CP algorithms.
+            sys_error (str): The systematic error to fetch. Only a single one is
+                possible at any time. The sys error names are the same as used
+                by the common CP algorithms.
 
         Returns:
             ObjectStream[T]: The updated query.
 
         Notes:
 
-            * This function can be chained - resolution works by looking at the most recent `query_sys_error` in the query.
+            * This function can be chained - resolution works by looking at the most
+              recent `query_sys_error` in the query.
         """
         return query.QMetaData({"calibration_sys_error": sys_error})
 
