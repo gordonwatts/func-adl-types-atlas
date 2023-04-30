@@ -25,7 +25,11 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
     This is in its own file to enable changes and updates for different
     releases to be easily handled.
 
-    PHYS - for working with R21 DAOD_PHYS formats
+    PHYS - for working with R22 DAOD_PHYS formats
+    PHYSLITE - for working with R22 DOAD_PHYSLITE formats
+
+    It turns out there is no significant difference between R22 and R24,
+    so these settings also work there.
 
     Returns:
         Dict[str, CalibrationEventConfig]: The default config.
@@ -49,5 +53,24 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
             datatype="mc",
             calibrate=True,
             uncalibrated_possible=True,
-        )
+        ),
+        "PHYSLITE": CalibrationEventConfig(
+            jet_collection="AnalysisJets",
+            jet_calib_truth_collection="AntiKt4TruthDressedWZJets",
+            electron_collection="AnalysisElectrons",
+            electron_working_point="MediumLHElectron",
+            electron_isolation="NonIso",
+            photon_collection="AnalysisPhotons",
+            photon_working_point="Tight",
+            photon_isolation="FixedCutTight",
+            muon_collection="AnalysisMuons",
+            muon_working_point="Medium",
+            muon_isolation="NonIso",
+            tau_collection="AnalysisTaus",
+            tau_working_point="Tight",
+            perform_overlap_removal=True,
+            datatype="mc",
+            calibrate=False,
+            uncalibrated_possible=False,
+        ),
     }

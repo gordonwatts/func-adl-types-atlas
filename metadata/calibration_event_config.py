@@ -54,3 +54,6 @@ class CalibrationEventConfig:
 
     # ** Run calibrations by default (PHYSLITE vs PHYS)
     calibrate: bool
+
+    # ** True if we can return uncalibrated (PHYSLITE doesn't)
+    uncalibrated_possible: bool
