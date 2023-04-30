@@ -51,3 +51,6 @@ class CalibrationEventConfig:
 
     # ** Data Type (data, MC, etc., used for pileup, jet corrections, etc.)
     datatype: str
+
+    # ** Run calibrations by default (PHYSLITE vs PHYS)
+    calibrate: bool

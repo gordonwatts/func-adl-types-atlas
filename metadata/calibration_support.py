@@ -247,6 +247,10 @@ def fixup_collection_call(
     if bank_name is None:
         bank_name = calibration_info.jet_collection
 
+    # Default behavior for running calibrations
+    if calibrate is None:
+        calibrate = calibration_info.calibrate
+
     # Uncalibrated collection is pretty easy - nothing to do here!
     if not calibrate:
         output_collection_name = bank_name

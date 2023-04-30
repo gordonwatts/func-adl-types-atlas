@@ -47,5 +47,6 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
             tau_working_point="Tight",
             perform_overlap_removal=True,
             datatype="mc",
+            calibrate=True,
         )
     }
