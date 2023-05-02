@@ -250,6 +250,11 @@ def fixup_collection_call(
     # Default behavior for running calibrations
     if calibrate is None:
         calibrate = calibration_info.calibrate
+    if (not calibrate) and (not calibration_info.uncalibrated_possible):
+        raise NotImplementedError(
+            f"Requested uncalibrated {bank_name}, but that "
+            "is not possible on this dataset type"
+        )
 
     # Uncalibrated collection is pretty easy - nothing to do here!
     if not calibrate:

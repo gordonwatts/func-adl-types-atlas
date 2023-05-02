@@ -566,6 +566,14 @@ int main(int argc, char**argv) {
     out << YAML::BeginMap;
 
     out << YAML::Key << "atlas_release" << YAML::Value << atlas_release;
+    out << YAML::Key << "dataset_types" << YAML::Value;
+    out << YAML::BeginSeq;
+    out << "PHYS";
+    if (atlas_release.find("21") == string::npos) {
+        out << "PHYSLITE";
+    }
+
+    out << YAML::EndSeq;
 
     out << YAML::EndMap;
 
