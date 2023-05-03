@@ -152,7 +152,7 @@ class calib_tools:
             logging.warning(
                 "Fetched the default calibration configuration for a query. It should "
                 "have been intentionally configured - using configuration for data "
-                "format {default_calibration_name()}"
+                f"format {default_calibration_name()}"
             )
             return calib_tools.default_config()
         else:
