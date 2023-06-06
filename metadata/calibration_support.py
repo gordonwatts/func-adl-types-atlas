@@ -249,11 +249,21 @@ def fixup_collection_call(
 
     # Default behavior for running calibrations
     if calibrate is None:
-        calibrate = calibration_info.calibrate
-    if (not calibrate) and (not calibration_info.uncalibrated_possible):
+        # Force calibration code to run if we are looking at SYstematic errors unless user has requested...
+        if sys_error != "NOSYS":
+            calibrate = True
+        else:
+            calibrate = calibration_info.calibrate
+    else:
+        if (not calibrate) and (not calibration_info.uncalibrated_possible):
+            raise NotImplementedError(
+                f"Requested uncalibrated {bank_name}, but that "
+                "is not possible on this dataset type"
+            )
+    if sys_error != "NOSYS" and not calibrate:
         raise NotImplementedError(
-            f"Requested uncalibrated {bank_name}, but that "
-            "is not possible on this dataset type"
+            "Cannot request a systematic error and not have calibration run "
+            f"for {bank_name}"
         )
 
     # Uncalibrated collection is pretty easy - nothing to do here!

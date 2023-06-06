@@ -38,6 +38,7 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
         "PHYS": CalibrationEventConfig(
             jet_collection="AntiKt4EMPFlowJets",
             jet_calib_truth_collection="AntiKt4TruthDressedWZJets",
+            run_jet_ghost_muon_association=True,
             electron_collection="Electrons",
             electron_working_point="MediumLHElectron",
             electron_isolation="NonIso",
@@ -53,10 +54,12 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
             datatype="mc",
             calibrate=True,
             uncalibrated_possible=True,
+            correct_pileup=True,
         ),
         "PHYSLITE": CalibrationEventConfig(
             jet_collection="AnalysisJets",
             jet_calib_truth_collection="AntiKt4TruthDressedWZJets",
+            run_jet_ghost_muon_association=False,
             electron_collection="AnalysisElectrons",
             electron_working_point="MediumLHElectron",
             electron_isolation="NonIso",
@@ -72,5 +75,6 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
             datatype="mc",
             calibrate=False,
             uncalibrated_possible=False,
+            correct_pileup=True,
         ),
     }

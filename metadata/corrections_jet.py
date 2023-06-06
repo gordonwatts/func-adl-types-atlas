@@ -1,7 +1,13 @@
 jetContainer = "{{calib.jet_collection}}"
 from JetAnalysisAlgorithms.JetAnalysisSequence import makeJetAnalysisSequence
 
-jetSequence = makeJetAnalysisSequence("{{calib.datatype}}", jetContainer)
+# Do not run ghost muon association if you have already
+# corrected objects.
+jetSequence = makeJetAnalysisSequence(
+    "{{calib.datatype}}",
+    jetContainer,
+    runGhostMuonAssociation={{calib.run_jet_ghost_muon_association}},
+)
 jetSequence.configure(inputName=jetContainer, outputName=jetContainer + "_Base_%SYS%")
 jetSequence.JvtEfficiencyAlg.truthJetCollection = "{{calib.jet_calib_truth_collection}}"
 try:

@@ -9,6 +9,9 @@ class CalibrationEventConfig:
     # Name of the truth jets to be used for the jet calibration
     jet_calib_truth_collection: str
 
+    # SHoudl the muon ghost association run? No if this is phys lite
+    run_jet_ghost_muon_association: bool
+
     # ** Electrons
     # Name of the electron collection to calibrate and use by default
     electron_collection: str
@@ -51,6 +54,9 @@ class CalibrationEventConfig:
 
     # ** Data Type (data, MC, etc., used for pileup, jet corrections, etc.)
     datatype: str
+
+    # Perform pileup correction. Almost should do it.
+    correct_pileup: bool
 
     # ** Run calibrations by default (PHYSLITE vs PHYS)
     calibrate: bool
