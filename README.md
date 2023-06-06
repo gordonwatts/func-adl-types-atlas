@@ -1,4 +1,5 @@
 # func-adl-types-atlas
+
 Generate the Event Data Model and types for `func_adl` for ATLAS AnalysisBase software.
 
 ## Usage
@@ -60,5 +61,5 @@ The above instructions and the Usage instructions should be enough to get you de
 ## Supported Releases
 
 * ATLAS AnalysisBase Containers
-    * R21 Series
-    * R22 Series
+  * R21 Series
+  * R22 Series
