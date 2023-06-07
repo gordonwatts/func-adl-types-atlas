@@ -146,6 +146,7 @@ class calib_tools:
         Returns:
             CalibrationEventConfig: The calibration configuration for the query.
         """
+        assert query is not None, "Call to `query_get`: `query` argument is null."
         r = lookup_query_metadata(query, "calibration")
         if r is None:
             # Really, a user needs to be more careful!
