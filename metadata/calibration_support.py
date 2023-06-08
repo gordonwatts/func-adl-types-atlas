@@ -246,11 +246,12 @@ def fixup_collection_call(
     # Make sure the bank name is set properly (or defaulted)
     calibration_info = calib_tools.query_get(new_s)
     if bank_name is None:
-        bank_name = calibration_info.jet_collection
+        bank_name = getattr(calibration_info, collection_attr_name)
 
     # Default behavior for running calibrations
     if calibrate is None:
-        # Force calibration code to run if we are looking at SYstematic errors unless user has requested...
+        # Force calibration code to run if we are looking at SYstematic errors unless
+        # user has requested...
         if sys_error != "NOSYS":
             calibrate = True
         else:
@@ -309,6 +310,8 @@ def fixup_collection_call(
     # Finally, rewrite the call to fetch the collection with the actual collection name
     # we want to fetch.
     new_call = copy.copy(a)
-    new_call.args = [ast.parse(f"'{output_collection_name}'").body[0].value]  # type: ignore
+    new_call.args = [
+        ast.parse(f"'{output_collection_name}'").body[0].value
+    ]  # type: ignore
 
     return new_s, new_call
