@@ -231,8 +231,10 @@ def fixup_collection_call(
     for arg in a.keywords:
         if arg.arg == "collection":
             bank_name = ast.literal_eval(arg.value)
-        if arg.arg == "calibrate":
+        elif arg.arg == "calibrate":
             calibrate = ast.literal_eval(arg.value)
+        else:
+            raise TypeError(f'Unknown argument "{arg.arg}" to collection call.')
 
     new_s = s
     if bank_name is not None:
@@ -250,7 +252,7 @@ def fixup_collection_call(
 
     # Default behavior for running calibrations
     if calibrate is None:
-        # Force calibration code to run if we are looking at SYstematic errors unless
+        # Force calibration code to run if we are looking at systematic errors unless
         # user has requested...
         if sys_error != "NOSYS":
             calibrate = True
