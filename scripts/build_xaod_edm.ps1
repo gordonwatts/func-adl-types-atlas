@@ -27,10 +27,10 @@ Docker must be installed.
 .Link
 https://github.com/gordonwatts/func-adl-types-atlas
 #> 
-# Param (
-#     [Parameter(Mandatory = $true)][string]$release,
-#     [Parameter(Mandatory = $true)][string]$outputfile
-# )
+Param (
+    [Parameter(Mandatory = $true)][string]$release,
+    [Parameter(Mandatory = $true)][string]$outputfile
+)
 Write-Host "Script is getting started"
 $ErrorActionPreference = "Stop"
 
@@ -45,6 +45,6 @@ $resolvedOutputFileName = Split-Path -Leaf $resolvedOutputFile
 
 # Do the work inside the container
 Write-Host "Building yaml file for release ${release}"
-# docker run --rm --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
+docker run --rm --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
 Write-Host "$?"
 Write-Host "Done building yaml file for release ${release}"
