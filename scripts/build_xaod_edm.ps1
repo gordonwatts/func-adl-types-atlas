@@ -27,12 +27,13 @@ Docker must be installed.
 .Link
 https://github.com/gordonwatts/func-adl-types-atlas
 #> 
-Param (
-    [Parameter(Mandatory = $true)][string]$release,
-    [Parameter(Mandatory = $true)][string]$outputfile
-)
+# Param (
+#     [Parameter(Mandatory = $true)][string]$release,
+#     [Parameter(Mandatory = $true)][string]$outputfile
+# )
 Write-Host "Script is getting started"
 $ErrorActionPreference = "Stop"
+fork it over
 
 # Get location of script so we can find the github repo clone.
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
