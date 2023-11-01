@@ -31,20 +31,22 @@ Param (
     [Parameter(Mandatory = $true)][string]$release,
     [Parameter(Mandatory = $true)][string]$outputfile
 )
-Write-Host "Script is getting started"
-$ErrorActionPreference = "Stop"
 
 # Get location of script so we can find the github repo clone.
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $repoPath = Split-Path -Parent $scriptPath
+Write-Host "Using repo path: $repoPath"
 
 # And output file should be written to the output directory
 $resolvedOutputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($outputfile)
 $resolvedOutputFileDir = Split-Path -Parent $resolvedOutputFile
+Write-Host "Writing output to directory: $resolvedOutputFileDir"
 $resolvedOutputFileName = Split-Path -Leaf $resolvedOutputFile
+Write-Host "Writing output to file: $resolvedOutputFileName"
 
 # Do the work inside the container
-Write-Host "Building yaml file for release ${release}"
+Write-Host "docker run --rm --mount type=bind,source=${repoPath},target=/func_adl_xaod_types --mount type=bind,source=${resolvedOutputFileDir},target=/output gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c /func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
 docker run --rm --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
-Write-Host "$?"
-Write-Host "Done building yaml file for release ${release}"
+if (-not $?) {
+    throw "Failed to run docker container!"
+}
