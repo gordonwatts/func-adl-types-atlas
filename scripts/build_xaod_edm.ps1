@@ -42,4 +42,7 @@ $resolvedOutputFileDir = Split-Path -Parent $resolvedOutputFile
 $resolvedOutputFileName = Split-Path -Leaf $resolvedOutputFile
 
 # Do the work inside the container
+Write-Host "Building yaml file for release ${release}"
 docker run --rm -it --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
+Write-Host "$?"
+Write-Host "Done building yaml file for release ${release}"
