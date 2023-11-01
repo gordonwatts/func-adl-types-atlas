@@ -42,9 +42,4 @@ $resolvedOutputFileDir = Split-Path -Parent $resolvedOutputFile
 $resolvedOutputFileName = Split-Path -Leaf $resolvedOutputFile
 
 # Do the work inside the container
-try {
-    $output = & docker run --rm -it --mount type=bind, source=${repoPath}, target=/func_adl_xaod_types --mount type=bind, source=${resolvedOutputFileDir}, target=/output gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}" 2>&1
-}
-catch {
-    throw "DOcker command failed with error: $_ (($output))"
-}
+docker run --rm -it --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
