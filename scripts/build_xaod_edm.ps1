@@ -31,6 +31,8 @@ Param (
     [Parameter(Mandatory = $true)][string]$release,
     [Parameter(Mandatory = $true)][string]$outputfile
 )
+Write-Host "Script is getting started"
+$ErrorActionPreference = "Stop"
 
 # Get location of script so we can find the github repo clone.
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
