@@ -50,7 +50,7 @@ function ConvertTo-LinuxLineEndings {
         [Parameter(Mandatory = $true)][string]$path
     )
     $content = Get-Content -Raw -Path $path
-    $content = $content -replace "`r`n", "`n"
+    $content = $content -replace "`r", ""
     Set-Content -Path $path -Value $content
 }
 ConvertTo-LinuxLineEndings "$repoPath/scripts/build_run_incontainer.sh"
