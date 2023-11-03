@@ -25,3 +25,4 @@ cmake --build .
 # And run everything
 cd ..
 scripts/run_on_atlas_containers.sh > /output/$1
+# End of junk.sh
