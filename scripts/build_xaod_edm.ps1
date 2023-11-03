@@ -57,7 +57,7 @@ ConvertTo-LinuxLineEndings "$repoPath/scripts/build_run_incontainer.sh"
 
 # Do the work inside the container
 Write-Host "docker run --rm --mount type=bind,source=${repoPath},target=/func_adl_xaod_types --mount type=bind,source=${resolvedOutputFileDir},target=/output gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c /func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
-docker run --rm --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
+docker run --rm --mount "type=bind,source=${resolvedOutputFileDir},target=/output" --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
 if (-not $?) {
     throw "Failed to run docker container!"
 }
