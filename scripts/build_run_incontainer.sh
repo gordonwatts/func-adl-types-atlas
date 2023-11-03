@@ -1,5 +1,8 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+p_base="$DIR/.."
+
 # Setup the release
 source ~/release_setup.sh
 
@@ -8,13 +11,13 @@ source ~/release_setup.sh
 # do development
 mkdir ~/builder
 cd ~/builder
-cp /func_adl_xaod_types/CMakeLists.txt ~/builder
-cp -r /func_adl_xaod_types/bin ~/builder
-cp -r /func_adl_xaod_types/include ~/builder
-cp -r /func_adl_xaod_types/scripts ~/builder
-cp -r /func_adl_xaod_types/metadata ~/builder
-cp -r /func_adl_xaod_types/src ~/builder
-cp -r /func_adl_xaod_types/tests ~/builder
+cp $p_base/CMakeLists.txt ~/builder
+cp -r $p_base/bin ~/builder
+cp -r $p_base/include ~/builder
+cp -r $p_base/scripts ~/builder
+cp -r $p_base/metadata ~/builder
+cp -r $p_base/src ~/builder
+cp -r $p_base/tests ~/builder
 
 # Configure and build the code
 mkdir build
@@ -24,5 +27,5 @@ cmake --build .
 
 # And run everything
 cd ..
-scripts/run_on_atlas_containers.sh > /output/$1
+scripts/run_on_atlas_containers.sh > /workdir/output/$1
 # End of junk.sh

@@ -18,15 +18,15 @@ def build_xaod_edm(release: str, output_file: Path):
     # 1. the path to the package inside the container
     # 2. the path to the output file inside the container
     # These are used in the `docker run` command below.
-    package_path_binding = f"{package_path}:/func_adl_xaod_types"
-    output_dir_binding = f"{output_dir}:/output"
+    package_path_binding = f"{package_path}:/workdir/func_adl_xaod_types"
+    output_dir_binding = f"{output_dir}:/workdir/output"
 
     # And the image name to build the container
     image_name = f"gitlab-registry.cern.ch/atlas/athena/analysisbase:{release}"
 
     # And the bash command to run inside the container
     bash_cmd = (
-        'bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh '
+        'bash -c "/workdir/func_adl_xaod_types/scripts/build_run_incontainer.sh '
         f'{output_name}"'
     )
 
