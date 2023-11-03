@@ -26,8 +26,8 @@ def build_xaod_edm(release: str, output_file: Path):
 
     # And the bash command to run inside the container
     bash_cmd = (
-        'bash -c "/workdir/func_adl_xaod_types/scripts/build_run_incontainer.sh '
-        f'{output_name}"'
+        "bash /workdir/func_adl_xaod_types/scripts/build_run_incontainer.sh "
+        f"{output_name}"
     )
 
     # And build the docker command and run it.
@@ -35,7 +35,6 @@ def build_xaod_edm(release: str, output_file: Path):
         f"docker run --rm -v {package_path_binding} -v {output_dir_binding}"
         f" {image_name} {bash_cmd}"
     )
-    print(docker_cmd)
     return os.system(docker_cmd)
 
 
