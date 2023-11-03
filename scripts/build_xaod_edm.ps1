@@ -44,6 +44,17 @@ Write-Host "Writing output to directory: $resolvedOutputFileDir"
 $resolvedOutputFileName = Split-Path -Leaf $resolvedOutputFile
 Write-Host "Writing output to file: $resolvedOutputFileName"
 
+# Make sure the script has linux line-endings, or it will fail!
+function ConvertTo-LinuxLineEndings {
+    param (
+        [Parameter(Mandatory = $true)][string]$path
+    )
+    $content = Get-Content -Raw -Path $path
+    $content = $content -replace "`r`n", "`n"
+    Set-Content -Path $path -Value $content
+}
+ConvertTo-LinuxLineEndings "$repoPath/scripts/build_run_incontainer.sh"
+
 # Do the work inside the container
 Write-Host "docker run --rm --mount type=bind,source=${repoPath},target=/func_adl_xaod_types --mount type=bind,source=${resolvedOutputFileDir},target=/output gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c /func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
 docker run --rm --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" --mount "type=bind,source=${resolvedOutputFileDir},target=/output" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
