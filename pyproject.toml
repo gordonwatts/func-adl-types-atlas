@@ -1,0 +1,22 @@
+[project]
+name = "func_adl_types_atlas"
+version = "0.1.0"
+description = "Commands for working with func_adl types in ATLAS"
+license = { text = "MIT" }
+authors = [{ name = "Gordon Watts <gwatts@uw.edu>" }]
+
+dependencies = []
+
+[project.optional-dependencies]
+test = ["black", "flake8"]
+
+[project.scripts]
+atlas_type_file_generator = "func_adl_types_atlas.build_xaod_edm:main"
+
+[tool.setuptools.packages.find]
+where = ["."] # list of folders that contain the packages (["."] by default)
+include = [
+    "func_adl_types_atlas*",
+] # package names should match these glob patterns (["*"] by default)
+exclude = [] # exclude packages matching these glob patterns (empty by default)
+namespaces = false # to disable scanning PEP 420 namespaces (true by default)

@@ -39,7 +39,7 @@ def build_xaod_edm(release: str, output_file: Path):
     return os.system(docker_cmd)
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Build XAOD EDM")
     parser.add_argument("release", type=str, help="Release version")
     parser.add_argument("output_file", type=Path, help="Output file path")
