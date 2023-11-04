@@ -3,6 +3,9 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 p_base="$DIR/.."
 
+lr -lR /workdir
+touch /workdir/output/junk.txt
+
 # Setup the release
 source ~/release_setup.sh
 
