@@ -32,5 +32,6 @@ cmake --build .
 
 # And run everything
 cd ..
+chmod a+x scripts/run_on_atlas_containers.sh
 scripts/run_on_atlas_containers.sh > /workdir/output/$1
 # End of junk.sh
