@@ -18,6 +18,8 @@ def build_xaod_edm(release: str, output_file: Path):
     # 1. the path to the package inside the container
     # 2. the path to the output file inside the container
     # These are used in the `docker run` command below.
+    # Reset the output protections - when running inside a github CI this
+    # is often too protected for other users to access.
     package_path_binding = f"{package_path}:/workdir/func_adl_xaod_types:rw"
     os.chmod(output_dir, 0o777)
     output_dir_binding = f"{output_dir}:/workdir/output:rw"
