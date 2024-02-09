@@ -58,6 +58,11 @@ struct method_info {
     std::string param_method_callback;
 };
 
+struct enum_info {
+    // The name of the enum
+    std::string name;
+};
+
 struct class_info {
     // Fully qualified C++ class name, as known to ROOT
     std::string name;
@@ -80,6 +85,9 @@ struct class_info {
 
     // Other classes this can take on a the behavior of
     std::vector<std::string> class_behaviors;
+
+    // The list of enums
+    std::vector<enum_info> enums;
 };
 
 std::ostream& operator <<(std::ostream& stream, const class_info& ci);

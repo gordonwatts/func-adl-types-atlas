@@ -95,3 +95,10 @@ TEST(t_translate, elementlink) {
     EXPECT_EQ(info.class_behaviors.size(), 1);
     EXPECT_EQ(info.class_behaviors[0], "xAOD::Jet_v1**");
 }
+
+TEST(t_translate, enum_calo) {
+    auto info = translate_class("xAOD::Jet_v1");
+
+    EXPECT_EQ(info.name, "xAOD::Jet_v1");
+    EXPECT_EQ(info.enums.size(), 1);
+}
