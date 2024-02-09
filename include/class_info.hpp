@@ -61,6 +61,9 @@ struct method_info {
 struct enum_info {
     // The name of the enum
     std::string name;
+
+    // List of the enum values
+    std::vector<std::pair<std::string, int>> values;
 };
 
 struct class_info {
