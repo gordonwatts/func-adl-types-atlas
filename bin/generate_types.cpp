@@ -515,6 +515,31 @@ int main(int argc, char**argv) {
             out << YAML::EndSeq;
         }
 
+        // Now we need to emit the enums.
+        if (c_info->second.enums.size() > 0)
+        {
+            out << YAML::Key << "enums"
+                << YAML::Value
+                << YAML::BeginSeq;
+            for (auto &&e : c_info->second.enums)
+            {
+                out << YAML::BeginMap
+                    << YAML::Key << "name" << YAML::Value << e.name
+                    << YAML::Key << "values" << YAML::Value
+                    << YAML::BeginSeq;
+                for (auto &&v : e.values)
+                {
+                    out << YAML::BeginMap
+                        << YAML::Key << "name" << YAML::Value << v.first
+                        << YAML::Key << "value" << YAML::Value << v.second
+                        << YAML::EndMap;
+                }
+                out << YAML::EndSeq
+                    << YAML::EndMap;
+            }
+            out << YAML::EndSeq;
+        }
+
         // Now we need to emit the methods.
         bool first_method = true;
         for (auto &&meth : c_info->second.methods)
