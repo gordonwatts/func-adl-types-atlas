@@ -338,7 +338,8 @@ int main(int argc, char**argv) {
     // to emit them. Cross them off the list, and another class' method is no longer interesting, in which case, that
     // has to be crossed. So we keep looping until we reach a stable set of classes.
     bool modified = true;
-    while (modified) {
+    while (modified)
+    {
         modified = false;
         set<string> bad_classes;
         for (auto &&c_name : classes_to_emit)
@@ -348,9 +349,11 @@ int main(int argc, char**argv) {
                 auto &&class_info = class_info_ptr->second;
                 if (!can_emit_any_methods(class_info.methods, classes_to_emit)) {
                     bad_classes.insert(c_name);
+                    cerr << "ERROR: Class " << c_name << " not translated: no methods to emit." << endl;
                 }
                 if (!check_template_arguments(class_info.name_as_type, classes_to_emit)) {
                     bad_classes.insert(c_name);
+                    cerr << "ERROR: Class " << c_name << " not translated: template arguments were bad." << endl;
                 }
                 if (!is_root_only_class(class_info)) {
                     bad_classes.insert(c_name);
@@ -363,7 +366,7 @@ int main(int argc, char**argv) {
             {
                 classes_to_emit.erase(b_c);
             }
-        }        
+        }
     }
 
     // Finally, go through the collections and keep only the ones where we are
@@ -569,7 +572,14 @@ int main(int argc, char**argv) {
                 }
 
                 out << YAML::EndMap;
-            }
+            } else {
+                auto method_args(referenced_types(meth));
+                cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
+                for (const auto& arg : method_args) {
+                    cerr << arg << ", ";
+                }
+                cerr << endl;
+                        }
         }
 
         if (!first_method) {
