@@ -22,7 +22,7 @@ void fixup_type_aliases(std::vector<class_info> &classes);
 // Resolve all typedefs on all types
 void fixup_type_defs(std::vector<class_info> &classes);
 
-// Return the typdefs we know about
+// Return the typedefs we know about
 std::map<std::string, std::vector<std::string>> root_typedef_map();
 
 // Return the actual name of a class, peering through all typedefs

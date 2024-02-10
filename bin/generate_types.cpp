@@ -138,7 +138,7 @@ string extract_container_iterator_type(const collection_info &c)
             break;
         
         default:
-            throw runtime_error("Do not know how to deal with the collectino of iterator type " + c.iterator_type_info.nickname);
+            throw runtime_error("Do not know how to deal with the collection of iterator type " + c.iterator_type_info.nickname);
     }
 }
 

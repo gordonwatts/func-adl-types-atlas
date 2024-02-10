@@ -97,7 +97,7 @@ bool is_good_method(const string &class_name, const TMethod *m_info, const set<s
 }
 
 ///
-// Get all publically directly inherited classes
+// Get all publicly directly inherited classes
 vector<string> inherited_public_classes(TClass *c_info) {
     auto inherited_list = c_info->GetListOfBases();
     TIter next(inherited_list);

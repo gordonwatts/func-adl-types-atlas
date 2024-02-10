@@ -38,7 +38,7 @@ TEST(t_translate, include_files_jet_container_v1) {
     EXPECT_EQ(info.include_file, "xAODJet/JetContainer.h");
 }
 
-TEST(t_translate, include_files_datavector) {
+TEST(t_translate, include_files_DataVector) {
     auto info = translate_class("DataVector<xAOD::Jet_v1>");
 
     EXPECT_EQ(info.name, "DataVector<xAOD::Jet_v1>");

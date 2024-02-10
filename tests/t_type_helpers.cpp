@@ -109,7 +109,7 @@ TEST(t_type_helpers, type_namespaced_type_twice) {
 
 
 // Simple typename qualified by namespace
-TEST(t_type_helpers, type_namespaced_burried) {
+TEST(t_type_helpers, type_namespaced_buried) {
     auto t = parse_typename("vector<std::size_t>");
 
     EXPECT_EQ(t.type_name, "vector");
@@ -151,7 +151,7 @@ TEST(t_type_helpers, type_whitespace) {
 
 
 // Simple typename qualified by namespace
-TEST(t_type_helpers, type_multple_template_args) {
+TEST(t_type_helpers, type_multiple_template_args) {
     auto t = parse_typename("vector<std::size_t, std::allocate<std::size_t>>");
 
     EXPECT_EQ(t.type_name, "vector");
@@ -394,7 +394,7 @@ TEST(t_type_helpers, unqualified_template_args_untouched_with_const) {
     EXPECT_EQ(unqualified_typename(parse_typename("vector<const int*>")), "vector<const int *>");
 }
 
-TEST(t_type_helpers, unqualified_const_datavector) {
+TEST(t_type_helpers, unqualified_const_DataVector) {
     EXPECT_EQ(unqualified_typename(parse_typename("const DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector")), "DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector");
 }
 
@@ -414,19 +414,19 @@ TEST(t_type_helpers, understood_simple_vector_no) {
     EXPECT_EQ(is_understood_type("vector<hi>", set<string>({"hit"})), false);
 }
 
-// TEST(t_type_helpers, understood_simple_datavector_yes) {
+// TEST(t_type_helpers, understood_simple_DataVector_yes) {
 //     EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hi"})), true);
 // }
 
-// TEST(t_type_helpers, understood_simple_datavector_no) {
+// TEST(t_type_helpers, understood_simple_DataVector_no) {
 //     EXPECT_EQ(is_understood_type("DataVector<hi>", set<string>({"hit"})), false);
 // }
 
-// TEST(t_type_helpers, understood_simple_elementlink_yes) {
+// TEST(t_type_helpers, understood_simple_ElementLink_yes) {
 //     EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hi"})), true);
 // }
 
-// TEST(t_type_helpers, understood_simple_elementlink_no) {
+// TEST(t_type_helpers, understood_simple_ElementLink_no) {
 //     EXPECT_EQ(is_understood_type("ElementLink<hi>", set<string>({"hit"})), false);
 // }
 
