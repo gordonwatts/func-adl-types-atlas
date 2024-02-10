@@ -84,6 +84,7 @@
         "binz",
         "Bitmask",
         "bobj",
+        "Broser",
         "buffersize",
         "Calib",
         "Calo",
@@ -133,6 +134,7 @@
         "Objlen",
         "perp",
         "pers",
+        "PHYSLITE",
         "Pixmap",
         "Prefetch",
         "Proto",
@@ -158,6 +160,7 @@
         "Vertexs",
         "Virt",
         "Wbox",
+        "ROOTCOREDIR",
         "Yvector"
     ],
     "restructuredtext.preview.docutils.disabled": true

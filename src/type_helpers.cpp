@@ -79,17 +79,17 @@ map<string, vector<string>> root_typedef_map()
 	TIter i_typedef (gROOT->GetListOfTypes(true));
 	int junk = gROOT->GetListOfTypes()->GetEntries();
 	TDataType *typedef_spec;
-    map<string, vector<string>> typdef_back_map;
+    map<string, vector<string>> typedef_back_map;
 	while ((typedef_spec = static_cast<TDataType*>(i_typedef.Next())) != 0)
 	{
 		string typedef_name = typedef_spec->GetName();
 		string base_name = typedef_spec->GetFullTypeName();
 
         if (typedef_name != base_name) {
-            typdef_back_map[base_name].push_back(typedef_name);
+            typedef_back_map[base_name].push_back(typedef_name);
         }
     }
-    return typdef_back_map;
+    return typedef_back_map;
 }
 
 map<string, string> g_typedef_map;
@@ -170,13 +170,13 @@ string resolve_typedef(const string &c_name) {
 void fixup_type_aliases(vector<class_info> &classes)
 {    
     // Build a typedef backwards mapping
-    map<string, vector<string>> typdef_back_map = root_typedef_map();
+    map<string, vector<string>> typedef_back_map = root_typedef_map();
 
     // Loop through all the classes we are looking at to see if there is an alias we should be done.
     for (auto &&c : classes)
     {
-        if (typdef_back_map.find(c.name) != typdef_back_map.end()) {
-            c.aliases = typdef_back_map[c.name];
+        if (typedef_back_map.find(c.name) != typedef_back_map.end()) {
+            c.aliases = typedef_back_map[c.name];
         }
     }
 }
@@ -198,7 +198,7 @@ void fixup_type_defs(vector<class_info> &classes)
     }
 }
 
-// Parse a horrendous typename into its various pieces.
+// Parse a horrendous C++ typename into its various pieces.
 //
 // "int"
 // class_name::size_type
@@ -598,18 +598,33 @@ typename_info py_typename(const typename_info &t)
         return result;
     }
 
-    // If this is an element link, then we need to conver this to a pointer.
+    // If this is an element link, then we need to convert this to a pointer.
     // Element links can only be taken of data vectors, and we are interested in their
     // inside type.
     if (t.type_name == "ElementLink") {
         if (t.template_arguments[0].type_name != "DataVector") {
             throw runtime_error("Found element link type, but not of a DataVector: '" + t.nickname + "'.");
         }
-        // Lift from twice deep - this is a link to a datavector.
+        // Lift from twice deep - this is a link to a DataVector.
         typename_info result = py_typename(t.template_arguments[0].template_arguments[0]);
         result.is_pointer = true;
         result.nickname = typename_cpp_string(result);
         return result;
     }
     return t;
+}
+
+// Look for all defined enums in the class and return
+// their fully qualified names
+vector<string> class_enums(const class_info &c)
+{
+    vector<string> result;
+
+    // Iterate over the enums in the class
+    for (const auto &enum_info : c.enums) {
+        // Add the fully qualified name of the enum to the result vector
+        result.push_back(unqualified_typename(c.name_as_type) + "::" + enum_info.name);
+    }
+
+    return result;
 }

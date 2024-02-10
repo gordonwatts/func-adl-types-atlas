@@ -8,6 +8,8 @@
 #include "TBaseClass.h"
 #include "TMethod.h"
 #include "TMethodArg.h"
+#include "TEnum.h"
+#include "TEnumConstant.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -95,7 +97,7 @@ bool is_good_method(const string &class_name, const TMethod *m_info, const set<s
 }
 
 ///
-// Get all publically directly inherited classes
+// Get all publicly directly inherited classes
 vector<string> inherited_public_classes(TClass *c_info) {
     auto inherited_list = c_info->GetListOfBases();
     TIter next(inherited_list);
@@ -278,6 +280,26 @@ class_info translate_class(const std::string &class_name)
             }
             seen_names.insert(method->GetName());
         }
+    }
+
+    // Get all enums
+    auto all_enums = c_info->GetListOfEnums();
+    TIter next_enum(all_enums);
+    while (auto enum_obj = static_cast<TEnum *>(next_enum()))
+    {
+        enum_info e_info;
+        e_info.name = enum_obj->GetName();
+
+        // Get all the enum values
+        auto all_values = enum_obj->GetConstants();
+        TIter next_value(all_values);
+        while (auto value = static_cast<TEnumConstant *>(next_value()))
+        {
+            e_info.values.push_back(make_pair(value->GetName(), value->GetValue()));
+        }
+
+        // Save the result!
+        result.enums.push_back(e_info);
     }
 
     // Get include files associated with this class. This is quite messy, actually, because of the way

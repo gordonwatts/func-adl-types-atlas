@@ -33,6 +33,8 @@ using namespace std;
 using namespace boost::program_options;
 
 // Return true if it is ok to emit this particular class.
+// Check for specific bad types (e.g. string, types of vector, etc.).
+// No checking w.r.t. other lists is done.
 bool can_emit_class(const class_info &c_info) {
     if (c_info.name_as_type.type_name == "string") {
         return false;
@@ -138,7 +140,7 @@ string extract_container_iterator_type(const collection_info &c)
             break;
         
         default:
-            throw runtime_error("Do not know how to deal with the collectino of iterator type " + c.iterator_type_info.nickname);
+            throw runtime_error("Do not know how to deal with the collection of iterator type " + c.iterator_type_info.nickname);
     }
 }
 
@@ -176,6 +178,23 @@ void dump_arguments(const string &arg_list_name, const vector<method_arg> &argum
         out << YAML::EndSeq;
     }
 }
+
+// Function to get the list of all types we are able to consider
+set<string> get_known_types(const set<string>& classes_to_emit, const map<string, class_info>& class_map)
+{
+    set<string> known_types(classes_to_emit.begin(), classes_to_emit.end());
+    for (auto &&c_name : classes_to_emit)
+    {
+        auto class_info_ptr = class_map.find(c_name);
+        if (class_info_ptr != class_map.end()) {
+            auto &&class_info = class_info_ptr->second;
+            auto defined_enums = class_enums(class_info);
+            known_types.insert(defined_enums.begin(), defined_enums.end());
+        }
+    }
+    return known_types;
+}
+
 
 int main(int argc, char**argv) {
     auto app_reference = create_root_app();
@@ -315,7 +334,7 @@ int main(int argc, char**argv) {
             if (class_name_is_good(c_ref)) {
                 classes_to_do.push(c_ref);
             }
-        }        
+        }
     }
 
     // Add some of the default types that need no introduction
@@ -338,19 +357,28 @@ int main(int argc, char**argv) {
     // to emit them. Cross them off the list, and another class' method is no longer interesting, in which case, that
     // has to be crossed. So we keep looping until we reach a stable set of classes.
     bool modified = true;
-    while (modified) {
+    while (modified)
+    {
         modified = false;
         set<string> bad_classes;
+
+        // Get a list of all types we are able to consider by merging the classes_to_emit and the enums that
+        // those classes define together.
+        auto known_types = get_known_types(classes_to_emit, class_map);
+        
+        // Now, what classes/methods can't be emitted due to lacking definitions?
         for (auto &&c_name : classes_to_emit)
         {
             auto class_info_ptr = class_map.find(c_name);
             if (class_info_ptr != class_map.end()) {
                 auto &&class_info = class_info_ptr->second;
-                if (!can_emit_any_methods(class_info.methods, classes_to_emit)) {
+                if (!can_emit_any_methods(class_info.methods, known_types)) {
                     bad_classes.insert(c_name);
+                    cerr << "ERROR: Class " << c_name << " not translated: no methods to emit." << endl;
                 }
-                if (!check_template_arguments(class_info.name_as_type, classes_to_emit)) {
+                if (!check_template_arguments(class_info.name_as_type, known_types)) {
                     bad_classes.insert(c_name);
+                    cerr << "ERROR: Class " << c_name << " not translated: template arguments were bad." << endl;
                 }
                 if (!is_root_only_class(class_info)) {
                     bad_classes.insert(c_name);
@@ -363,8 +391,11 @@ int main(int argc, char**argv) {
             {
                 classes_to_emit.erase(b_c);
             }
-        }        
+        }
     }
+
+    // Get the final list of known types we can work with.
+    auto known_types = get_known_types(classes_to_emit, class_map);
 
     // Finally, go through the collections and keep only the ones where we are
     // dumping out the classes they contain.
@@ -488,7 +519,7 @@ int main(int argc, char**argv) {
 
         // Make sure there is at least one method
         // TODO: this is not needed, delete and check.
-        if (!can_emit_any_methods(c_info->second.methods, classes_to_emit)) {
+        if (!can_emit_any_methods(c_info->second.methods, known_types)) {
             continue;
         }
 
@@ -515,11 +546,36 @@ int main(int argc, char**argv) {
             out << YAML::EndSeq;
         }
 
+        // Now we need to emit the enums.
+        if (c_info->second.enums.size() > 0)
+        {
+            out << YAML::Key << "enums"
+                << YAML::Value
+                << YAML::BeginSeq;
+            for (auto &&e : c_info->second.enums)
+            {
+                out << YAML::BeginMap
+                    << YAML::Key << "name" << YAML::Value << e.name
+                    << YAML::Key << "values" << YAML::Value
+                    << YAML::BeginSeq;
+                for (auto &&v : e.values)
+                {
+                    out << YAML::BeginMap
+                        << YAML::Key << "name" << YAML::Value << v.first
+                        << YAML::Key << "value" << YAML::Value << v.second
+                        << YAML::EndMap;
+                }
+                out << YAML::EndSeq
+                    << YAML::EndMap;
+            }
+            out << YAML::EndSeq;
+        }
+
         // Now we need to emit the methods.
         bool first_method = true;
         for (auto &&meth : c_info->second.methods)
         {
-            if (is_understood_method(meth, classes_to_emit)) {
+            if (is_understood_method(meth, known_types)) {
                 if (first_method) {
                     out << YAML::Key << "methods"
                         << YAML::Value
@@ -544,7 +600,14 @@ int main(int argc, char**argv) {
                 }
 
                 out << YAML::EndMap;
-            }
+            } else {
+                auto method_args(referenced_types(meth));
+                cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
+                for (const auto& arg : method_args) {
+                    cerr << arg << ", ";
+                }
+                cerr << endl;
+                        }
         }
 
         if (!first_method) {

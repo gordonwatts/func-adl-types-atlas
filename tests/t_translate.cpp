@@ -38,7 +38,7 @@ TEST(t_translate, include_files_jet_container_v1) {
     EXPECT_EQ(info.include_file, "xAODJet/JetContainer.h");
 }
 
-TEST(t_translate, include_files_datavector) {
+TEST(t_translate, include_files_DataVector) {
     auto info = translate_class("DataVector<xAOD::Jet_v1>");
 
     EXPECT_EQ(info.name, "DataVector<xAOD::Jet_v1>");
@@ -85,7 +85,7 @@ TEST(t_translate, vector_float) {
     EXPECT_EQ(info.library_name, "");
 }
 
-TEST(t_translate, elementlink) {
+TEST(t_translate, element_link) {
     auto info = translate_class("ElementLink<DataVector<xAOD::Jet_v1> >");
 
     EXPECT_EQ(info.name, "ElementLink<DataVector<xAOD::Jet_v1>>");
@@ -94,4 +94,23 @@ TEST(t_translate, elementlink) {
     EXPECT_EQ(info.inherited_class_names.size(), 0);
     EXPECT_EQ(info.class_behaviors.size(), 1);
     EXPECT_EQ(info.class_behaviors[0], "xAOD::Jet_v1**");
+}
+
+TEST(t_translate, enum_calo) {
+    auto info = translate_class("xAOD::CaloCluster_v1");
+
+    EXPECT_EQ(info.name, "xAOD::CaloCluster_v1");
+    EXPECT_EQ(info.enums.size(), 3);
+
+    // Find one we can look up.
+    auto it = find_if(info.enums.begin(), info.enums.end(), [](const enum_info &e) { return e.name == "ClusterSize"; });
+    EXPECT_EQ(it == info.enums.end(), false);
+
+    // Check the values of the enum
+    EXPECT_EQ(it->values.size(), 18);
+
+    // Check for the value of one, SW_37ele, is 3.
+    auto it2 = find_if(it->values.begin(), it->values.end(), [](const pair<string, int> &p) { return p.first == "SW_37ele"; });
+    EXPECT_EQ(it2 == it->values.end(), false);
+    EXPECT_EQ(it2->second, 3);
 }
