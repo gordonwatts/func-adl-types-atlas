@@ -33,6 +33,8 @@ using namespace std;
 using namespace boost::program_options;
 
 // Return true if it is ok to emit this particular class.
+// Check for specific bad types (e.g. string, types of vector, etc.).
+// No checking w.r.t. other lists is done.
 bool can_emit_class(const class_info &c_info) {
     if (c_info.name_as_type.type_name == "string") {
         return false;
@@ -177,6 +179,23 @@ void dump_arguments(const string &arg_list_name, const vector<method_arg> &argum
     }
 }
 
+// Function to get the list of all types we are able to consider
+set<string> get_known_types(const set<string>& classes_to_emit, const map<string, class_info>& class_map)
+{
+    set<string> known_types(classes_to_emit.begin(), classes_to_emit.end());
+    for (auto &&c_name : classes_to_emit)
+    {
+        auto class_info_ptr = class_map.find(c_name);
+        if (class_info_ptr != class_map.end()) {
+            auto &&class_info = class_info_ptr->second;
+            auto defined_enums = class_enums(class_info);
+            known_types.insert(defined_enums.begin(), defined_enums.end());
+        }
+    }
+    return known_types;
+}
+
+
 int main(int argc, char**argv) {
     auto app_reference = create_root_app();
 
@@ -315,7 +334,7 @@ int main(int argc, char**argv) {
             if (class_name_is_good(c_ref)) {
                 classes_to_do.push(c_ref);
             }
-        }        
+        }
     }
 
     // Add some of the default types that need no introduction
@@ -342,16 +361,22 @@ int main(int argc, char**argv) {
     {
         modified = false;
         set<string> bad_classes;
+
+        // Get a list of all types we are able to consider by merging the classes_to_emit and the enums that
+        // those classes define together.
+        auto known_types = get_known_types(classes_to_emit, class_map);
+        
+        // Now, what classes/methods can't be emitted due to lacking definitions?
         for (auto &&c_name : classes_to_emit)
         {
             auto class_info_ptr = class_map.find(c_name);
             if (class_info_ptr != class_map.end()) {
                 auto &&class_info = class_info_ptr->second;
-                if (!can_emit_any_methods(class_info.methods, classes_to_emit)) {
+                if (!can_emit_any_methods(class_info.methods, known_types)) {
                     bad_classes.insert(c_name);
                     cerr << "ERROR: Class " << c_name << " not translated: no methods to emit." << endl;
                 }
-                if (!check_template_arguments(class_info.name_as_type, classes_to_emit)) {
+                if (!check_template_arguments(class_info.name_as_type, known_types)) {
                     bad_classes.insert(c_name);
                     cerr << "ERROR: Class " << c_name << " not translated: template arguments were bad." << endl;
                 }
@@ -368,6 +393,9 @@ int main(int argc, char**argv) {
             }
         }
     }
+
+    // Get the final list of known types we can work with.
+    auto known_types = get_known_types(classes_to_emit, class_map);
 
     // Finally, go through the collections and keep only the ones where we are
     // dumping out the classes they contain.
@@ -491,7 +519,7 @@ int main(int argc, char**argv) {
 
         // Make sure there is at least one method
         // TODO: this is not needed, delete and check.
-        if (!can_emit_any_methods(c_info->second.methods, classes_to_emit)) {
+        if (!can_emit_any_methods(c_info->second.methods, known_types)) {
             continue;
         }
 
@@ -547,7 +575,7 @@ int main(int argc, char**argv) {
         bool first_method = true;
         for (auto &&meth : c_info->second.methods)
         {
-            if (is_understood_method(meth, classes_to_emit)) {
+            if (is_understood_method(meth, known_types)) {
                 if (first_method) {
                     out << YAML::Key << "methods"
                         << YAML::Value

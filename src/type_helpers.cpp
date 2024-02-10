@@ -198,7 +198,7 @@ void fixup_type_defs(vector<class_info> &classes)
     }
 }
 
-// Parse a horrendous typename into its various pieces.
+// Parse a horrendous C++ typename into its various pieces.
 //
 // "int"
 // class_name::size_type
@@ -623,7 +623,7 @@ vector<string> class_enums(const class_info &c)
     // Iterate over the enums in the class
     for (const auto &enum_info : c.enums) {
         // Add the fully qualified name of the enum to the result vector
-        result.push_back(normalized_type_name(c.name_as_type) + "::" + enum_info.name);
+        result.push_back(unqualified_typename(c.name_as_type) + "::" + enum_info.name);
     }
 
     return result;
