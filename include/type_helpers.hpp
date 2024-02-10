@@ -43,6 +43,10 @@ typename_info get_first_class(const class_info &c, const std::string &name);
 std::string normalized_type_name(const typename_info &ti);
 std::string normalized_type_name(const std::string &ti);
 
+// Return a set of enums that the class defines, returning
+// a set of their fully qualified names
+std::vector<std::string> class_enums(const class_info &c);
+
 // Return the complete type without modifiers (like * or const)
 std::string unqualified_typename(const typename_info &ti);
 

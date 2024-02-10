@@ -518,3 +518,28 @@ TEST(t_type_helpers, normalized_elPtr) {
 TEST(t_type_helpers, normalized_cpp_type) {
     EXPECT_EQ(normalized_type_name("cpp_type<U>"), "cpp_type[U]");
 }
+
+TEST(t_type_helpers, class_enums_one) {
+    enum_info e1;
+    e1.name = "fork";
+
+    class_info ci;
+    ci.name = "class_1";
+    ci.name_as_type = parse_typename("xAOD::class_1");
+    ci.enums.push_back(e1);
+
+    auto r = class_enums(ci);
+
+    EXPECT_EQ(r.size(), 1);
+
+    EXPECT_EQ(r[0], "xAOD::class_1::fork");
+}
+
+TEST(t_type_helpers, class_enums_zero) {
+
+    class_info ci;
+    ci.name = "class_1";
+    auto r = class_enums(ci);
+
+    EXPECT_EQ(r.size(), 0);
+}
