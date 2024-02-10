@@ -31,7 +31,7 @@ std::string resolve_typedef(const std::string &c_name);
 // Return a type name with & and * stripped off the end.
 std::string unqualified_type_name(const std::string &full_type_name);
 
-// Parse a fully qualified typename
+// Parse a fully qualified C++ typename
 typename_info parse_typename(const std::string &type_name);
 
 // Return type info for the first class or inherited class that
