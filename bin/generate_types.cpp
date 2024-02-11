@@ -195,6 +195,32 @@ set<string> get_known_types(const set<string>& classes_to_emit, const map<string
     return known_types;
 }
 
+// Find c_name as a class in the map, or if not, look one level up
+// to see if the class has an enum named.
+map<string, class_info>::const_iterator find_class_or_enum(const string &c_name, const map<string, class_info> &class_map)
+{
+    auto c_info = class_map.find(c_name);
+    if (c_info != class_map.end()) {
+        return c_info;
+    }
+
+    auto t = parse_typename(c_name);
+    if (t.namespace_list.size() > 0) {
+        auto parent_class_name = unqualified_typename(parent_class(t));
+        auto parent_class_itr = class_map.find(parent_class_name);
+        if (parent_class_itr == class_map.end()) {
+            return class_map.end();
+        }
+
+        // Check to see if c_name is an enum in this class
+        auto all_enums = class_enums(parent_class_itr->second);
+        if (find(all_enums.begin(), all_enums.end(), c_name) != all_enums.end()) {
+            return parent_class_itr;
+        }
+    }
+
+    return class_map.end();
+}
 
 int main(int argc, char**argv) {
     auto app_reference = create_root_app();
@@ -339,15 +365,16 @@ int main(int argc, char**argv) {
         }
         classes_done.insert(c_name);
 
-        // Find the class
-        auto c_info = class_map.find(c_name);
+        // Find the class or enum
+        auto c_info = find_class_or_enum(c_name, class_map);
+        // auto c_info = class_map.find(c_name);
         if (c_info == class_map.end()) {
             continue;
         }
 
         // If we can dump the class, then we should!
         if (can_emit_class(c_info->second)) {
-            classes_to_emit.insert(c_name);
+            classes_to_emit.insert(c_info->first);
         }
 
         // Now, add referenced classes to the queue
