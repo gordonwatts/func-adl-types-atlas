@@ -614,12 +614,16 @@ int main(int argc, char**argv) {
                 out << YAML::EndMap;
             } else {
                 auto method_args(referenced_types(meth));
-                cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
-                for (const auto& arg : method_args) {
-                    cerr << arg << ", ";
+                // Do not warn when return type is void - this is just how we work
+                // in a functional world for now (e.g. by design).
+                if (meth.return_type.size() != 0) {
+                    cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
+                    for (const auto& arg : method_args) {
+                        cerr << arg << ", ";
+                    }
+                    cerr << endl;
                 }
-                cerr << endl;
-                        }
+            }
         }
 
         if (!first_method) {

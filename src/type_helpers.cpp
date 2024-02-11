@@ -544,7 +544,9 @@ bool is_understood_type(const typename_info &t, const set<std::string> &known_ty
     return false;
 }
 
-// Are all types attached to this class known - is it safe to work with this method?
+// Can we emit this class?
+//  1. The method must return something (e.g. it can't be void)
+//  2. All types used in the method must be known.
 bool is_understood_method(const method_info &meth, const set<string> &classes_to_emit) {
     // Make sure returns something.
     if (meth.return_type.size() == 0) {
