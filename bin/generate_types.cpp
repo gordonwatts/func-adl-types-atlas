@@ -283,6 +283,17 @@ int main(int argc, char**argv) {
                     classes_to_do.push(c_name);
                 }
             }        
+        } else {
+            // The class might actually be an enum, and the parent might
+            // be something we can translate. So - parse off one level down in the
+            // type name, and add it to the list, and see what happens.
+            auto t = parse_typename(class_name);
+            if (t.namespace_list.size() > 0) {
+                auto parent_class_name = unqualified_typename(parent_class(t));
+                if (class_name_is_good(parent_class_name)) {
+                    classes_to_do.push(parent_class_name);
+                }
+            }
         }
     }
 

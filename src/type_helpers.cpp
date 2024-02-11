@@ -630,3 +630,28 @@ vector<string> class_enums(const class_info &c)
 
     return result;
 }
+
+// Determine the parent class our surrounding
+// namespace.
+typename_info parent_class(const typename_info &ti)
+{
+    // Make sure this is going to work!
+    if (ti.namespace_list.size() == 0) {
+        throw invalid_argument("No parent class for " + ti.nickname);
+    }
+
+    // Pop ourselves one up!
+    typename_info result = ti.namespace_list.back();
+
+    // Re-insert all the extra namespace info.
+    result.namespace_list.insert(result.namespace_list.begin(), ti.namespace_list.begin(), ti.namespace_list.end() - 1);
+
+    // Reset pointer and const-ness
+    result.is_pointer = false;
+    result.is_const = false;
+
+    // And update the nickname
+    result.nickname = typename_cpp_string(result);
+
+    return result;
+}

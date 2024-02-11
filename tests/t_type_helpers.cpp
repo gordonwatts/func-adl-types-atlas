@@ -543,3 +543,53 @@ TEST(t_type_helpers, class_enums_zero) {
 
     EXPECT_EQ(r.size(), 0);
 }
+
+
+TEST(t_type_helpers, parent_class_three) {
+    auto t = parse_typename("std::org::size_t");
+    auto p = parent_class(t);
+
+    EXPECT_EQ(p.type_name, "org");
+    EXPECT_EQ(p.namespace_list.size(), 1);
+    EXPECT_EQ(p.namespace_list[0].type_name, "std");
+    EXPECT_EQ(p.template_arguments.size(), 0);
+    EXPECT_EQ(p.is_const, false);
+    EXPECT_EQ(p.is_pointer, false);
+    EXPECT_EQ(p.nickname, "std::org");
+}
+
+TEST(t_type_helpers, parent_class_const_ptr) {
+    auto t = parse_typename("const std::org::size_t *");
+    auto p = parent_class(t);
+
+    EXPECT_EQ(p.type_name, "org");
+    EXPECT_EQ(p.namespace_list.size(), 1);
+    EXPECT_EQ(p.namespace_list[0].type_name, "std");
+    EXPECT_EQ(p.nickname, "std::org");
+    EXPECT_EQ(p.template_arguments.size(), 0);
+    EXPECT_EQ(p.is_const, false);
+    EXPECT_EQ(p.is_pointer, false);
+}
+
+TEST(t_type_helpers, parent_class_none) {
+    auto t = parse_typename("size_t");
+    try {
+        parent_class(t);
+        FAIL() << "Expected std::invalid_argument";
+    } catch (std::invalid_argument const & err) {
+        EXPECT_EQ(err.what(), std::string("No parent class for size_t"));
+    } catch (...) {
+        FAIL() << "Expected std::invalid_argument";
+    }   
+}
+
+TEST(t_type_helpers, parent_class_vector) {
+    auto t = parse_typename("std::vector<int>::size_t");
+    auto p = parent_class(t);
+    auto expected = parse_typename("std::vector<int>");
+
+    EXPECT_EQ(p.type_name, expected.type_name);
+    EXPECT_EQ(p.namespace_list.size(), expected.namespace_list.size());
+    EXPECT_EQ(p.nickname, expected.nickname);
+    EXPECT_EQ(p.template_arguments.size(), expected.template_arguments.size());
+}
