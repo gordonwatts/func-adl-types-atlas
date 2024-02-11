@@ -195,6 +195,32 @@ set<string> get_known_types(const set<string>& classes_to_emit, const map<string
     return known_types;
 }
 
+// Find c_name as a class in the map, or if not, look one level up
+// to see if the class has an enum named.
+map<string, class_info>::const_iterator find_class_or_enum(const string &c_name, const map<string, class_info> &class_map)
+{
+    auto c_info = class_map.find(c_name);
+    if (c_info != class_map.end()) {
+        return c_info;
+    }
+
+    auto t = parse_typename(c_name);
+    if (t.namespace_list.size() > 0) {
+        auto parent_class_name = unqualified_typename(parent_class(t));
+        auto parent_class_itr = class_map.find(parent_class_name);
+        if (parent_class_itr == class_map.end()) {
+            return class_map.end();
+        }
+
+        // Check to see if c_name is an enum in this class
+        auto all_enums = class_enums(parent_class_itr->second);
+        if (find(all_enums.begin(), all_enums.end(), c_name) != all_enums.end()) {
+            return parent_class_itr;
+        }
+    }
+
+    return class_map.end();
+}
 
 int main(int argc, char**argv) {
     auto app_reference = create_root_app();
@@ -248,6 +274,8 @@ int main(int argc, char**argv) {
     vector<class_info> done_classes;
 
     while (classes_to_do.size() > 0) {
+        // Grab a class and mark it on the list
+        // so we don't try to re-run it.
         auto raw_class_name(classes_to_do.front());
         classes_to_do.pop();
         if (classes_done.find(raw_class_name) != classes_done.end())
@@ -261,16 +289,37 @@ int main(int argc, char**argv) {
             }
         classes_done.insert(class_name);
 
+        // Translate the class
         auto c = translate_class(class_name);
+
+        // If we translated it, look at all classes it referenced and
+        // add them to the list to translate.
         if (c.name.size() > 0) {
+            // Mark this class done
             done_classes.push_back(c);
 
+            // Add enum's to the `classes_done` list so we don't try to translate them again.
+            auto defined_enums = class_enums(c);
+            classes_done.insert(defined_enums.begin(), defined_enums.end());
+
+            // Add any referenced classes to our class list!
             for (auto &&c_name : referenced_types(c))
             {
                 if (class_name_is_good(c_name)) {
                     classes_to_do.push(c_name);
                 }
             }        
+        } else {
+            // The class might actually be an enum, and the parent might
+            // be something we can translate. So - parse off one level down in the
+            // type name, and add it to the list, and see what happens.
+            auto t = parse_typename(class_name);
+            if (t.namespace_list.size() > 0) {
+                auto parent_class_name = unqualified_typename(parent_class(t));
+                if (class_name_is_good(parent_class_name)) {
+                    classes_to_do.push(parent_class_name);
+                }
+            }
         }
     }
 
@@ -316,15 +365,16 @@ int main(int argc, char**argv) {
         }
         classes_done.insert(c_name);
 
-        // Find the class
-        auto c_info = class_map.find(c_name);
+        // Find the class or enum
+        auto c_info = find_class_or_enum(c_name, class_map);
+        // auto c_info = class_map.find(c_name);
         if (c_info == class_map.end()) {
             continue;
         }
 
         // If we can dump the class, then we should!
         if (can_emit_class(c_info->second)) {
-            classes_to_emit.insert(c_name);
+            classes_to_emit.insert(c_info->first);
         }
 
         // Now, add referenced classes to the queue
@@ -602,12 +652,16 @@ int main(int argc, char**argv) {
                 out << YAML::EndMap;
             } else {
                 auto method_args(referenced_types(meth));
-                cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
-                for (const auto& arg : method_args) {
-                    cerr << arg << ", ";
+                // Do not warn when return type is void - this is just how we work
+                // in a functional world for now (e.g. by design).
+                if (meth.return_type.size() != 0) {
+                    cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
+                    for (const auto& arg : method_args) {
+                        cerr << arg << ", ";
+                    }
+                    cerr << endl;
                 }
-                cerr << endl;
-                        }
+            }
         }
 
         if (!first_method) {

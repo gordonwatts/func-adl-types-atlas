@@ -34,6 +34,10 @@ std::string unqualified_type_name(const std::string &full_type_name);
 // Parse a fully qualified C++ typename
 typename_info parse_typename(const std::string &type_name);
 
+// Pop a parent class (std::org::size -> std:org).
+//  - throw exception if there are no parent classes.
+typename_info parent_class(const typename_info &ti);
+
 // Return type info for the first class or inherited class that
 // has name as the name of a template class.
 typename_info get_first_class(const class_info &c, const std::string &name);

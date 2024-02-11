@@ -38,20 +38,43 @@ You'll get output that looks something like this:
 
 ```bash
 [bash][atlas AnalysisBase-21.2.184]:func-adl-types-atlas > ./scripts/run_on_atlas_containers.sh > test1.txt 
-ERROR: Cannot translate class 'xAOD::CompositeParticleContainer': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'xAOD::CompositeParticleAuxContainer': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'xAOD::IParticleLinkContainer': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'xAOD::ParticleAuxContainer': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'xAOD::ParticleContainer': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'xAOD::egammaRecContainer': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'xAOD::CMXJetHitsAuxContainer': ROOT's type system doesn't have it loaded.
+[bash][atlas AnalysisBase-21.2.247]:func-adl-types-atlas > 
+[bash][atlas AnalysisBase-21.2.247]:func-adl-types-atlas > ./scripts/run_on_atlas_containers.sh > test1.yaml
+ERROR: Cannot translate class 'xAOD::CaloRingsAuxContainer': ROOT's type system doesn't have it loaded as a class.
+ERROR: Cannot translate class 'xAOD::RingSetAuxContainer': ROOT's type system doesn't have it loaded as a class.
+ERROR: Cannot translate class 'xAOD::CaloRingsContainer': ROOT's type system doesn't have it loaded as a class.
+ERROR: Cannot translate class 'xAOD::RingSetConfAuxContainer': ROOT's type system doesn't have it loaded as a class.
+ERROR: Cannot translate class 'xAOD::RingSetConfContainer': ROOT's type system doesn't have it loaded as a class.
 ...
-INFO: Not translating '__shared_ptr<ROOT::Math::Minimizer, __gnu_cxx::_Lock_policy::_S_atomic>' as it is a private internal class (__shared_ptr)
-INFO: Not translating '__shared_ptr<ROOT::Math::Minimizer>' as it is a private internal class (__shared_ptr)
-INFO: Not translating '__shared_ptr_access<ROOT::Math::Minimizer, __gnu_cxx::_Lock_policy::_S_atomic, false, false>' as it is a private internal class (__shared_ptr_access)
-ERROR: Cannot translate class 'Axis_t': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'Bool_t()(const TGraph,Int_t,Int_t)': ROOT's type system doesn't have it loaded.
-ERROR: Cannot translate class 'mutex::native_handle_type': ROOT's type system doesn't have it loaded.
+ERROR: Class DataModel_detail::DVLIteratorBase not translated: no methods to emit.
+ERROR: Class ROOT::Experimental::Internal::TBulkBranchRead not translated: no methods to emit.
+ERROR: Class ROOT::TIOFeatures not translated: no methods to emit.
+ERROR: Class TPoint not translated: no methods to emit.
+ERROR: Class TRefCnt not translated: no methods to emit.
+ERROR: Class TTree::TClusterIterator not translated: no methods to emit.
+ERROR: Class TVirtualIsAProxy not translated: no methods to emit.
+ERROR: Class condition_variable not translated: no methods to emit.
+ERROR: Class vector<TStreamerInfoActions::TIDNode> not translated: template arguments were bad.
+ERROR: Class vector<const ROOT::TSchemaRule *> not translated: template arguments were bad.
+ERROR: Class vector<const double *> not translated: template arguments were bad.
+ERROR: Class vector<const xAOD::CaloCluster_v1 *> not translated: template arguments were bad.
+ERROR: Class vector<const xAOD::IParticle *> not translated: template arguments were bad.
+...
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::GetClassName - some types not emitted: TString, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::GetRules - some types not emitted: TObjArray, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::GetPersistentRules - some types not emitted: TObjArray, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::Class_Version - some types not emitted: Version_t, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::IsA - some types not emitted: TClass, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::DeclFileName - some types not emitted: char, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::ImplFileName - some types not emitted: char, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::Class_Name - some types not emitted: char, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::Dictionary - some types not emitted: TClass, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::Class - some types not emitted: TClass, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::Hash - some types not emitted: ULong_t, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::ClassName - some types not emitted: char, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::CheckedHash - some types not emitted: ULong_t, 
+ERROR: Cannot emit method ROOT::Detail::TSchemaRuleSet::Clone - some types not emitted: TObject, char, 
+...
 ```
 
 And you will have a giant `yaml` file containing the complete type system. That `yaml` file can be read by the type generator system.
