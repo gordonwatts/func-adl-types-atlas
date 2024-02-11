@@ -248,6 +248,8 @@ int main(int argc, char**argv) {
     vector<class_info> done_classes;
 
     while (classes_to_do.size() > 0) {
+        // Grab a class and mark it on the list
+        // so we don't try to re-run it.
         auto raw_class_name(classes_to_do.front());
         classes_to_do.pop();
         if (classes_done.find(raw_class_name) != classes_done.end())
@@ -261,10 +263,20 @@ int main(int argc, char**argv) {
             }
         classes_done.insert(class_name);
 
+        // Translate the class
         auto c = translate_class(class_name);
+
+        // If we translated it, look at all classes it referenced and
+        // add them to the list to translate.
         if (c.name.size() > 0) {
+            // Mark this class done
             done_classes.push_back(c);
 
+            // Add enum's to the `classes_done` list so we don't try to translate them again.
+            auto defined_enums = class_enums(c);
+            classes_done.insert(defined_enums.begin(), defined_enums.end());
+
+            // Add any referenced classes to our class list!
             for (auto &&c_name : referenced_types(c))
             {
                 if (class_name_is_good(c_name)) {
