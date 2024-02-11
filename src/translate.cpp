@@ -209,7 +209,7 @@ class_info translate_class(const std::string &class_name)
     auto c_info = TClass::GetClass(unq_class_name.c_str());
     if (c_info == nullptr)
     {
-        std::cerr << "ERROR: Cannot translate class '" << class_name << "': ROOT's type system doesn't have it loaded." << std::endl;
+        std::cerr << "ERROR: Cannot translate class '" << class_name << "': ROOT's type system doesn't have it loaded as a class." << std::endl;
         return result;
     }
     // There are several other types of classes we do not need to translate as well.
