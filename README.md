@@ -88,7 +88,8 @@ There are lots! However, the log file from running this script will tell you eve
 That said, some classes of things are missing:
 
 * template classes require a lot of extra work, and often custom work. The basics are implemented, but if you find something missing that is required, then please open an issue!
-* class `typedef`'s are not supported and must be hand-coded. This is due to a limitation in ROOT: they do not store this information in a place easily accessible.
+* C++ `class typedef`'s are not supported and must be hand-coded. This is due to a limitation in ROOT: they do not store this information in a place easily accessible.
+* Not every class is translated. Only classes referenced by the ATLAS collections, and anything they in turn reference (and so on) are translated.
 
 ## Supported Releases
 
