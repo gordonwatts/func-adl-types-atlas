@@ -115,6 +115,10 @@ void build_typedef_map() {
     // Add a few special ones to keep the system working
     g_typedef_map["ULong64_t"] = "unsigned long long";
     g_typedef_map["uint32_t"] = "unsigned int";
+
+    // Some class typedef's that ROOT RTTI can't seem to "get".
+    g_typedef_map["xAOD::CaloCluster_v1::CaloSample"] = "CaloSampling::CaloSample";
+    g_typedef_map["xAOD::CaloCluster_v1::flt_t"] = "float";
 }
 
 // From typedefs, return resolved typedefs.

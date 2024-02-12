@@ -81,6 +81,16 @@ And you will have a giant `yaml` file containing the complete type system. That 
 
 The above instructions and the Usage instructions should be enough to get you developing on platforms other than windows, with or without `vscode`. PR's welcome to add instructions on how to run on other OS's and development environments!
 
+## Limitations
+
+There are lots! However, the log file from running this script will tell you everything that wasn't translated and a top-level reason as to why not.
+
+That said, some classes of things are missing:
+
+* template classes require a lot of extra work, and often custom work. The basics are implemented, but if you find something missing that is required, then please open an issue!
+* C++ `class typedef`'s are not supported and must be hand-coded. This is due to a limitation in ROOT: they do not store this information in a place easily accessible.
+* Not every class is translated. Only classes referenced by the ATLAS collections, and anything they in turn reference (and so on) are translated.
+
 ## Supported Releases
 
 * ATLAS AnalysisBase Containers
