@@ -28,18 +28,36 @@ Docker must be installed.
 https://github.com/gordonwatts/func-adl-types-atlas
 #> 
 Param (
-[Parameter(Mandatory=$true)][string]$release,
-[Parameter(Mandatory=$true)][string]$outputfile
+    [Parameter(Mandatory = $true)][string]$release,
+    [Parameter(Mandatory = $true)][string]$outputfile
 )
 
 # Get location of script so we can find the github repo clone.
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $repoPath = Split-Path -Parent $scriptPath
+Write-Host "Using repo path: $repoPath"
 
 # And output file should be written to the output directory
 $resolvedOutputFile = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($outputfile)
 $resolvedOutputFileDir = Split-Path -Parent $resolvedOutputFile
+Write-Host "Writing output to directory: $resolvedOutputFileDir"
 $resolvedOutputFileName = Split-Path -Leaf $resolvedOutputFile
+Write-Host "Writing output to file: $resolvedOutputFileName"
+
+# Make sure the script has linux line-endings, or it will fail!
+function ConvertTo-LinuxLineEndings {
+    param (
+        [Parameter(Mandatory = $true)][string]$path
+    )
+    $content = Get-Content -Raw -Path $path
+    $content = $content -replace "`r", ""
+    Set-Content -Path $path -Value $content
+}
+ConvertTo-LinuxLineEndings "$repoPath/scripts/build_run_incontainer.sh"
 
 # Do the work inside the container
-docker run --rm -it --mount type=bind,source=${repoPath},target=/func_adl_xaod_types --mount type=bind,source=${resolvedOutputFileDir},target=/output gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
+Write-Host "docker run --rm --mount type=bind,source=${repoPath},target=/func_adl_xaod_types --mount type=bind,source=${resolvedOutputFileDir},target=/output gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c /func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
+docker run --rm --mount "type=bind,source=${resolvedOutputFileDir},target=/output" --mount "type=bind,source=${repoPath},target=/func_adl_xaod_types" gitlab-registry.cern.ch/atlas/athena/analysisbase:$release bash -c "/func_adl_xaod_types/scripts/build_run_incontainer.sh  ${resolvedOutputFileName}"
+if (-not $?) {
+    throw "Failed to run docker container!"
+}

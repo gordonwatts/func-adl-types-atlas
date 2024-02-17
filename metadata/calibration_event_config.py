@@ -49,6 +49,10 @@ class CalibrationEventConfig:
     # The working point (e.g. xxxx)
     tau_working_point: str
 
+    # ** MET
+    # The name of the MET collection to calibrate and use by default.
+    met_collection: str
+
     # ** Other Config Options
     perform_overlap_removal: bool
 

@@ -46,6 +46,7 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
             muon_isolation="NonIso",
             tau_collection="TauJets",
             tau_working_point="Tight",
+            met_collection="MissingET",
             perform_overlap_removal=True,
             datatype="mc",
             calibrate=True,
