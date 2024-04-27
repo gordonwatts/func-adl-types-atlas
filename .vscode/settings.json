@@ -142,6 +142,7 @@
         "prwfiles",
         "pwrfiles",
         "Readahead",
+        "ROOTCOREDIR",
         "Stip",
         "Subjet",
         "Subjets",
@@ -159,9 +160,9 @@
         "utin",
         "Vect",
         "Vertexs",
+        "vint",
         "Virt",
         "Wbox",
-        "ROOTCOREDIR",
         "Yvector"
     ],
     "restructuredtext.preview.docutils.disabled": true
