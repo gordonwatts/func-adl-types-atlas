@@ -593,3 +593,34 @@ TEST(t_type_helpers, parent_class_vector) {
     EXPECT_EQ(p.nickname, expected.nickname);
     EXPECT_EQ(p.template_arguments.size(), expected.template_arguments.size());
 }
+
+TEST(t_type_helpers, referenced_types_simple)
+{
+    auto t = parse_typename("int");
+    auto r = type_referenced_types(t);
+    EXPECT_EQ(r.size(), 0);
+}
+
+TEST(t_type_helpers, referenced_types_blank)
+{
+    auto t = parse_typename("");
+    auto r = type_referenced_types(t);
+    EXPECT_EQ(r.size(), 0);
+}
+
+TEST(t_type_helpers, referenced_types_vector)
+{
+    auto t = parse_typename("std::vector<int>");
+    auto r = type_referenced_types(t);
+    EXPECT_EQ(r.size(), 1);
+    EXPECT_EQ(r.find("int") != r.end(), true);
+}
+
+TEST(t_type_helpers, referenced_types_nested_vector)
+{
+    auto t = parse_typename("std::vector<ElementLink<int>>");
+    auto r = type_referenced_types(t);
+    EXPECT_EQ(r.size(), 2);
+    EXPECT_EQ(r.find("int") != r.end(), true);
+    EXPECT_EQ(r.find("ElementLink<int>") != r.end(), true);
+}
