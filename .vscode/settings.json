@@ -165,5 +165,6 @@
         "Wbox",
         "Yvector"
     ],
-    "restructuredtext.preview.docutils.disabled": true
+    "restructuredtext.preview.docutils.disabled": true,
+    "terminal.integrated.scrollback": 10000
 }

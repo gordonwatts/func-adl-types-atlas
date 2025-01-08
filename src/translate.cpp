@@ -201,8 +201,26 @@ bool include_file_exists(const string &include_path) {
     return !gSystem->AccessPathName(expanded.c_str(), kFileExists);
 }
 
+void load_template_arguments(const vector<typename_info> &types) {
+    // Load the list of types from ROOT, but
+    // load their template arguments first.
+    // Gets around ROOT failing to load ElementLink<xAOD::MuonContainer>
+    // even though it knows about all of that.
+    for (auto &&t : types)
+    {
+        load_template_arguments(t.template_arguments);
+        // Don't care about the result - just need to change ROOT's state.
+        TClass::GetClass(unqualified_typename(t).c_str());
+    }
+}
+
 class_info translate_class(const std::string &class_name)
 {
+    // Recursively load the class - to make sure in templates everything
+    // inside is already loaded.
+    auto t_prior = parse_typename(class_name);
+    load_template_arguments(t_prior.template_arguments);
+
     // Get the class
     class_info result;
     auto unq_class_name = unqualified_type_name(class_name);
@@ -212,6 +230,7 @@ class_info translate_class(const std::string &class_name)
         std::cerr << "ERROR: Cannot translate class '" << class_name << "': ROOT's type system doesn't have it loaded as a class." << std::endl;
         return result;
     }
+
     // There are several other types of classes we do not need to translate as well.
     string name = c_info->GetName();
     auto t = parse_typename(name);
