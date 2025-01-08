@@ -16,7 +16,16 @@ TEST(t_type_helpers, type_int) {
     EXPECT_EQ(t.is_const, false);
 }
 
-TEST(t_type_helpers, type_int_ptr) {
+TEST(t_type_helpers, type_int_spaces)
+{
+    auto t1 = parse_typename(" int");
+    EXPECT_EQ(t1.type_name, "int");
+    auto t2 = parse_typename("int ");
+    EXPECT_EQ(t1.type_name, "int");
+}
+
+TEST(t_type_helpers, type_int_ptr)
+{
     auto t = parse_typename("int*");
 
     EXPECT_EQ(t.namespace_list.size(), 0);
@@ -69,6 +78,15 @@ TEST(t_type_helpers, type_vector_int) {
     EXPECT_EQ(t.type_name, "vector");
 }
 
+TEST(t_type_helpers, type_vector_int_spaces)
+{
+    auto t = parse_typename("vector< int >");
+
+    EXPECT_EQ(t.template_arguments.size(), 1);
+    auto sub_t = t.template_arguments[0];
+    EXPECT_EQ(sub_t.type_name, "int");
+    EXPECT_EQ(t.type_name, "vector");
+}
 
 // Simple typename qualified by namespace
 TEST(t_type_helpers, type_namespaced_type) {
