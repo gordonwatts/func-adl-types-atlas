@@ -465,6 +465,19 @@ typename_info container_of(const class_info &ci) {
     throw runtime_error("Do not know how to find container type for class " + ci.name);
 }
 
+// Return a list of the C++ types that this type refers to in its
+// type name. This will unwind all the template arguments and return them as a set.
+// Does not return the typename that is itself.
+set<string> type_referenced_types(const typename_info &t) {
+    set<string> result;
+    for (auto &&t_arg : t.template_arguments) {
+        result.insert(unqualified_typename(t_arg));
+        auto t_args = type_referenced_types(t_arg);
+        result.insert(t_args.begin(), t_args.end());
+    }
+    return result;
+}
+
 // Return the C++ type as unqualified.
 std::string unqualified_typename(const typename_info &ti)
 {

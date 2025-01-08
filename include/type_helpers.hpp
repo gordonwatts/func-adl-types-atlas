@@ -63,6 +63,9 @@ typename_info container_of(const typename_info &ti);
 bool is_collection(const class_info &ci);
 typename_info container_of(const class_info &ci);
 
+// Return list of referenced types
+std::set<std::string> type_referenced_types(const typename_info &t);
+
 // Is this type something we can deal with?
 bool is_understood_type(const std::string &t_name, const std::set<std::string> &known_types);
 bool is_understood_type(const typename_info &t, const std::set<std::string> &known_types);
