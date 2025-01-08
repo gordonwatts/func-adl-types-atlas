@@ -181,7 +181,37 @@ TEST(t_type_helpers, type_multiple_template_args) {
     EXPECT_EQ(t.template_arguments[1].type_name, "allocate");
 }
 
-TEST(t_type_helpers, type_const_on_top) {
+TEST(t_type_helpers, type_multiple_template_args_with_spaces)
+{
+    auto t = parse_typename("vector<std::size_t,       std::allocate<std::size_t>>");
+
+    EXPECT_EQ(t.type_name, "vector");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+
+    EXPECT_EQ(t.template_arguments.size(), 2);
+    EXPECT_EQ(t.template_arguments[0].type_name, "size_t");
+    EXPECT_EQ(t.template_arguments[1].type_name, "allocate");
+    EXPECT_EQ(t.template_arguments[0].namespace_list.size(), 1);
+    EXPECT_EQ(t.template_arguments[0].namespace_list[0].type_name, "std");
+}
+
+TEST(t_type_helpers, type_multiple_template_args_with_spaces_no_ns)
+{
+    auto t = parse_typename("vector<std::size_t,       allocate<std::size_t>>");
+
+    EXPECT_EQ(t.type_name, "vector");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+
+    EXPECT_EQ(t.template_arguments.size(), 2);
+    EXPECT_EQ(t.template_arguments[0].type_name, "size_t");
+    EXPECT_EQ(t.template_arguments[1].type_name, "allocate");
+    EXPECT_EQ(t.template_arguments[1].namespace_list.size(), 0);
+}
+
+TEST(t_type_helpers, type_const_on_top)
+{
     auto t = parse_typename("const DataVector<xAOD::SlowMuon_v1, DataModel_detail::NoBase>::PtrVector");
 
     EXPECT_EQ(t.type_name, "PtrVector");

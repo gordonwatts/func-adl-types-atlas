@@ -228,7 +228,7 @@ typename_info parse_typename(const string &type_name)
         switch (type_name[t_index]) {
             case '<':
                 if (ns_depth == 0) {
-                    result.type_name = name;
+                    result.type_name = boost::trim_copy(name);
                     name = "";
                 } else {
                     name += type_name[t_index];
