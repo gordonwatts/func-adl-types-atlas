@@ -176,7 +176,7 @@ void fixup_type_aliases(vector<class_info> &classes)
     // Build a typedef backwards mapping
     map<string, vector<string>> typedef_back_map = root_typedef_map();
 
-    // Loop through all the classes we are looking at to see if there is an alias we should be done.
+    // Loop through all the classes we are looking at to see if there is an alias.
     for (auto &&c : classes)
     {
         if (typedef_back_map.find(c.name) != typedef_back_map.end()) {
@@ -188,7 +188,7 @@ void fixup_type_aliases(vector<class_info> &classes)
 // Find referenced arguments in methods and resolve any typedefs in there
 void fixup_type_defs(vector<class_info> &classes)
 {    
-    // Loop through all the classes we are looking at to see if there is an alias we should be done.
+    // Loop through all the classes we are looking at to see if there is an alias.
     for (auto &&c : classes)
     {
         for (auto &&m : c.methods)
