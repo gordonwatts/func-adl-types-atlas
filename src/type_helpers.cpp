@@ -203,6 +203,8 @@ void fixup_type_defs(vector<class_info> &classes)
     }
 }
 
+std::regex _multi_space_regex("\\s+");
+
 // Parse a horrendous C++ typename into its various pieces.
 //
 // "int"
@@ -213,8 +215,7 @@ typename_info parse_typename(const string &type_name)
     typename_info result;
     result.is_const = false;
     result.is_pointer = false;
-    std::regex multi_space_regex("\\s+");
-    result.nickname = trim(regex_replace(type_name, multi_space_regex, " "));
+    result.nickname = trim(regex_replace(type_name, _multi_space_regex, " "));
     bool top_level_is_const = false;
 
     // Simple bail if this is a blank.
