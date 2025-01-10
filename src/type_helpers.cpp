@@ -6,6 +6,7 @@
 #include "TClassTable.h"
 
 #include <algorithm>
+#include <regex>
 #include <iterator>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
@@ -212,7 +213,8 @@ typename_info parse_typename(const string &type_name)
     typename_info result;
     result.is_const = false;
     result.is_pointer = false;
-    result.nickname = trim(type_name);
+    std::regex multi_space_regex("\\s+");
+    result.nickname = trim(regex_replace(type_name, multi_space_regex, " "));
     bool top_level_is_const = false;
 
     // Simple bail if this is a blank.
@@ -289,13 +291,14 @@ typename_info parse_typename(const string &type_name)
                     if (n1 == "const") {
                         top_level_is_const = true;
                         name = "";
-                    } else {
-                        name += type_name[t_index];
+                        break;
                     }
-                } else {
-                    name += type_name[t_index];
                 }
-            
+                if (!name.empty() && name.back() != ' ') {
+                    name += ' ';
+                }
+                break;
+
             case '&':
                 // We don't care about reference modifiers for this work.
                 if (ns_depth != 0) {

@@ -65,6 +65,50 @@ TEST(t_type_helpers, type_int_const) {
     EXPECT_EQ(t.is_const, true);
 }
 
+TEST(t_type_helpers, type_int_const_spaces)
+{
+    auto t = parse_typename("const   int");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.nickname, "const int");
+    EXPECT_EQ(t.is_const, true);
+}
+
+TEST(t_type_helpers, type_unsigned_int)
+{
+    auto t = parse_typename("unsigned int");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "unsigned int");
+    EXPECT_EQ(t.nickname, "unsigned int");
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_unsigned_int_spaces)
+{
+    auto t = parse_typename("unsigned   int");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "unsigned int");
+    EXPECT_EQ(t.nickname, "unsigned int");
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_const_unsigned_int)
+{
+    auto t = parse_typename("const unsigned int");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "unsigned int");
+    EXPECT_EQ(t.nickname, "const unsigned int");
+    EXPECT_EQ(t.is_const, true);
+}
+
 // Simple template
 TEST(t_type_helpers, type_vector_int) {
     auto t = parse_typename("vector<int>");
@@ -260,7 +304,8 @@ TEST(t_type_helpers, typedef_resolve_utin32) {
     EXPECT_EQ(resolve_typedef("uint32_t"), "unsigned int");
 }
 
-TEST(t_type_helpers, typedef_resolve_ulong64) {
+TEST(t_type_helpers, typedef_resolve_ulong64)
+{
     EXPECT_EQ(resolve_typedef("ULong64_t"), "unsigned long long");
 }
 
@@ -405,7 +450,8 @@ TEST(t_type_helpers, cpp_string_simple_pointer) {
     EXPECT_EQ(typename_cpp_string(parse_typename("int*")), "int *");
 }
 
-TEST(t_type_helpers, cpp_string_simple_const) {
+TEST(t_type_helpers, cpp_string_simple_const)
+{
     EXPECT_EQ(typename_cpp_string(parse_typename("const int*")), "const int *");
 }
 
