@@ -201,6 +201,9 @@ bool include_file_exists(const string &include_path) {
     return !gSystem->AccessPathName(expanded.c_str(), kFileExists);
 }
 
+// Make sure any type template arguments are loaded. If they
+// are not, ROOT might not load them, and then the class will
+// fail to resolve.
 void load_template_arguments(const vector<typename_info> &types) {
     // Load the list of types from ROOT, but
     // load their template arguments first.
@@ -208,9 +211,11 @@ void load_template_arguments(const vector<typename_info> &types) {
     // even though it knows about all of that.
     for (auto &&t : types)
     {
-        load_template_arguments(t.template_arguments);
-        // Don't care about the result - just need to change ROOT's state.
-        TClass::GetClass(unqualified_typename(t).c_str());
+        if (TClass::GetClass(unqualified_typename(t).c_str()) == nullptr) {
+            // If we can't load it, then load template arguments first.
+            load_template_arguments(t.template_arguments);
+            TClass::GetClass(unqualified_typename(t).c_str());
+        }
     }
 }
 
