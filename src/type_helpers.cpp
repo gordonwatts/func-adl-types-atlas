@@ -6,6 +6,7 @@
 #include "TClassTable.h"
 
 #include <algorithm>
+#include <regex>
 #include <iterator>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
@@ -176,7 +177,7 @@ void fixup_type_aliases(vector<class_info> &classes)
     // Build a typedef backwards mapping
     map<string, vector<string>> typedef_back_map = root_typedef_map();
 
-    // Loop through all the classes we are looking at to see if there is an alias we should be done.
+    // Loop through all the classes we are looking at to see if there is an alias.
     for (auto &&c : classes)
     {
         if (typedef_back_map.find(c.name) != typedef_back_map.end()) {
@@ -188,7 +189,7 @@ void fixup_type_aliases(vector<class_info> &classes)
 // Find referenced arguments in methods and resolve any typedefs in there
 void fixup_type_defs(vector<class_info> &classes)
 {    
-    // Loop through all the classes we are looking at to see if there is an alias we should be done.
+    // Loop through all the classes we are looking at to see if there is an alias.
     for (auto &&c : classes)
     {
         for (auto &&m : c.methods)
@@ -202,6 +203,8 @@ void fixup_type_defs(vector<class_info> &classes)
     }
 }
 
+std::regex _multi_space_regex("\\s+");
+
 // Parse a horrendous C++ typename into its various pieces.
 //
 // "int"
@@ -212,7 +215,7 @@ typename_info parse_typename(const string &type_name)
     typename_info result;
     result.is_const = false;
     result.is_pointer = false;
-    result.nickname = trim(type_name);
+    result.nickname = trim(regex_replace(type_name, _multi_space_regex, " "));
     bool top_level_is_const = false;
 
     // Simple bail if this is a blank.
@@ -228,7 +231,7 @@ typename_info parse_typename(const string &type_name)
         switch (type_name[t_index]) {
             case '<':
                 if (ns_depth == 0) {
-                    result.type_name = name;
+                    result.type_name = boost::trim_copy(name);
                     name = "";
                 } else {
                     name += type_name[t_index];
@@ -289,13 +292,14 @@ typename_info parse_typename(const string &type_name)
                     if (n1 == "const") {
                         top_level_is_const = true;
                         name = "";
-                    } else {
-                        name += type_name[t_index];
+                        break;
                     }
-                } else {
-                    name += type_name[t_index];
                 }
-            
+                if (!name.empty() && name.back() != ' ') {
+                    name += ' ';
+                }
+                break;
+
             case '&':
                 // We don't care about reference modifiers for this work.
                 if (ns_depth != 0) {
@@ -463,6 +467,19 @@ typename_info container_of(const class_info &ci) {
     }
 
     throw runtime_error("Do not know how to find container type for class " + ci.name);
+}
+
+// Return a list of the C++ types that this type refers to in its
+// type name. This will unwind all the template arguments and return them as a set.
+// Does not return the typename that is itself.
+set<string> type_referenced_types(const typename_info &t) {
+    set<string> result;
+    for (auto &&t_arg : t.template_arguments) {
+        result.insert(unqualified_typename(t_arg));
+        auto t_args = type_referenced_types(t_arg);
+        result.insert(t_args.begin(), t_args.end());
+    }
+    return result;
 }
 
 // Return the C++ type as unqualified.

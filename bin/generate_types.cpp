@@ -250,10 +250,13 @@ int main(int argc, char**argv) {
     }
     auto cmd_classes = vm["class"].as<vector<string>>();
     queue<string> classes_to_do;
+    set<string> classes_original_set;
+
     for (auto &&c_name : cmd_classes)
     {
         if (class_name_is_good(c_name)) {
             classes_to_do.push(c_name);
+            classes_original_set.insert(c_name);
         }
     }
 
@@ -271,6 +274,7 @@ int main(int argc, char**argv) {
     // Translate the classes from the ROOT system to our internal system, starting from
     // a given top level. Add all connected classes below that.
     set<string> classes_done;
+    set<string> classes_original_set_done;
     vector<class_info> done_classes;
 
     while (classes_to_do.size() > 0) {
@@ -298,6 +302,12 @@ int main(int argc, char**argv) {
             // Mark this class done
             done_classes.push_back(c);
 
+            // And if this is one of the original classes, mark it as done too
+            // with the full name we can do the lookup for.
+            if (classes_original_set.find(raw_class_name) != classes_original_set.end()) {
+                classes_original_set_done.insert(c.name);
+            }
+
             // Add enum's to the `classes_done` list so we don't try to translate them again.
             auto defined_enums = class_enums(c);
             classes_done.insert(defined_enums.begin(), defined_enums.end());
@@ -308,7 +318,19 @@ int main(int argc, char**argv) {
                 if (class_name_is_good(c_name)) {
                     classes_to_do.push(c_name);
                 }
-            }        
+            }
+
+            // And add any template references in this class name
+            auto t_info = parse_typename(class_name);
+            for (auto &&t_name : type_referenced_types(t_info))
+            {
+                auto c_name = unqualified_type_name(t_name);
+                if (class_name_is_good(c_name))
+                {
+                    classes_to_do.push(c_name);
+                }
+            }
+
         } else {
             // The class might actually be an enum, and the parent might
             // be something we can translate. So - parse off one level down in the
@@ -354,6 +376,12 @@ int main(int argc, char**argv) {
         if (class_name_is_good(c_name)) {
             classes_to_do.push(c_name);
         }
+    }
+
+    // Next, look at any of the classes that were on the original list
+    for (auto &&c_name : classes_original_set_done)
+    {
+        classes_to_do.push(c_name);
     }
 
     // With that list of classes, lets find everything connected.

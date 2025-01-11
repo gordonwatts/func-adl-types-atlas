@@ -114,3 +114,13 @@ TEST(t_translate, enum_calo) {
     EXPECT_EQ(it2 == it->values.end(), false);
     EXPECT_EQ(it2->second, 3);
 }
+
+TEST(t_translate, muon_container) {
+    // Make sure we can translates something like ElementLink<xAOD::MuonContainer>
+    // when we've not already loaded muon container.
+    // WARNING: the test can't load muon container anywhere else!
+
+    auto info = translate_class("ElementLink<xAOD::MuonContainer>");
+
+    EXPECT_EQ(info.name, "ElementLink<DataVector<xAOD::Muon_v1>>");
+}
