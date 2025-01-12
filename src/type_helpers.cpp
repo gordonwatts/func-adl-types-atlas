@@ -546,6 +546,9 @@ std::string typename_cpp_string(const typename_info &ti)
 
     if (ti.is_pointer) {
         stream << " *";
+        if (ti.is_const_pointer) {
+            stream << " const";
+        }
     }
 
     return stream.str();
