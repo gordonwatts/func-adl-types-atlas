@@ -215,6 +215,7 @@ typename_info parse_typename(const string &type_name)
     typename_info result;
     result.is_const = false;
     result.is_pointer = false;
+    result.is_const_pointer = false;
     result.nickname = trim(regex_replace(type_name, _multi_space_regex, " "));
     bool top_level_is_const = false;
 
@@ -289,9 +290,13 @@ typename_info parse_typename(const string &type_name)
             case ' ':
                 if (ns_depth == 0) {
                     auto n1 = boost::trim_copy(name);
-                    if (n1 == "const") {
-                        top_level_is_const = true;
-                        name = "";
+                    if (boost::ends_with(n1, "const")) {
+                        if (result.is_pointer) {
+                            result.is_const_pointer = true;
+                        } else {
+                            top_level_is_const = true;
+                        }
+                        name = boost::trim_copy(name.substr(0, name.size() - 5));
                         break;
                     }
                 }
@@ -312,6 +317,14 @@ typename_info parse_typename(const string &type_name)
                 break;
         }
         t_index++;
+    }
+    if (boost::ends_with(name, "const")) {
+        if (result.is_pointer) {
+            result.is_const_pointer = true;
+        } else {
+            top_level_is_const = true;
+        }
+        name = name.substr(0, name.size() - 5);
     }
     if (name.size() > 0 && result.type_name.size() == 0) {
         boost::trim(name);

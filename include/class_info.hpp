@@ -24,6 +24,10 @@ struct typename_info {
 
     // Is this a pointer?
     bool is_pointer;
+
+    // And if this is a point, is a const pointer?
+    // int * const
+    bool is_const_pointer;
 };
 
 struct method_arg {
