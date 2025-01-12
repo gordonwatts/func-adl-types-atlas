@@ -264,11 +264,14 @@ typename_info parse_typename(const string &type_name)
                     if (name.size() > 0) {
                         result.namespace_list.push_back(parse_typename(name));
                         name = "";
-                    } else {
+                    }
+                    else
+                    {
+                        result.cpp_name = typename_cpp_string(result);
                         typename_info nested_ns = result;
                         result = typename_info();
 
-                        // result.cpp_name = nested_ns.cpp_name;
+                        result.cpp_name = nested_ns.cpp_name;
                         // nested_ns.cpp_name = nested_ns.cpp_name.substr(0, t_index);
 
                         result.namespace_list.push_back(nested_ns);
