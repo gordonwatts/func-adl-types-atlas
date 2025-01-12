@@ -63,16 +63,16 @@ collection_info get_collection_info(const class_info &c, const vector<class_info
     // The iterator looks at the thing we are looking at. This needs to be a DataVector.
     ostringstream it_name;
     auto item = get_first_class(c, "DataVector");
-    it_name << "Iterable<" << item.nickname << ">";
+    it_name << "Iterable<" << item.cpp_name << ">";
 
     // And we need to fetch the include file for the collections too.
     r.include_file = c.include_file;
 
     // The library is just the prefix on the include for the cpp item
     auto cls_ptr = find_if(all_classes.begin(), all_classes.end(),
-        [item](const class_info &a_class_item){return a_class_item.name == item.nickname;});
+        [item](const class_info &a_class_item){return a_class_item.name == item.cpp_name;});
     if (cls_ptr == all_classes.end()) {
-        throw runtime_error("Cannot find class " + item.nickname + " in ROOT's class list when trying to create collection " + c.name + ".");
+        throw runtime_error("Cannot find class " + item.cpp_name + " in ROOT's class list when trying to create collection " + c.name + ".");
     }
     r.link_libraries.push_back(cls_ptr->library_name);
 

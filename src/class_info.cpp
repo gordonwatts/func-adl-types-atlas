@@ -177,8 +177,8 @@ std::vector<std::string> referenced_types(const typename_info &t_info)
     }
 
     // And the top level name, but make sure it is "legal"
-    if (!all_of(t_info.nickname.begin(), t_info.nickname.end(), ::isdigit)
-        && (t_info.nickname[0] != '-')
+    if (!all_of(t_info.cpp_name.begin(), t_info.cpp_name.end(), ::isdigit)
+        && (t_info.cpp_name[0] != '-')
         )
         result.insert(unqualified_typename(t_info));
 

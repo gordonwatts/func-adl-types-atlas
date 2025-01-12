@@ -270,7 +270,7 @@ class_info translate_class(const std::string &class_name)
         isValid_method.name = "isValid";
         isValid_method.return_type = "bool";
         result.methods.push_back(isValid_method);
-        result.class_behaviors.push_back(t.template_arguments[0].template_arguments[0].nickname + "**");
+        result.class_behaviors.push_back(t.template_arguments[0].template_arguments[0].cpp_name + "**");
         return result;
     }
 
@@ -332,8 +332,8 @@ class_info translate_class(const std::string &class_name)
     string include ("");
     if (include == "") {
         auto dv_info = get_first_class(result, "DataVector");
-        if (dv_info.nickname.size() > 0) {
-            include = get_include_file_for_container(class_name, dv_info.nickname);
+        if (dv_info.cpp_name.size() > 0) {
+            include = get_include_file_for_container(class_name, dv_info.cpp_name);
             if (include.size() > 0 && !include_file_exists(include)) {
                 include = "";
             }

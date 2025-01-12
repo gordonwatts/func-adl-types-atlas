@@ -75,7 +75,7 @@ bool check_template_arguments(const typename_info &info, const set<string> &clas
                 return false;
             }
         } else {
-            if (classes_to_emit.find(ta.nickname) == classes_to_emit.end()) {
+            if (classes_to_emit.find(ta.cpp_name) == classes_to_emit.end()) {
                 return false;
             }
         }
@@ -132,15 +132,15 @@ string extract_container_iterator_type(const collection_info &c)
 {
     switch (c.iterator_type_info.template_arguments.size()) {
         case 0:
-            return c.iterator_type_info.nickname;
+            return c.iterator_type_info.cpp_name;
             break;
         
         case 1:
-            return c.iterator_type_info.template_arguments[0].nickname;
+            return c.iterator_type_info.template_arguments[0].cpp_name;
             break;
         
         default:
-            throw runtime_error("Do not know how to deal with the collection of iterator type " + c.iterator_type_info.nickname);
+            throw runtime_error("Do not know how to deal with the collection of iterator type " + c.iterator_type_info.cpp_name);
     }
 }
 
@@ -498,7 +498,7 @@ int main(int argc, char**argv) {
             << YAML::Key << "collection_name" << YAML::Value << c.name
             << YAML::Key << "cpp_item_type" << YAML::Value << extract_container_iterator_type(c)
             << YAML::Key << "python_item_type" << YAML::Value << normalized_type_name(extract_container_iterator_type(c))
-            << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.nickname
+            << YAML::Key << "cpp_container_type" << YAML::Value << c.type_info.cpp_name
             << YAML::Key << "python_container_type" << YAML::Value << normalized_type_name(c.iterator_type_info)
             << YAML::Key << "include_file" << YAML::Value << c.include_file
             << YAML::Key << "link_libraries" << YAML::Value << YAML::BeginSeq;
@@ -604,11 +604,11 @@ int main(int argc, char**argv) {
         // If we can dump the class, then we should!
         out << YAML::BeginMap
             << YAML::Key << "python_name" << YAML::Value << normalized_type_name(c_info->second.name_as_type)
-            << YAML::Key << "cpp_name" << YAML::Value << c_info->second.name_as_type.nickname;
+            << YAML::Key << "cpp_name" << YAML::Value << c_info->second.name_as_type.cpp_name;
                 
         if (is_collection(c_info->second)) {
             auto container_typename = container_of(c_info->second);
-            out << YAML::Key << "is_container_of_cpp" << YAML::Value << container_typename.nickname;
+            out << YAML::Key << "is_container_of_cpp" << YAML::Value << container_typename.cpp_name;
             out << YAML::Key << "is_container_of_python" << YAML::Value << normalized_type_name(container_typename);
         }
         
@@ -664,7 +664,7 @@ int main(int argc, char**argv) {
                 auto rtn_type = parse_typename(meth.return_type);
                 out << YAML::BeginMap
                     << YAML::Key << "name" << YAML::Value << meth.name
-                    << YAML::Key << "return_type" << YAML::Value << rtn_type.nickname;
+                    << YAML::Key << "return_type" << YAML::Value << rtn_type.cpp_name;
 
                 dump_arguments("arguments", meth.arguments, out);
                 dump_arguments("parameter_arguments", meth.parameter_arguments, out);

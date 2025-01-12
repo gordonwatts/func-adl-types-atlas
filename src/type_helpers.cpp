@@ -216,11 +216,11 @@ typename_info parse_typename(const string &type_name)
     result.is_const = false;
     result.is_pointer = false;
     result.is_const_pointer = false;
-    result.nickname = trim(regex_replace(type_name, _multi_space_regex, " "));
+    result.cpp_name = "";
     bool top_level_is_const = false;
 
     // Simple bail if this is a blank.
-    if (result.nickname.size() == 0) {
+    if (trim(type_name).size() == 0) {
         return result;
     }
 
@@ -268,8 +268,8 @@ typename_info parse_typename(const string &type_name)
                         typename_info nested_ns = result;
                         result = typename_info();
 
-                        result.nickname = nested_ns.nickname;
-                        nested_ns.nickname = nested_ns.nickname.substr(0, t_index);
+                        // result.cpp_name = nested_ns.cpp_name;
+                        // nested_ns.cpp_name = nested_ns.cpp_name.substr(0, t_index);
 
                         result.namespace_list.push_back(nested_ns);
                     }
@@ -331,8 +331,10 @@ typename_info parse_typename(const string &type_name)
         result.type_name = name;
         name = "";
     }
-
     result.is_const = top_level_is_const;
+
+    // Get the full type name right, and properly parsed.
+    result.cpp_name = typename_cpp_string(result);
 
     return result;
 }
@@ -602,7 +604,7 @@ bool is_understood_method(const method_info &meth, const set<string> &classes_to
                 throw runtime_error("Method " + meth.name + " uses a template argument of cpp_type and doesn't have exactly one template argument");
             }
             
-            known_classes.insert(t_parsed.template_arguments[0].nickname);
+            known_classes.insert(t_parsed.template_arguments[0].cpp_name);
         }
     }
     
@@ -630,7 +632,7 @@ typename_info py_typename(const typename_info &t)
         typename_info result(t);
         result.type_name = "Iterable";
         result.template_arguments[0] = py_typename(t.template_arguments[0]);
-        result.nickname = typename_cpp_string(result);
+        result.cpp_name = typename_cpp_string(result);
         return result;
     }
 
@@ -639,12 +641,12 @@ typename_info py_typename(const typename_info &t)
     // inside type.
     if (t.type_name == "ElementLink") {
         if (t.template_arguments[0].type_name != "DataVector") {
-            throw runtime_error("Found element link type, but not of a DataVector: '" + t.nickname + "'.");
+            throw runtime_error("Found element link type, but not of a DataVector: '" + t.cpp_name + "'.");
         }
         // Lift from twice deep - this is a link to a DataVector.
         typename_info result = py_typename(t.template_arguments[0].template_arguments[0]);
         result.is_pointer = true;
-        result.nickname = typename_cpp_string(result);
+        result.cpp_name = typename_cpp_string(result);
         return result;
     }
     return t;
@@ -671,7 +673,7 @@ typename_info parent_class(const typename_info &ti)
 {
     // Make sure this is going to work!
     if (ti.namespace_list.size() == 0) {
-        throw invalid_argument("No parent class for " + ti.nickname);
+        throw invalid_argument("No parent class for " + ti.cpp_name);
     }
 
     // Pop ourselves one up!
@@ -685,7 +687,7 @@ typename_info parent_class(const typename_info &ti)
     result.is_const = false;
 
     // And update the nickname
-    result.nickname = typename_cpp_string(result);
+    result.cpp_name = typename_cpp_string(result);
 
     return result;
 }

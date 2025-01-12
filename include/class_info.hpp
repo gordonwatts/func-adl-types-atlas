@@ -17,7 +17,7 @@ struct typename_info {
 
     // The full name of the type, including all qualifiers
     // int, int*, std::vector<std::jet>&, const int &, etc.
-    std::string nickname;
+    std::string cpp_name;
 
     // Is this a const decl?
     bool is_const;
