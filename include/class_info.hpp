@@ -9,7 +9,7 @@ struct typename_info {
     // The list of identifiers separated by "::"
     std::vector<typename_info> namespace_list;
 
-    // The actual type name
+    // The actual type name ("vector" in std::vector<int>, for example)
     std::string type_name;
 
     // The template arguments (if there are any)
