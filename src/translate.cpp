@@ -244,7 +244,7 @@ class_info translate_class(const std::string &class_name)
         return result;
     }
 
-    result.name = typename_cpp_string(t);
+    result.name = t.cpp_name;
     result.name_as_type = t;
 
     // Special case a vector.

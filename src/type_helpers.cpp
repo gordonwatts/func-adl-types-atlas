@@ -524,7 +524,7 @@ std::string typename_cpp_string(const typename_info &ti)
         if (!first)
             stream << "::";
         first = false;
-        stream << typename_cpp_string(ns);
+        stream << ns.cpp_name;
     }
     if (!first)
         stream << "::";
@@ -541,7 +541,7 @@ std::string typename_cpp_string(const typename_info &ti)
         } else {
             stream << ", ";
         }
-        stream << typename_cpp_string(t_arg);
+        stream << t_arg.cpp_name;
     }
     if (!first) {
         stream << ">";
