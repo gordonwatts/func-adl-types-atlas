@@ -31,7 +31,7 @@ TEST(t_type_helpers, type_int_ptr)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.cpp_name, "int*");
+    EXPECT_EQ(t.cpp_name, "int *");
     EXPECT_EQ(t.is_pointer, true);
 }
 
@@ -41,7 +41,8 @@ TEST(t_type_helpers, type_int_ref) {
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.cpp_name, "int&");
+    // We do not care about reference modifiers here.
+    EXPECT_EQ(t.cpp_name, "int");
     EXPECT_EQ(t.is_pointer, false);
 }
 
@@ -76,7 +77,7 @@ TEST(t_type_helpers, type_int_ptr_const_2)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.cpp_name, "int const *");
+    EXPECT_EQ(t.cpp_name, "const int *");
     EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, true);
     EXPECT_EQ(t.is_const_pointer, false);
@@ -126,7 +127,7 @@ TEST(t_type_helpers, type_int_const_2)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.cpp_name, "int const");
+    EXPECT_EQ(t.cpp_name, "const int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -137,7 +138,7 @@ TEST(t_type_helpers, type_int_const_3)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.cpp_name, "int const");
+    EXPECT_EQ(t.cpp_name, "const int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -496,7 +497,7 @@ TEST(t_type_helpers, container_of_begin_end_JetVertexConst) {
 
     auto t = container_of(ci);
 
-    EXPECT_EQ(t.cpp_name, "xAOD::JetConstituent*");
+    EXPECT_EQ(t.cpp_name, "xAOD::JetConstituent *");
 }
 
 TEST(t_type_helpers, container_of_vector) {
