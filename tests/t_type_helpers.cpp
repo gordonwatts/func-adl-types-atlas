@@ -67,7 +67,6 @@ TEST(t_type_helpers, type_int_ptr_const)
     EXPECT_EQ(t.cpp_name, "const int *");
     EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, true);
-    EXPECT_EQ(t.is_const_pointer, false);
 }
 
 TEST(t_type_helpers, type_int_ptr_const_2)
@@ -80,7 +79,6 @@ TEST(t_type_helpers, type_int_ptr_const_2)
     EXPECT_EQ(t.cpp_name, "const int *");
     EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, true);
-    EXPECT_EQ(t.is_const_pointer, false);
 }
 
 TEST(t_type_helpers, type_int_const_ptr_space)
@@ -93,7 +91,6 @@ TEST(t_type_helpers, type_int_const_ptr_space)
     EXPECT_EQ(t.cpp_name, "int * const");
     EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
-    EXPECT_EQ(t.is_const_pointer, true);
 }
 
 TEST(t_type_helpers, type_int_const_ptr)
@@ -106,7 +103,42 @@ TEST(t_type_helpers, type_int_const_ptr)
     EXPECT_EQ(t.cpp_name, "int * const");
     EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
-    EXPECT_EQ(t.is_const_pointer, true);
+}
+
+TEST(t_type_helpers, type_int_2ptr)
+{
+    auto t = parse_typename("int **");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.cpp_name, "int * *");
+    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_int_ptr_const_ptr)
+{
+    auto t = parse_typename("int * const *");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.cpp_name, "int * const *");
+    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_int_ptr_ptr_const)
+{
+    auto t = parse_typename("int * * const");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.cpp_name, "int * * const");
+    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.is_const, false);
 }
 
 TEST(t_type_helpers, type_int_const)

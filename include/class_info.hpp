@@ -5,6 +5,14 @@
 #include <iostream>
 #include <vector>
 
+struct pointer_info {
+    // True if the pointer is const -
+    // for example, "int * const", will have this set to
+    // true, and "int *" will have this set to false.
+    bool is_const;
+};
+
+
 struct typename_info {
     // The list of identifiers separated by "::"
     std::vector<typename_info> namespace_list;
@@ -25,9 +33,8 @@ struct typename_info {
     // Is this a pointer?
     bool is_pointer;
 
-    // And if this is a point, is a const pointer?
-    // int * const
-    bool is_const_pointer;
+    // Pointer info
+    std::vector<pointer_info> p_info;
 };
 
 struct method_arg {
