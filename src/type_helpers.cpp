@@ -151,7 +151,7 @@ string resolve_typedef(const string &c_name) {
     }
 
     // Last is to normalize, if possible, with a class name
-    auto c = TClass::GetClass(result.c_str());
+    auto c = get_tclass(result);
     if (c != nullptr) {
         result = c->GetName();
     }
@@ -482,7 +482,7 @@ typename_info container_of(const class_info &ci) {
             return parse_typename(rtn_type->second);
         }
 
-        auto &&c = TClass::GetClass(rtn_type_name.c_str());
+        auto &&c = get_tclass(rtn_type_name);
         if (c != nullptr) {
             return parse_typename(c->GetName());
         } else {
@@ -704,4 +704,20 @@ typename_info parent_class(const typename_info &ti)
     result.cpp_name = typename_cpp_string(result);
 
     return result;
+}
+
+// Get a TClass pointer, but protect against fetching
+// internal classes.
+TClass *get_tclass(const string &name)
+{
+    // Any type that looks like it has something internal,
+    // like __gnu_cxx::xxxx. ROOT has some issue with these,
+    // printing out error messages to cout (rather than cerr),
+    // which pollutes out output, of course. We don't need them,
+    // so avoid them.
+    if (name.find("__") != string::npos) {
+        return nullptr;
+    }
+
+    return TClass::GetClass(name.c_str());
 }

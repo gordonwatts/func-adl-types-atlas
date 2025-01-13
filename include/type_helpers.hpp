@@ -76,4 +76,8 @@ bool is_understood_method(const method_info &meth, const std::set<std::string> &
 // Return the python version of the typename.
 typename_info py_typename(const std::string &t_name);
 typename_info py_typename(const typename_info &t);
+
+// Return a TClass, but skip internal classes.
+class TClass;
+TClass *get_tclass(const std::string &name);
 #endif

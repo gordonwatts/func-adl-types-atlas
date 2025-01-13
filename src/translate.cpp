@@ -117,7 +117,7 @@ vector<string> inherited_public_classes(TClass *c_info) {
 }
 
 vector<string> inherited_public_classes(const std::string &cls_name) {
-    auto c_info = TClass::GetClass(cls_name.c_str());
+    auto c_info = get_tclass(cls_name);
     if (c_info != nullptr) {
         return inherited_public_classes(c_info);
     } else {
@@ -164,7 +164,7 @@ string clean_so_name(string original_name)
 // heuristics to get it right.
 string get_include_file_for_class(const string &class_name)
 {
-    auto c_info = TClass::GetClass(class_name.c_str());
+    auto c_info = get_tclass(class_name);
     if (c_info == nullptr) {
         return "";
     }
@@ -188,7 +188,7 @@ string get_include_file_for_container(const string &class_name, const string &ra
     auto object_name = std::regex_replace(raw_object_name, std::regex("_v[0-9]+$"), "");
     auto parsed_info = parse_typename(object_name);
 
-    auto c_info = TClass::GetClass(class_name.c_str());
+    auto c_info = get_tclass(class_name);
     if (c_info == nullptr) {
         return "";
     }
@@ -211,10 +211,11 @@ void load_template_arguments(const vector<typename_info> &types) {
     // even though it knows about all of that.
     for (auto &&t : types)
     {
-        if (TClass::GetClass(unqualified_typename(t).c_str()) == nullptr) {
+        if (get_tclass(unqualified_typename(t)) == nullptr)
+        {
             // If we can't load it, then load template arguments first.
             load_template_arguments(t.template_arguments);
-            TClass::GetClass(unqualified_typename(t).c_str());
+            get_tclass(unqualified_typename(t));
         }
     }
 }
@@ -228,8 +229,8 @@ class_info translate_class(const std::string &class_name)
 
     // Get the class
     class_info result;
-    auto unq_class_name = unqualified_type_name(class_name);
-    auto c_info = TClass::GetClass(unq_class_name.c_str());
+    auto unq_class_name = unqualified_typename(t_prior);
+    auto c_info = get_tclass(unq_class_name);
     if (c_info == nullptr)
     {
         std::cerr << "ERROR: Cannot translate class '" << class_name << "': ROOT's type system doesn't have it loaded as a class." << std::endl;
