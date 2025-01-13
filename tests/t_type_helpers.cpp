@@ -12,7 +12,6 @@ TEST(t_type_helpers, type_int) {
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.is_pointer, false);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -32,7 +31,6 @@ TEST(t_type_helpers, type_int_ptr)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int *");
-    EXPECT_EQ(t.is_pointer, true);
 }
 
 TEST(t_type_helpers, type_int_ref) {
@@ -43,7 +41,6 @@ TEST(t_type_helpers, type_int_ref) {
     EXPECT_EQ(t.type_name, "int");
     // We do not care about reference modifiers here.
     EXPECT_EQ(t.cpp_name, "int");
-    EXPECT_EQ(t.is_pointer, false);
 }
 
 TEST(t_type_helpers, type_int_ptr_space) {
@@ -53,7 +50,6 @@ TEST(t_type_helpers, type_int_ptr_space) {
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int *");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -65,7 +61,6 @@ TEST(t_type_helpers, type_int_ptr_const)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "const int *");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -77,7 +72,6 @@ TEST(t_type_helpers, type_int_ptr_const_2)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "const int *");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -89,7 +83,6 @@ TEST(t_type_helpers, type_int_const_ptr_space)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int * const");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -101,7 +94,6 @@ TEST(t_type_helpers, type_int_const_ptr)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int * const");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -113,7 +105,6 @@ TEST(t_type_helpers, type_int_2ptr)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int * *");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -125,7 +116,6 @@ TEST(t_type_helpers, type_int_ptr_const_ptr)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int * const *");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -137,7 +127,6 @@ TEST(t_type_helpers, type_int_ptr_ptr_const)
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
     EXPECT_EQ(t.cpp_name, "int * * const");
-    EXPECT_EQ(t.is_pointer, true);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -666,31 +655,26 @@ TEST(t_type_helpers, understood_method_template) {
 TEST(t_type_helpers, py_type_simple_type) {
     auto t = py_typename("int");
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.is_pointer, false);
 }
 
 TEST(t_type_helpers, py_type_vector) {
     auto t = py_typename("vector<int>");
     EXPECT_EQ(t.cpp_name, "Iterable<int>");
-    EXPECT_EQ(t.is_pointer, false);
 }
 
 TEST(t_type_helpers, py_type_element_link) {
     auto t = py_typename("ElementLink<DataVector<int>>");
     EXPECT_EQ(t.cpp_name, "int *");
-    EXPECT_EQ(t.is_pointer, true);
 }
 
 TEST(t_type_helpers, py_type_dv) {
     auto t = py_typename("DataVector<int>");
     EXPECT_EQ(t.cpp_name, "Iterable<int>");
-    EXPECT_EQ(t.is_pointer, false);
 }
 
 TEST(t_type_helpers, py_type_dv_el) {
     auto t = py_typename("vector<ElementLink<DataVector<int>>>");
     EXPECT_EQ(t.cpp_name, "Iterable<int *>");
-    EXPECT_EQ(t.is_pointer, false);
 }
 // TODO: Remove py_typename, not used.
 
@@ -757,7 +741,6 @@ TEST(t_type_helpers, parent_class_three) {
     EXPECT_EQ(p.namespace_list[0].type_name, "std");
     EXPECT_EQ(p.template_arguments.size(), 0);
     EXPECT_EQ(p.is_const, false);
-    EXPECT_EQ(p.is_pointer, false);
     EXPECT_EQ(p.cpp_name, "std::org");
 }
 
@@ -771,7 +754,6 @@ TEST(t_type_helpers, parent_class_const_ptr) {
     EXPECT_EQ(p.cpp_name, "std::org");
     EXPECT_EQ(p.template_arguments.size(), 0);
     EXPECT_EQ(p.is_const, false);
-    EXPECT_EQ(p.is_pointer, false);
 }
 
 TEST(t_type_helpers, parent_class_none) {

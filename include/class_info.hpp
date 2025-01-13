@@ -30,10 +30,7 @@ struct typename_info {
     // Is this a const decl?
     bool is_const;
 
-    // Is this a pointer?
-    bool is_pointer;
-
-    // Pointer info
+    // Pointer info - for each "*" we push info.
     std::vector<pointer_info> p_info;
 };
 

@@ -160,8 +160,11 @@ string resolve_typedef(const string &c_name) {
     if (t.is_const) {
         result = "const " + result;
     }
-    if (t.is_pointer) {
+    for (auto &p : t.p_info) {
         result = result + "*";
+        if (p.is_const) {
+            result = result + " const";
+        }
     }
 
     return result;
@@ -214,8 +217,6 @@ typename_info parse_typename(const string &type_name)
 {
     typename_info result;
     result.is_const = false;
-    result.is_pointer = false;
-    result.is_const_pointer = false;
     result.cpp_name = "";
     bool top_level_is_const = false;
 
@@ -284,7 +285,9 @@ typename_info parse_typename(const string &type_name)
 
             case '*':
                 if (ns_depth == 0) {
-                    result.is_pointer = true;
+                    pointer_info p;
+                    p.is_const = false;
+                    result.p_info.push_back(p);
                 } else {
                     name += type_name[t_index];
                 }
@@ -294,8 +297,8 @@ typename_info parse_typename(const string &type_name)
                 if (ns_depth == 0) {
                     auto n1 = boost::trim_copy(name);
                     if (boost::ends_with(n1, "const")) {
-                        if (result.is_pointer) {
-                            result.is_const_pointer = true;
+                        if (result.p_info.size() > 0) {
+                            result.p_info.back().is_const = true;
                         } else {
                             top_level_is_const = true;
                         }
@@ -322,9 +325,12 @@ typename_info parse_typename(const string &type_name)
         t_index++;
     }
     if (boost::ends_with(name, "const")) {
-        if (result.is_pointer) {
-            result.is_const_pointer = true;
-        } else {
+        if (result.p_info.size() > 0)
+        {
+            result.p_info.back().is_const = true;
+        }
+        else
+        {
             top_level_is_const = true;
         }
         name = name.substr(0, name.size() - 5);
@@ -505,7 +511,7 @@ std::string unqualified_typename(const typename_info &ti)
 {
     typename_info n_ti = ti;
     n_ti.is_const = false;
-    n_ti.is_pointer = false;
+    n_ti.p_info.clear();
     return typename_cpp_string(n_ti);
 }
 
@@ -547,9 +553,10 @@ std::string typename_cpp_string(const typename_info &ti)
         stream << ">";
     }
 
-    if (ti.is_pointer) {
+    for (auto &p : ti.p_info) {
         stream << " *";
-        if (ti.is_const_pointer) {
+        if (p.is_const)
+        {
             stream << " const";
         }
     }
@@ -651,7 +658,9 @@ typename_info py_typename(const typename_info &t)
         }
         // Lift from twice deep - this is a link to a DataVector.
         typename_info result = py_typename(t.template_arguments[0].template_arguments[0]);
-        result.is_pointer = true;
+        pointer_info p;
+        p.is_const = false;
+        result.p_info.push_back(p);
         result.cpp_name = typename_cpp_string(result);
         return result;
     }
@@ -689,7 +698,6 @@ typename_info parent_class(const typename_info &ti)
     result.namespace_list.insert(result.namespace_list.begin(), ti.namespace_list.begin(), ti.namespace_list.end() - 1);
 
     // Reset pointer and const-ness
-    result.is_pointer = false;
     result.is_const = false;
 
     // And update the nickname
