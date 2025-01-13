@@ -151,7 +151,7 @@ string resolve_typedef(const string &c_name) {
     }
 
     // Last is to normalize, if possible, with a class name
-    auto c = TClass::GetClass(result.c_str());
+    auto c = get_tclass(result);
     if (c != nullptr) {
         result = c->GetName();
     }
@@ -160,8 +160,11 @@ string resolve_typedef(const string &c_name) {
     if (t.is_const) {
         result = "const " + result;
     }
-    if (t.is_pointer) {
+    for (auto &p : t.p_info) {
         result = result + "*";
+        if (p.is_const) {
+            result = result + " const";
+        }
     }
 
     return result;
@@ -214,13 +217,11 @@ typename_info parse_typename(const string &type_name)
 {
     typename_info result;
     result.is_const = false;
-    result.is_pointer = false;
-    result.is_const_pointer = false;
-    result.nickname = trim(regex_replace(type_name, _multi_space_regex, " "));
+    result.cpp_name = "";
     bool top_level_is_const = false;
 
     // Simple bail if this is a blank.
-    if (result.nickname.size() == 0) {
+    if (trim(type_name).size() == 0) {
         return result;
     }
 
@@ -264,12 +265,15 @@ typename_info parse_typename(const string &type_name)
                     if (name.size() > 0) {
                         result.namespace_list.push_back(parse_typename(name));
                         name = "";
-                    } else {
+                    }
+                    else
+                    {
+                        result.cpp_name = typename_cpp_string(result);
                         typename_info nested_ns = result;
                         result = typename_info();
 
-                        result.nickname = nested_ns.nickname;
-                        nested_ns.nickname = nested_ns.nickname.substr(0, t_index);
+                        result.cpp_name = nested_ns.cpp_name;
+                        // nested_ns.cpp_name = nested_ns.cpp_name.substr(0, t_index);
 
                         result.namespace_list.push_back(nested_ns);
                     }
@@ -281,7 +285,9 @@ typename_info parse_typename(const string &type_name)
 
             case '*':
                 if (ns_depth == 0) {
-                    result.is_pointer = true;
+                    pointer_info p;
+                    p.is_const = false;
+                    result.p_info.push_back(p);
                 } else {
                     name += type_name[t_index];
                 }
@@ -291,8 +297,8 @@ typename_info parse_typename(const string &type_name)
                 if (ns_depth == 0) {
                     auto n1 = boost::trim_copy(name);
                     if (boost::ends_with(n1, "const")) {
-                        if (result.is_pointer) {
-                            result.is_const_pointer = true;
+                        if (result.p_info.size() > 0) {
+                            result.p_info.back().is_const = true;
                         } else {
                             top_level_is_const = true;
                         }
@@ -319,9 +325,12 @@ typename_info parse_typename(const string &type_name)
         t_index++;
     }
     if (boost::ends_with(name, "const")) {
-        if (result.is_pointer) {
-            result.is_const_pointer = true;
-        } else {
+        if (result.p_info.size() > 0)
+        {
+            result.p_info.back().is_const = true;
+        }
+        else
+        {
             top_level_is_const = true;
         }
         name = name.substr(0, name.size() - 5);
@@ -331,8 +340,10 @@ typename_info parse_typename(const string &type_name)
         result.type_name = name;
         name = "";
     }
-
     result.is_const = top_level_is_const;
+
+    // Get the full type name right, and properly parsed.
+    result.cpp_name = typename_cpp_string(result);
 
     return result;
 }
@@ -471,7 +482,7 @@ typename_info container_of(const class_info &ci) {
             return parse_typename(rtn_type->second);
         }
 
-        auto &&c = TClass::GetClass(rtn_type_name.c_str());
+        auto &&c = get_tclass(rtn_type_name);
         if (c != nullptr) {
             return parse_typename(c->GetName());
         } else {
@@ -500,7 +511,7 @@ std::string unqualified_typename(const typename_info &ti)
 {
     typename_info n_ti = ti;
     n_ti.is_const = false;
-    n_ti.is_pointer = false;
+    n_ti.p_info.clear();
     return typename_cpp_string(n_ti);
 }
 
@@ -519,7 +530,7 @@ std::string typename_cpp_string(const typename_info &ti)
         if (!first)
             stream << "::";
         first = false;
-        stream << typename_cpp_string(ns);
+        stream << ns.cpp_name;
     }
     if (!first)
         stream << "::";
@@ -536,14 +547,18 @@ std::string typename_cpp_string(const typename_info &ti)
         } else {
             stream << ", ";
         }
-        stream << typename_cpp_string(t_arg);
+        stream << t_arg.cpp_name;
     }
     if (!first) {
         stream << ">";
     }
 
-    if (ti.is_pointer) {
+    for (auto &p : ti.p_info) {
         stream << " *";
+        if (p.is_const)
+        {
+            stream << " const";
+        }
     }
 
     return stream.str();
@@ -602,7 +617,7 @@ bool is_understood_method(const method_info &meth, const set<string> &classes_to
                 throw runtime_error("Method " + meth.name + " uses a template argument of cpp_type and doesn't have exactly one template argument");
             }
             
-            known_classes.insert(t_parsed.template_arguments[0].nickname);
+            known_classes.insert(t_parsed.template_arguments[0].cpp_name);
         }
     }
     
@@ -630,7 +645,7 @@ typename_info py_typename(const typename_info &t)
         typename_info result(t);
         result.type_name = "Iterable";
         result.template_arguments[0] = py_typename(t.template_arguments[0]);
-        result.nickname = typename_cpp_string(result);
+        result.cpp_name = typename_cpp_string(result);
         return result;
     }
 
@@ -639,12 +654,14 @@ typename_info py_typename(const typename_info &t)
     // inside type.
     if (t.type_name == "ElementLink") {
         if (t.template_arguments[0].type_name != "DataVector") {
-            throw runtime_error("Found element link type, but not of a DataVector: '" + t.nickname + "'.");
+            throw runtime_error("Found element link type, but not of a DataVector: '" + t.cpp_name + "'.");
         }
         // Lift from twice deep - this is a link to a DataVector.
         typename_info result = py_typename(t.template_arguments[0].template_arguments[0]);
-        result.is_pointer = true;
-        result.nickname = typename_cpp_string(result);
+        pointer_info p;
+        p.is_const = false;
+        result.p_info.push_back(p);
+        result.cpp_name = typename_cpp_string(result);
         return result;
     }
     return t;
@@ -671,7 +688,7 @@ typename_info parent_class(const typename_info &ti)
 {
     // Make sure this is going to work!
     if (ti.namespace_list.size() == 0) {
-        throw invalid_argument("No parent class for " + ti.nickname);
+        throw invalid_argument("No parent class for " + ti.cpp_name);
     }
 
     // Pop ourselves one up!
@@ -681,11 +698,26 @@ typename_info parent_class(const typename_info &ti)
     result.namespace_list.insert(result.namespace_list.begin(), ti.namespace_list.begin(), ti.namespace_list.end() - 1);
 
     // Reset pointer and const-ness
-    result.is_pointer = false;
     result.is_const = false;
 
     // And update the nickname
-    result.nickname = typename_cpp_string(result);
+    result.cpp_name = typename_cpp_string(result);
 
     return result;
+}
+
+// Get a TClass pointer, but protect against fetching
+// internal classes.
+TClass *get_tclass(const string &name)
+{
+    // Any type that looks like it has something internal,
+    // like __gnu_cxx::xxxx. ROOT has some issue with these,
+    // printing out error messages to cout (rather than cerr),
+    // which pollutes out output, of course. We don't need them,
+    // so avoid them.
+    if (name.find("__") != string::npos) {
+        return nullptr;
+    }
+
+    return TClass::GetClass(name.c_str());
 }

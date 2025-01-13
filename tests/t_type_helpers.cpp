@@ -12,7 +12,6 @@ TEST(t_type_helpers, type_int) {
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.is_pointer, false);
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -31,8 +30,7 @@ TEST(t_type_helpers, type_int_ptr)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int*");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "int *");
 }
 
 TEST(t_type_helpers, type_int_ref) {
@@ -41,8 +39,8 @@ TEST(t_type_helpers, type_int_ref) {
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int&");
-    EXPECT_EQ(t.is_pointer, false);
+    // We do not care about reference modifiers here.
+    EXPECT_EQ(t.cpp_name, "int");
 }
 
 TEST(t_type_helpers, type_int_ptr_space) {
@@ -51,8 +49,7 @@ TEST(t_type_helpers, type_int_ptr_space) {
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int *");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "int *");
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -63,10 +60,8 @@ TEST(t_type_helpers, type_int_ptr_const)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "const int *");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "const int *");
     EXPECT_EQ(t.is_const, true);
-    EXPECT_EQ(t.is_const_pointer, false);
 }
 
 TEST(t_type_helpers, type_int_ptr_const_2)
@@ -76,10 +71,8 @@ TEST(t_type_helpers, type_int_ptr_const_2)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int const *");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "const int *");
     EXPECT_EQ(t.is_const, true);
-    EXPECT_EQ(t.is_const_pointer, false);
 }
 
 TEST(t_type_helpers, type_int_const_ptr_space)
@@ -89,10 +82,8 @@ TEST(t_type_helpers, type_int_const_ptr_space)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int * const");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "int * const");
     EXPECT_EQ(t.is_const, false);
-    EXPECT_EQ(t.is_const_pointer, true);
 }
 
 TEST(t_type_helpers, type_int_const_ptr)
@@ -102,10 +93,41 @@ TEST(t_type_helpers, type_int_const_ptr)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int * const");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "int * const");
     EXPECT_EQ(t.is_const, false);
-    EXPECT_EQ(t.is_const_pointer, true);
+}
+
+TEST(t_type_helpers, type_int_2ptr)
+{
+    auto t = parse_typename("int **");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.cpp_name, "int * *");
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_int_ptr_const_ptr)
+{
+    auto t = parse_typename("int * const *");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.cpp_name, "int * const *");
+    EXPECT_EQ(t.is_const, false);
+}
+
+TEST(t_type_helpers, type_int_ptr_ptr_const)
+{
+    auto t = parse_typename("int * * const");
+
+    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.template_arguments.size(), 0);
+    EXPECT_EQ(t.type_name, "int");
+    EXPECT_EQ(t.cpp_name, "int * * const");
+    EXPECT_EQ(t.is_const, false);
 }
 
 TEST(t_type_helpers, type_int_const)
@@ -115,7 +137,7 @@ TEST(t_type_helpers, type_int_const)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "const int");
+    EXPECT_EQ(t.cpp_name, "const int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -126,7 +148,7 @@ TEST(t_type_helpers, type_int_const_2)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int const");
+    EXPECT_EQ(t.cpp_name, "const int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -137,7 +159,7 @@ TEST(t_type_helpers, type_int_const_3)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "int const");
+    EXPECT_EQ(t.cpp_name, "const int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -148,7 +170,7 @@ TEST(t_type_helpers, type_int_const_spaces)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.nickname, "const int");
+    EXPECT_EQ(t.cpp_name, "const int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -159,7 +181,7 @@ TEST(t_type_helpers, type_unsigned_int)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "unsigned int");
-    EXPECT_EQ(t.nickname, "unsigned int");
+    EXPECT_EQ(t.cpp_name, "unsigned int");
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -170,7 +192,7 @@ TEST(t_type_helpers, type_unsigned_int_spaces)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "unsigned int");
-    EXPECT_EQ(t.nickname, "unsigned int");
+    EXPECT_EQ(t.cpp_name, "unsigned int");
     EXPECT_EQ(t.is_const, false);
 }
 
@@ -181,7 +203,7 @@ TEST(t_type_helpers, type_const_unsigned_int)
     EXPECT_EQ(t.namespace_list.size(), 0);
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.type_name, "unsigned int");
-    EXPECT_EQ(t.nickname, "const unsigned int");
+    EXPECT_EQ(t.cpp_name, "const unsigned int");
     EXPECT_EQ(t.is_const, true);
 }
 
@@ -229,7 +251,7 @@ TEST(t_type_helpers, type_namespaced_type_twice) {
     auto t = parse_typename("std::org::size_t");
 
     EXPECT_EQ(t.type_name, "size_t");
-    EXPECT_EQ(t.nickname, "std::org::size_t");
+    EXPECT_EQ(t.cpp_name, "std::org::size_t");
 
     EXPECT_EQ(t.namespace_list.size(), 2);
     auto t_ns = t.namespace_list[0];
@@ -272,11 +294,11 @@ TEST(t_type_helpers, type_namespaced_buried) {
 TEST(t_type_helpers, type_qualified_typename) {
     auto t = parse_typename("vector<float>::size_t");
 
-    EXPECT_EQ(t.nickname, "vector<float>::size_t");
+    EXPECT_EQ(t.cpp_name, "vector<float>::size_t");
     EXPECT_EQ(t.type_name, "size_t");
     EXPECT_EQ(t.template_arguments.size(), 0);
     EXPECT_EQ(t.namespace_list.size(), 1);
-    EXPECT_EQ(t.namespace_list[0].nickname, "vector<float>");
+    EXPECT_EQ(t.namespace_list[0].cpp_name, "vector<float>");
 }
 
 
@@ -284,7 +306,7 @@ TEST(t_type_helpers, type_qualified_typename) {
 TEST(t_type_helpers, type_whitespace) {
     auto t = parse_typename("vector<float>::size_t ");
 
-    EXPECT_EQ(t.nickname, "vector<float>::size_t");
+    EXPECT_EQ(t.cpp_name, "vector<float>::size_t");
 }
 
 
@@ -421,26 +443,26 @@ TEST(t_type_helpers, typedef_fixup_methods) {
 TEST(t_type_helpers, is_collection_int) {
     typename_info ti;
     ti.type_name = "int";
-    ti.nickname = "int";
+    ti.cpp_name = "int";
     EXPECT_EQ(is_collection(ti), false);
 }
 
 TEST(t_type_helpers, is_collection_vector) {
     typename_info ti_int;
     ti_int.type_name = "int";
-    ti_int.nickname = "int";
+    ti_int.cpp_name = "int";
 
     typename_info ti;
     ti.type_name = "vector";
-    ti.nickname = "vector<int>";
+    ti.cpp_name = "vector<int>";
     ti.template_arguments.push_back(ti_int);
     EXPECT_EQ(is_collection(ti), true);
 }
 
 TEST(t_type_helpers, is_collection_simple_class) {
     typename_info ti;
-    ti.nickname = "dude";
-    ti.nickname = "dude";
+    ti.cpp_name = "dude";
+    ti.cpp_name = "dude";
 
     class_info ci;
     ci.name = "dude";
@@ -451,13 +473,13 @@ TEST(t_type_helpers, is_collection_simple_class) {
 
 TEST(t_type_helpers, container_of_begin_end_TIter) {
     typename_info ti;
-    ti.nickname = "dude";
-    ti.nickname = "dude";
+    ti.cpp_name = "dude";
+    ti.cpp_name = "dude";
 
     class_info ci;
     ci.name = "MyVector";
     ci.name_as_type.type_name = "MyVector";
-    ci.name_as_type.nickname = "MyVector";
+    ci.name_as_type.cpp_name = "MyVector";
 
     // Add begin/end vector here
     method_info m_begin;
@@ -471,18 +493,18 @@ TEST(t_type_helpers, container_of_begin_end_TIter) {
 
     auto t = container_of(ci);
 
-    EXPECT_EQ(t.nickname, "TObject");
+    EXPECT_EQ(t.cpp_name, "TObject");
 }
 
 TEST(t_type_helpers, container_of_begin_end_JetVertexConst) {
     typename_info ti;
-    ti.nickname = "dude";
-    ti.nickname = "dude";
+    ti.cpp_name = "dude";
+    ti.cpp_name = "dude";
 
     class_info ci;
     ci.name = "MyVector";
     ci.name_as_type.type_name = "MyVector";
-    ci.name_as_type.nickname = "MyVector";
+    ci.name_as_type.cpp_name = "MyVector";
 
     // Add begin/end vector here
     method_info m_begin;
@@ -496,7 +518,7 @@ TEST(t_type_helpers, container_of_begin_end_JetVertexConst) {
 
     auto t = container_of(ci);
 
-    EXPECT_EQ(t.nickname, "xAOD::JetConstituent*");
+    EXPECT_EQ(t.cpp_name, "xAOD::JetConstituent *");
 }
 
 TEST(t_type_helpers, container_of_vector) {
@@ -515,7 +537,7 @@ TEST(t_type_helpers, container_of_vector) {
 
     auto t = container_of(ci);
 
-    EXPECT_EQ(t.nickname, "int");
+    EXPECT_EQ(t.cpp_name, "int");
 }
 
 TEST(t_type_helpers, cpp_string_simple) {
@@ -633,31 +655,26 @@ TEST(t_type_helpers, understood_method_template) {
 TEST(t_type_helpers, py_type_simple_type) {
     auto t = py_typename("int");
     EXPECT_EQ(t.type_name, "int");
-    EXPECT_EQ(t.is_pointer, false);
 }
 
 TEST(t_type_helpers, py_type_vector) {
     auto t = py_typename("vector<int>");
-    EXPECT_EQ(t.nickname, "Iterable<int>");
-    EXPECT_EQ(t.is_pointer, false);
+    EXPECT_EQ(t.cpp_name, "Iterable<int>");
 }
 
 TEST(t_type_helpers, py_type_element_link) {
     auto t = py_typename("ElementLink<DataVector<int>>");
-    EXPECT_EQ(t.nickname, "int *");
-    EXPECT_EQ(t.is_pointer, true);
+    EXPECT_EQ(t.cpp_name, "int *");
 }
 
 TEST(t_type_helpers, py_type_dv) {
     auto t = py_typename("DataVector<int>");
-    EXPECT_EQ(t.nickname, "Iterable<int>");
-    EXPECT_EQ(t.is_pointer, false);
+    EXPECT_EQ(t.cpp_name, "Iterable<int>");
 }
 
 TEST(t_type_helpers, py_type_dv_el) {
     auto t = py_typename("vector<ElementLink<DataVector<int>>>");
-    EXPECT_EQ(t.nickname, "Iterable<int *>");
-    EXPECT_EQ(t.is_pointer, false);
+    EXPECT_EQ(t.cpp_name, "Iterable<int *>");
 }
 // TODO: Remove py_typename, not used.
 
@@ -724,8 +741,7 @@ TEST(t_type_helpers, parent_class_three) {
     EXPECT_EQ(p.namespace_list[0].type_name, "std");
     EXPECT_EQ(p.template_arguments.size(), 0);
     EXPECT_EQ(p.is_const, false);
-    EXPECT_EQ(p.is_pointer, false);
-    EXPECT_EQ(p.nickname, "std::org");
+    EXPECT_EQ(p.cpp_name, "std::org");
 }
 
 TEST(t_type_helpers, parent_class_const_ptr) {
@@ -735,10 +751,9 @@ TEST(t_type_helpers, parent_class_const_ptr) {
     EXPECT_EQ(p.type_name, "org");
     EXPECT_EQ(p.namespace_list.size(), 1);
     EXPECT_EQ(p.namespace_list[0].type_name, "std");
-    EXPECT_EQ(p.nickname, "std::org");
+    EXPECT_EQ(p.cpp_name, "std::org");
     EXPECT_EQ(p.template_arguments.size(), 0);
     EXPECT_EQ(p.is_const, false);
-    EXPECT_EQ(p.is_pointer, false);
 }
 
 TEST(t_type_helpers, parent_class_none) {
@@ -760,7 +775,7 @@ TEST(t_type_helpers, parent_class_vector) {
 
     EXPECT_EQ(p.type_name, expected.type_name);
     EXPECT_EQ(p.namespace_list.size(), expected.namespace_list.size());
-    EXPECT_EQ(p.nickname, expected.nickname);
+    EXPECT_EQ(p.cpp_name, expected.cpp_name);
     EXPECT_EQ(p.template_arguments.size(), expected.template_arguments.size());
 }
 
