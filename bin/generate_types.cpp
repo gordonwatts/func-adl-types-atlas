@@ -605,6 +605,9 @@ int main(int argc, char**argv) {
         out << YAML::BeginMap
             << YAML::Key << "python_name" << YAML::Value << normalized_type_name(c_info->second.name_as_type)
             << YAML::Key << "cpp_name" << YAML::Value << c_info->second.name_as_type.cpp_name;
+        
+        if (c_info->second.library_name.size() > 0)
+            out << YAML::Key << "library" << YAML::Value << c_info->second.library_name;
                 
         if (is_collection(c_info->second)) {
             auto container_typename = container_of(c_info->second);
