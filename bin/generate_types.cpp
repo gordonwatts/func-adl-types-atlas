@@ -606,9 +606,10 @@ int main(int argc, char**argv) {
             << YAML::Key << "python_name" << YAML::Value << normalized_type_name(c_info->second.name_as_type)
             << YAML::Key << "cpp_name" << YAML::Value << c_info->second.name_as_type.cpp_name;
         
-        if (c_info->second.library_name.size() > 0)
+        if (c_info->second.library_name.size() > 0 && c_info->second.library_name.find(".so") == string::npos) {
             out << YAML::Key << "library" << YAML::Value << c_info->second.library_name;
-                
+        }
+
         if (is_collection(c_info->second)) {
             auto container_typename = container_of(c_info->second);
             out << YAML::Key << "is_container_of_cpp" << YAML::Value << container_typename.cpp_name;
