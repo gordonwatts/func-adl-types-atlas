@@ -3,60 +3,36 @@ project(func_adl_types_atlas VERSION 0.1.0)
 
 find_package(ROOT REQUIRED COMPONENTS Core)
 
-# Get the major version number from AnalysisBase_VERSION
-string(REPLACE "." ";" AnalysisBase_VERSION_LIST $ENV{AnalysisBase_VERSION})
-list(GET AnalysisBase_VERSION_LIST 0 AnalysisBase_MAJOR_VERSION)
-
-  include(FetchContent)
-if (AnalysisBase_MAJOR_VERSION GREATER_EQUAL 25)
-    # FetchContent for version 25 or larger
-
-    # Google test
+# Define a macro to handle FetchContent_Declare with conditional DOWNLOAD_EXTRACT_TIMESTAMP
+# This allows us to work with several versions of cmake.
+include(FetchContent)
+macro(FetchContent_Package name url)
+  if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24.0")
     FetchContent_Declare(
-      googletest
-      URL https://github.com/google/googletest/archive/075810f7a20405ea09a93f68847d6e963212fa62.zip
+      ${name}
+      URL ${url}
       DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     )
-    FetchContent_MakeAvailable(googletest)
-
-    # YAML parsing
+  else()
     FetchContent_Declare(
-      yaml-cpp
-      URL https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+      ${name}
+      URL ${url}
     )
-    FetchContent_MakeAvailable(yaml-cpp)
+  endif()
+  FetchContent_MakeAvailable(${name})
+endmacro()
 
-else()
-    # FetchContent for version less than 25
-
-    # Google test
-    FetchContent_Declare(
-      googletest
-      URL https://github.com/google/googletest/archive/release-1.8.1.zip
-    )
-    FetchContent_MakeAvailable(googletest)
-
-    # YAML parsing
-    FetchContent_Declare(
-      yaml-cpp
-      URL https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip
-    )
-    FetchContent_MakeAvailable(yaml-cpp)
-
-    # Boost
-    find_package(Boost COMPONENTS program_options REQUIRED)
-endif()
-
-# Add argparse
-FetchContent_Declare(
-  argparse
-  URL https://github.com/p-ranav/argparse/archive/refs/tags/v3.2.zip
-)
-FetchContent_MakeAvailable(argparse)
+# Fetch our libraries
+FetchContent_Package(googletest https://github.com/google/googletest/archive/075810f7a20405ea09a93f68847d6e963212fa62.zip)
+FetchContent_Package(yaml-cpp https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip)
+FetchContent_Package(argparse https://github.com/p-ranav/argparse/archive/refs/tags/v3.2.zip)
 
 include(CTest)
 enable_testing()
+
+if($ENV{AnalysisBase_VERSION} VERSION_LESS "25.0.0")
+  find_package(Boost COMPONENTS program_options REQUIRED)
+endif()
 
 # Package setup
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
