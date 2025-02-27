@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.20.0)
 project(func_adl_types_atlas VERSION 0.1.0)
 
 find_package(ROOT REQUIRED COMPONENTS Core)
@@ -7,11 +7,11 @@ find_package(ROOT REQUIRED COMPONENTS Core)
 string(REPLACE "." ";" AnalysisBase_VERSION_LIST $ENV{AnalysisBase_VERSION})
 list(GET AnalysisBase_VERSION_LIST 0 AnalysisBase_MAJOR_VERSION)
 
+  include(FetchContent)
 if (AnalysisBase_MAJOR_VERSION GREATER_EQUAL 25)
     # FetchContent for version 25 or larger
 
     # Google test
-    include(FetchContent)
     FetchContent_Declare(
       googletest
       URL https://github.com/google/googletest/archive/075810f7a20405ea09a93f68847d6e963212fa62.zip
@@ -20,7 +20,6 @@ if (AnalysisBase_MAJOR_VERSION GREATER_EQUAL 25)
     FetchContent_MakeAvailable(googletest)
 
     # YAML parsing
-    include(FetchContent)
     FetchContent_Declare(
       yaml-cpp
       URL https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip
@@ -32,7 +31,6 @@ else()
     # FetchContent for version less than 25
 
     # Google test
-    include(FetchContent)
     FetchContent_Declare(
       googletest
       URL https://github.com/google/googletest/archive/release-1.8.1.zip
@@ -40,7 +38,6 @@ else()
     FetchContent_MakeAvailable(googletest)
 
     # YAML parsing
-    include(FetchContent)
     FetchContent_Declare(
       yaml-cpp
       URL https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip
@@ -51,9 +48,15 @@ else()
     find_package(Boost COMPONENTS program_options REQUIRED)
 endif()
 
+# Add argparse
+FetchContent_Declare(
+  argparse
+  URL https://github.com/p-ranav/argparse/archive/refs/tags/v3.2.zip
+)
+FetchContent_MakeAvailable(argparse)
+
 include(CTest)
 enable_testing()
-
 
 # Package setup
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -93,8 +96,7 @@ gtest_discover_tests(t_metadata_file_finder)
 
 # Executables for running the translation
 add_executable(generate_types bin/generate_types.cpp)
-# target_link_libraries(generate_types ROOT::Core wraper_generators Boost::program_options stdc++fs)
-target_link_libraries(generate_types ROOT::Core wraper_generators stdc++fs)
+target_link_libraries(generate_types ROOT::Core wraper_generators argparse stdc++fs)
 
 # # Some definitions for CPACK (incase we need those eventually)
 # set(CPACK_PROJECT_NAME ${PROJECT_NAME})

@@ -19,8 +19,7 @@
 #include "TClassTable.h"
 
 #include "yaml-cpp/yaml.h"
-
-#include <boost/program_options.hpp>
+#include <argparse/argparse.hpp>
 
 #include <iostream>
 #include <queue>
@@ -30,7 +29,6 @@
 #include <fstream>
 
 using namespace std;
-using namespace boost::program_options;
 
 // Return true if it is ok to emit this particular class.
 // Check for specific bad types (e.g. string, types of vector, etc.).
@@ -226,29 +224,38 @@ int main(int argc, char**argv) {
     auto app_reference = create_root_app();
 
     // Parse the command line arguments
-    options_description desc{"Options"};
-    desc.add_options()
-      ("help,h", "This message")
-      ("library,l", value<vector<string>>(), "Load shared library")
-      ("class,c", value<vector<string>>(), "Translate class");
-    command_line_parser parser{argc, argv};
-    parser.options(desc);
-    auto parsed_options = parser.run();
+    argparse::ArgumentParser program("generate_types");
 
-    variables_map vm;
-    store(parsed_options, vm);
-    notify(vm);
+    program.add_argument("-l", "--library")
+        .help("Load shared library")
+        .append()
+        .default_value(vector<string>{});
 
-    if (vm.count("help")) {
-        cout << desc << endl;
+    program.add_argument("-c", "--class")
+        .help("Translate class")
+        .append()
+        .required();
+
+    program.add_argument("-h", "--help")
+        .default_value(false)
+        .implicit_value(true)
+        .nargs(0)
+        .help("This message");
+
+    try {
+        program.parse_args(argc, argv);
+    } catch (const runtime_error& err) {
+        cerr << err.what() << endl;
+        cerr << program;
         return 1;
     }
 
-    if (vm.count("class") == 0) {
-        cerr << "ERROR: Can't do class self discovery. You must provide the --class options!" << endl;
+    if (program.get<bool>("--help")) {
+        cout << program;
         return 1;
     }
-    auto cmd_classes = vm["class"].as<vector<string>>();
+
+    auto cmd_classes = program.get<vector<string>>("--class");
     queue<string> classes_to_do;
     set<string> classes_original_set;
 
@@ -260,14 +267,12 @@ int main(int argc, char**argv) {
         }
     }
 
-    if (vm.count("library") > 0) {
-        auto libraries = vm["library"].as<vector<string>>();
-        for (auto &&l_name : libraries)
-        {
-            auto status = gSystem->Load(l_name.c_str());
-            if (status < 0) {
-                cerr << "ERROR: Can't load library " << l_name << " - status: " << status << endl;
-            }
+    auto libraries = program.get<vector<string>>("--library");
+    for (auto &&l_name : libraries)
+    {
+        auto status = gSystem->Load(l_name.c_str());
+        if (status < 0) {
+            cerr << "ERROR: Can't load library " << l_name << " - status: " << status << endl;
         }
     }
 
