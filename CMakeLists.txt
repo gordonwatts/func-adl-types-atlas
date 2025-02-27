@@ -24,7 +24,7 @@ endmacro()
 
 # Fetch our libraries
 FetchContent_Package(googletest https://github.com/google/googletest/archive/075810f7a20405ea09a93f68847d6e963212fa62.zip)
-FetchContent_Package(yaml-cpp https://github.com/jbeder/yaml-cpp/archive/0579ae3d976091d7d664aa9d2527e0d0cff25763.zip)
+FetchContent_Package(yaml-cpp https://github.com/jbeder/yaml-cpp/archive/refs/tags/0.8.0.zip)
 FetchContent_Package(argparse https://github.com/p-ranav/argparse/archive/refs/tags/v3.2.zip)
 
 if($ENV{AnalysisBase_VERSION} VERSION_LESS "25.0.0")
