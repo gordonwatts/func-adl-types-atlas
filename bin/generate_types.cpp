@@ -620,6 +620,7 @@ int main(int argc, char**argv) {
         << YAML::BeginSeq;
 
     // Get a list of a list of all classes 
+    map<string, vector<string>> failed_types;
     for (auto &&c : classes_to_emit)
     {
         string c_name(unqualified_type_name(c));
@@ -726,6 +727,7 @@ int main(int argc, char**argv) {
                             }
                             first = false;
                             cerr << arg;
+                            failed_types[arg].push_back(c_info->first + "::" + meth.name);
                         }
                     }
                     cerr << endl;
@@ -736,7 +738,6 @@ int main(int argc, char**argv) {
         if (!first_method) {
             out << YAML::EndSeq;
         }
-        
 
         out << YAML::EndMap;
     }
@@ -776,4 +777,17 @@ int main(int argc, char**argv) {
         metadata_in.read(&buf[0], buf_size);
         cout.write(&buf[0], metadata_in.gcount());
     } while (metadata_in.gcount() > 0);     
+
+    // Dump the failed types and their associated methods
+    cerr << "Summary of failed types and their methods:" << endl;
+    vector<pair<string, vector<string>>> sorted_failed_types(failed_types.begin(), failed_types.end());
+    sort(sorted_failed_types.begin(), sorted_failed_types.end(), [](const auto& a, const auto& b) {
+        return a.second.size() > b.second.size();
+    });
+    for (const auto& [type, methods] : sorted_failed_types) {
+        cerr << "Type: " << type << ", Number of methods: " << methods.size() << endl;
+        for (const auto& method : methods) {
+            cerr << "  " << method << endl;
+        }
+    }
 }
