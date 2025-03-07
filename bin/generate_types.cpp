@@ -621,12 +621,7 @@ int main(int argc, char**argv) {
         // Find the class
         auto c_info = class_map.find(c_name);
         if (c_info == class_map.end()) {
-            continue;
-        }
-
-        // Make sure there is at least one method
-        // TODO: this is not needed, delete and check.
-        if (!can_emit_any_methods(c_info->second.methods, known_types)) {
+            cerr << "ERROR: Ready to emit class " << c_name << " but it is not in the class map." << endl;
             continue;
         }
 
