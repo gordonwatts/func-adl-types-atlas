@@ -42,7 +42,7 @@ bool can_emit_class(const class_info &c_info) {
             return false;
         }
     }
-    if (c_info.methods.size() == 0) {
+    if (c_info.methods.size() == 0 && c_info.enums.size() == 0) {
         return false;
     }
     return true;
@@ -433,6 +433,8 @@ int main(int argc, char**argv) {
         // If we can dump the class, then we should!
         if (can_emit_class(c_info->second)) {
             classes_to_emit.insert(c_info->first);
+        } else {
+            cerr << "ERROR: Class " << c_name << " fails `can_emit_class`: not emitted." << endl;
         }
 
         // Now, add referenced classes to the queue
@@ -480,15 +482,12 @@ int main(int argc, char**argv) {
             auto class_info_ptr = class_map.find(c_name);
             if (class_info_ptr != class_map.end()) {
                 auto &&class_info = class_info_ptr->second;
-                if (!can_emit_any_methods(class_info.methods, known_types)) {
-                    bad_classes.insert(c_name);
-                    cerr << "ERROR: Class " << c_name << " not translated: no methods to emit." << endl;
-                }
                 if (!check_template_arguments(class_info.name_as_type, known_types)) {
                     bad_classes.insert(c_name);
                     cerr << "ERROR: Class " << c_name << " not translated: template arguments were bad." << endl;
                 }
                 if (!is_root_only_class(class_info)) {
+                    cerr << "INFO: Class " << c_name << " not translated: ROOT only class." << endl;
                     bad_classes.insert(c_name);
                 }
             }
