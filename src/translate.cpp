@@ -209,8 +209,43 @@ bool load_template_arguments(const vector<typename_info> &types) {
     // load their template arguments first.
     // Gets around ROOT failing to load ElementLink<xAOD::MuonContainer>
     // even though it knows about all of that.
+
+    // Some base types that aren't classes but are well known.
+    static set<string> base_types;
+    if (base_types.size() == 0) {
+        base_types.insert("int");
+        base_types.insert("float");
+        base_types.insert("double");
+        base_types.insert("bool");
+        base_types.insert("string");
+        base_types.insert("char");
+        base_types.insert("unsigned char");
+        base_types.insert("signed char");
+        base_types.insert("short");
+        base_types.insert("unsigned short");
+        base_types.insert("unsigned int");
+        base_types.insert("long");
+        base_types.insert("unsigned long");
+        base_types.insert("long long");
+        base_types.insert("unsigned long long");
+        base_types.insert("char16_t");
+        base_types.insert("char32_t");
+        base_types.insert("uint");
+        base_types.insert("uint8_t");
+        base_types.insert("uint16_t");
+        base_types.insert("uint32_t");
+        base_types.insert("uint64_t");
+        base_types.insert("int8_t");
+        base_types.insert("int16_t");
+        base_types.insert("int32_t");
+        base_types.insert("int64_t");
+    }
+
     for (auto &&t : types)
     {
+        if (base_types.find(t.type_name) != base_types.end()) {
+            continue;
+        }
         if (get_tclass(unqualified_typename(t)) == nullptr)
         {
             // If we can't load it, then load template arguments first.
