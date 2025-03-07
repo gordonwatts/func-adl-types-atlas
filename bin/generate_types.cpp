@@ -455,8 +455,10 @@ int main(int argc, char**argv) {
     classes_to_emit.insert("int8_t");
     classes_to_emit.insert("int16_t");
     classes_to_emit.insert("int32_t");
+    classes_to_emit.insert("int64_t");
     classes_to_emit.insert("uint8_t");
     classes_to_emit.insert("uint16_t");
+    classes_to_emit.insert("uint64_t");
     classes_to_emit.insert("uint");
     classes_to_emit.insert("unsigned int");
     classes_to_emit.insert("char");
