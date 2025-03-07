@@ -281,6 +281,7 @@ int main(int argc, char**argv) {
     set<string> classes_done;
     set<string> classes_original_set_done;
     vector<class_info> done_classes;
+    set<string> seen_namespace_additions;
 
     while (classes_to_do.size() > 0) {
         // Grab a class and mark it on the list
@@ -297,9 +298,33 @@ int main(int argc, char**argv) {
                 continue;
             }
         classes_done.insert(class_name);
+        cout << "--> Translating class " << raw_class_name << " (" << classes_to_do.size() << " classes left)" << endl;
 
         // Translate the class
         auto c = translate_class(class_name);
+
+        // Make sure to add all namespace qualifications in. This is
+        // because ROOT will store "global" enums in those namespaces,
+        // which is crazy but true.
+        const auto tn = c.name.size() == 0 ? parse_typename(class_name) : c.name_as_type;
+        string namespace_stem = "";
+        for (auto &&ns : tn.namespace_list)
+        {
+            if (namespace_stem.size() > 0) {
+                namespace_stem += "::";
+            }
+            namespace_stem += ns.cpp_name;
+            if (class_name_is_good(namespace_stem))
+            {
+                // Make sure it isn't on the classes_to_do list or the classes_done list first
+                if (classes_done.find(namespace_stem) == classes_done.end()
+                    && seen_namespace_additions.find(namespace_stem) == seen_namespace_additions.end()) {
+                    cout << "--> adding namespace " << namespace_stem << endl;
+                    classes_to_do.push(namespace_stem);
+                    seen_namespace_additions.insert(namespace_stem);
+                }
+            }
+        }
 
         // If we translated it, look at all classes it referenced and
         // add them to the list to translate.
