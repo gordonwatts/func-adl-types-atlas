@@ -143,8 +143,12 @@ string extract_container_iterator_type(const collection_info &c)
 }
 
 // These classes are known to be problematic
-set<string> _g_bad_classes {
-    "ROOT", "SG", "xAOD", "TObject", "SG::auxid_set_t"
+set<string> _g_bad_classes{
+    "ROOT",
+    "SG",
+    "TObject",
+    "SG::auxid_set_t",
+    "DataModel_detail",
 };
 
 // Inspect the class name. There are just some classes we
@@ -153,6 +157,7 @@ bool class_name_is_good(const string &c_name) {
     return (_g_bad_classes.find(c_name) == _g_bad_classes.end()
         && (c_name.find("Eigen") == c_name.npos)
         && (c_name.find("SG::") == c_name.npos)
+        && (c_name.find("ROOT::Experimental") != 0)
        );
 }
 
