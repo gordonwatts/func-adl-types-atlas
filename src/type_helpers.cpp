@@ -90,6 +90,7 @@ map<string, vector<string>> root_typedef_map()
             typedef_back_map[base_name].push_back(typedef_name);
         }
     }
+
     return typedef_back_map;
 }
 
@@ -116,6 +117,15 @@ void build_typedef_map() {
     // Add a few special ones to keep the system working
     g_typedef_map["ULong64_t"] = "unsigned long long";
     g_typedef_map["uint32_t"] = "unsigned int";
+    g_typedef_map["Double_t"] = "double";
+    g_typedef_map["Float_t"] = "float";
+    g_typedef_map["Int_t"] = "int";
+    g_typedef_map["Long64_t"] = "long long";
+    g_typedef_map["Long_t"] = "long";
+    g_typedef_map["Bool_t"] = "bool";
+    g_typedef_map["UInt_t"] = "unsigned int";
+    g_typedef_map["ULong_t"] = "unsigned long";
+    g_typedef_map["ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiM4D<double>>::Scalar"] = "double";
 
     // Some class typedef's that ROOT RTTI can't seem to "get".
     g_typedef_map["xAOD::CaloCluster_v1::CaloSample"] = "CaloSampling::CaloSample";
@@ -136,7 +146,7 @@ string resolve_typedef(const string &c_name) {
     // For whatever reason, ROOT never seems to know about this,
     // and this is a strictly C++ type.
     if (t.type_name == "size_t") {
-        return "int";
+        return "unsigned int";
     }
 
     string result = unqualified_typename(t);
