@@ -380,7 +380,7 @@ TEST(t_type_helpers, typedef_resolve_simple) {
 
 TEST(t_type_helpers, typedef_resolve_size_t) {
     TClass::GetClass("xAOD::EventInfo"); // Make sure the typedefs are loaded into root!
-    EXPECT_EQ(resolve_typedef("size_t"), "int");
+    EXPECT_EQ(resolve_typedef("size_t"), "unsigned int");
 }
 
 TEST(t_type_helpers, typedef_resolve_blank) {
