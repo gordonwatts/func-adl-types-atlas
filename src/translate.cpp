@@ -274,6 +274,7 @@ class_info translate_class(const std::string &class_name)
 
     // Get the class
     auto unq_class_name = unqualified_typename(t_prior);
+    cout << "--> Translating class: " << unq_class_name << "(" << class_name << ")" << endl;
     auto c_info = get_tclass(unq_class_name);
     if (c_info == nullptr)
     {
