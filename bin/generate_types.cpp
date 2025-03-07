@@ -298,7 +298,6 @@ int main(int argc, char**argv) {
                 continue;
             }
         classes_done.insert(class_name);
-        cout << "--> Translating class " << raw_class_name << " (" << classes_to_do.size() << " classes left)" << endl;
 
         // Translate the class
         auto c = translate_class(class_name);
@@ -319,7 +318,6 @@ int main(int argc, char**argv) {
                 // Make sure it isn't on the classes_to_do list or the classes_done list first
                 if (classes_done.find(namespace_stem) == classes_done.end()
                     && seen_namespace_additions.find(namespace_stem) == seen_namespace_additions.end()) {
-                    cout << "--> adding namespace " << namespace_stem << endl;
                     classes_to_do.push(namespace_stem);
                     seen_namespace_additions.insert(namespace_stem);
                 }
