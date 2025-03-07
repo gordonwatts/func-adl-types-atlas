@@ -42,7 +42,7 @@ bool can_emit_class(const class_info &c_info) {
             return false;
         }
     }
-    if (c_info.methods.size() == 0) {
+    if (c_info.methods.size() == 0 && c_info.enums.size() == 0) {
         return false;
     }
     return true;
@@ -281,6 +281,7 @@ int main(int argc, char**argv) {
     set<string> classes_done;
     set<string> classes_original_set_done;
     vector<class_info> done_classes;
+    set<string> seen_namespace_additions;
 
     while (classes_to_do.size() > 0) {
         // Grab a class and mark it on the list
@@ -300,6 +301,28 @@ int main(int argc, char**argv) {
 
         // Translate the class
         auto c = translate_class(class_name);
+
+        // Make sure to add all namespace qualifications in. This is
+        // because ROOT will store "global" enums in those namespaces,
+        // which is crazy but true.
+        const auto tn = c.name.size() == 0 ? parse_typename(class_name) : c.name_as_type;
+        string namespace_stem = "";
+        for (auto &&ns : tn.namespace_list)
+        {
+            if (namespace_stem.size() > 0) {
+                namespace_stem += "::";
+            }
+            namespace_stem += ns.cpp_name;
+            if (class_name_is_good(namespace_stem))
+            {
+                // Make sure it isn't on the classes_to_do list or the classes_done list first
+                if (classes_done.find(namespace_stem) == classes_done.end()
+                    && seen_namespace_additions.find(namespace_stem) == seen_namespace_additions.end()) {
+                    classes_to_do.push(namespace_stem);
+                    seen_namespace_additions.insert(namespace_stem);
+                }
+            }
+        }
 
         // If we translated it, look at all classes it referenced and
         // add them to the list to translate.
@@ -408,6 +431,8 @@ int main(int argc, char**argv) {
         // If we can dump the class, then we should!
         if (can_emit_class(c_info->second)) {
             classes_to_emit.insert(c_info->first);
+        } else {
+            cerr << "ERROR: Class " << c_name << " fails `can_emit_class`: not emitted." << endl;
         }
 
         // Now, add referenced classes to the queue
@@ -455,15 +480,12 @@ int main(int argc, char**argv) {
             auto class_info_ptr = class_map.find(c_name);
             if (class_info_ptr != class_map.end()) {
                 auto &&class_info = class_info_ptr->second;
-                if (!can_emit_any_methods(class_info.methods, known_types)) {
-                    bad_classes.insert(c_name);
-                    cerr << "ERROR: Class " << c_name << " not translated: no methods to emit." << endl;
-                }
                 if (!check_template_arguments(class_info.name_as_type, known_types)) {
                     bad_classes.insert(c_name);
                     cerr << "ERROR: Class " << c_name << " not translated: template arguments were bad." << endl;
                 }
                 if (!is_root_only_class(class_info)) {
+                    cerr << "INFO: Class " << c_name << " not translated: ROOT only class." << endl;
                     bad_classes.insert(c_name);
                 }
             }
@@ -597,12 +619,7 @@ int main(int argc, char**argv) {
         // Find the class
         auto c_info = class_map.find(c_name);
         if (c_info == class_map.end()) {
-            continue;
-        }
-
-        // Make sure there is at least one method
-        // TODO: this is not needed, delete and check.
-        if (!can_emit_any_methods(c_info->second.methods, known_types)) {
+            cerr << "ERROR: Ready to emit class " << c_name << " but it is not in the class map." << endl;
             continue;
         }
 
@@ -692,7 +709,7 @@ int main(int argc, char**argv) {
                 // Do not warn when return type is void - this is just how we work
                 // in a functional world for now (e.g. by design).
                 if (meth.return_type.size() != 0) {
-                    cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not emitted: ";
+                    cerr << "ERROR: Cannot emit method " << c_info->first << "::" << meth.name << " - some types not known: ";
                     for (const auto& arg : method_args) {
                         cerr << arg << ", ";
                     }
