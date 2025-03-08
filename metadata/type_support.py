@@ -51,6 +51,7 @@ cpp_double = cpp_type[float]("double", float)
 cpp_string = cpp_type[float]("std::string", float)
 cpp_vfloat = cpp_type[Iterable[float]]("float", float, "std::vector<float>")
 cpp_vint = cpp_type[Iterable[int]]("int", int, "std::vector<int>")
+cpp_vdouble = cpp_type[Iterable[float]]("double", float, "std::vector<double>")
 
 
 # TODO: 3.10 and this should be a ParamSpec, not a TypeVar.
