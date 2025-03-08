@@ -698,7 +698,13 @@ TEST(t_type_helpers, normalized_vector_front_ns) {
     EXPECT_EQ(normalized_type_name("std::vector<double>"), "std.vector_float_");
 }
 
-TEST(t_type_helpers, normalized_elPtr) {
+TEST(t_type_helpers, normalized_vector_space)
+{
+    EXPECT_EQ(normalized_type_name("vector<unsigned char>"), "vector_unsigned_char_");
+}
+
+TEST(t_type_helpers, normalized_elPtr)
+{
     EXPECT_EQ(normalized_type_name("ElementLink<DataVector<xAOD::Truth>>"), "ElementLink_DataVector_xAOD_Truth__");
 }
 

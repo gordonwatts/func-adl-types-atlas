@@ -418,6 +418,7 @@ string normalized_type_name(const typename_info &ti)
             }
             break;
 
+        case ' ':
         case ',':
             result[i] = '_';
             break;
