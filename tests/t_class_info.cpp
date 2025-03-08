@@ -122,7 +122,16 @@ TEST(t_class_info, convert_double_to_float) {
     EXPECT_EQ(out.str(), "vector[float]");
 }
 
-TEST(t_class_info, has_methods_no) {
+TEST(t_class_info, convert_unsigned_char)
+{
+    auto tn = parse_typename("vector<unsigned char>");
+    ostringstream out;
+    out << tn;
+    EXPECT_EQ(out.str(), "vector[int]");
+}
+
+TEST(t_class_info, has_methods_no)
+{
     method_info mi;
     mi.name = "begin";
 
