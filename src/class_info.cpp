@@ -70,6 +70,17 @@ map<string, string> python_type_conversions =
         {"unsigned long long", "int"},
         {"size_t", "int"},
         {"string", "str"},
+        {"unsigned char", "int"},
+        {"char", "int"},
+        {"int8_t", "int"},
+        {"int16_t", "int"},
+        {"int32_t", "int"},
+        {"int64_t", "int"},
+        {"uint8_t", "int"},
+        {"uint16_t", "int"},
+        {"uint32_t", "int"},
+        {"uint64_t", "int"},
+        {"uint", "int"},
     };
 
 // Reconstruct the full type name
