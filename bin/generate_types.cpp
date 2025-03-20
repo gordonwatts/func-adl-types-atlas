@@ -639,6 +639,11 @@ int main(int argc, char**argv) {
             continue;
         }
 
+        if (!can_emit_class(c_info->second)) {
+            cerr << "ERROR: Ready to emit class " << c_name << " but it is on our list of classes to block." << endl;
+            continue;
+        }
+
         // If we can dump the class, then we should!
         out << YAML::BeginMap
             << YAML::Key << "python_name" << YAML::Value << normalized_type_name(c_info->second.name_as_type)
