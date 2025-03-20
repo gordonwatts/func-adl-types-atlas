@@ -73,27 +73,6 @@ vector<string> all_that_inherit_from(const string &c_name)
     return vector<string>(results.begin(), results.end());
 }
 
-// Build a list of type mapping
-map<string, vector<string>> root_typedef_map()
-{
-    // Build a typedef backwards mapping
-	TIter i_typedef (gROOT->GetListOfTypes(true));
-	int junk = gROOT->GetListOfTypes()->GetEntries();
-	TDataType *typedef_spec;
-    map<string, vector<string>> typedef_back_map;
-	while ((typedef_spec = static_cast<TDataType*>(i_typedef.Next())) != 0)
-	{
-		string typedef_name = typedef_spec->GetName();
-		string base_name = typedef_spec->GetFullTypeName();
-
-        if (typedef_name != base_name) {
-            typedef_back_map[base_name].push_back(typedef_name);
-        }
-    }
-
-    return typedef_back_map;
-}
-
 map<string, string> g_typedef_map;
 
 void build_typedef_map() {
@@ -130,6 +109,22 @@ void build_typedef_map() {
     // Some class typedef's that ROOT RTTI can't seem to "get".
     g_typedef_map["xAOD::CaloCluster_v1::CaloSample"] = "CaloSampling::CaloSample";
     g_typedef_map["xAOD::CaloCluster_v1::flt_t"] = "float";
+}
+
+// Build a list of type mapping
+map<string, vector<string>> root_typedef_map()
+{
+    // Build the forward map
+    build_typedef_map();
+
+    // Use that to build the backwards map.
+    map<string, vector<string>> typedef_back_map;
+    for (auto &item : g_typedef_map)
+    {
+        typedef_back_map[item.second].push_back(item.first);
+    }
+
+    return typedef_back_map;
 }
 
 // From typedefs, return resolved typedefs.
