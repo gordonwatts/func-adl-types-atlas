@@ -160,7 +160,6 @@ class calib_tools:
             return copy.copy(r)
 
     @classmethod
-    @property
     def default_sys_error(cls) -> str:
         """Return the default systematic error"""
         if cls._default_sys_error is None:
@@ -243,7 +242,7 @@ def fixup_collection_call(
     # See if there is a systematic error we need to fetch
     sys_error = lookup_query_metadata(new_s, "calibration_sys_error")
     if sys_error is None:
-        sys_error = calib_tools.default_sys_error
+        sys_error = calib_tools.default_sys_error()
 
     # Make sure the bank name is set properly (or defaulted)
     calibration_info = calib_tools.query_get(new_s)
