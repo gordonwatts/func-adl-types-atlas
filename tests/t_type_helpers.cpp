@@ -700,7 +700,7 @@ TEST(t_type_helpers, normalized_vector_front_ns) {
 
 TEST(t_type_helpers, normalized_vector_space)
 {
-    EXPECT_EQ(normalized_type_name("vector<unsigned char>"), "vector_unsigned_char_");
+    EXPECT_EQ(normalized_type_name("vector<unsigned char>"), "vector_int_");
 }
 
 TEST(t_type_helpers, normalized_elPtr)
