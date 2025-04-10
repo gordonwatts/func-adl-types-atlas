@@ -1,8 +1,24 @@
-# pulled from:https://gitlab.cern.ch/atlas/athena/-/blob/21.2/PhysicsAnalysis/Algorithms/JetAnalysisAlgorithms/python/JetAnalysisAlgorithmsTest.py
-# Set up the systematics loader/handler service:
-from AnaAlgorithm.DualUseConfig import createService
 from AnaAlgorithm.AlgSequence import AlgSequence
-calibrationAlgSeq = AlgSequence()
-sysService = createService( 'CP::SystematicsSvc', 'SystematicsSvc', sequence = calibrationAlgSeq )
-sysService.systematicsList = ['{{ sys_error }}']
-# Add sequence to job
+from AnalysisAlgorithmsConfig.ConfigAccumulator import ConfigAccumulator
+from AnalysisAlgorithmsConfig.ConfigText import TextConfig
+from Campaigns.Utils import Campaign
+from AthenaConfiguration.AllConfigFlags import initConfigFlags
+
+dataType='mc'
+isPhyslite=False
+geometry='RUN2'
+campaign=Campaign.MC20e
+
+# Needed to configure the AlgSequence
+from AthenaConfiguration.AllConfigFlags import initConfigFlags
+flags = initConfigFlags()
+flags.Input.Files = [sh.at(0).fileName(0)]
+flags.lock()
+
+autoconfigFromFlags=flags
+
+config = TextConfig()
+
+# Switch on systematics
+config.addBlock('CommonServices')
+config.setOptions(systematicsHistogram='systematicsList')
