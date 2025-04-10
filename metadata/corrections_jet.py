@@ -8,6 +8,17 @@ config.setOptions (runJvtUpdate=False)
 config.setOptions (runNNJvtUpdate=True)
 config.setOptions (recalibratePhyslite=False)
 
+
+config.addBlock('Jets.JVT', containerName=output_jet_container)
+
+config.addBlock ('SystObjectLink')
+config.setOptions (containerName='AnaJets')
+
+config.addBlock ('ObjectCutFlow')
+config.setOptions (containerName='AnaJets')
+config.setOptions (selectionName='jvt')
+
+
 # TODO: Figure out why this needs to be here:
 # Output jet_collection = {{calib.jet_collection}}Calib_{{ sys_error }}
 
