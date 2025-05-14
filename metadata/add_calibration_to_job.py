@@ -1,12 +1,23 @@
 configSeq = config.configure()
 
-# compile
+from Campaigns.Utils import Campaign
+
+# Needed to configure the AlgSequence
+from AthenaConfiguration.AllConfigFlags import initConfigFlags
+
+flags = initConfigFlags()
+flags.Input.Files = [sh.at(0).fileName(0)]
+flags.lock()
+
+autoconfigFromFlags = flags
+
+logging.info("Adding Calibration")
+
+from AnaAlgorithm.AlgSequence import AlgSequence
 algSeq = AlgSequence()
-configAccumulator = ConfigAccumulator(algSeq, dataType=dataType,
-        isPhyslite=isPhyslite,
-        geometry=geometry,
-        campaign=campaign,
-        autoconfigFromFlags=autoconfigFromFlags)
+
+from AnalysisAlgorithmsConfig.ConfigAccumulator import ConfigAccumulator
+configAccumulator = ConfigAccumulator(algSeq, autoconfigFromFlags=autoconfigFromFlags)
 configSeq.fullConfigure(configAccumulator)
 
 algSeq.addSelfToJob( job )
