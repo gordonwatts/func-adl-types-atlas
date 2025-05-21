@@ -1,24 +1,8 @@
-electron_container_name = "{{calib.electron_collection}}_{{calib.electron_working_point}}_{{calib.electron_isolation}}_Calib"
-
-# Electrons
-config.addBlock ('Electrons')
-config.setOptions (containerName=electron_container_name)
-config.setOptions (recalibratePhyslite=False)
-
-# Electrons.WorkingPoint
-config.addBlock ('Electrons.WorkingPoint')
-config.setOptions (containerName=electron_container_name)
-config.setOptions (selectionName='loose_ele')
-config.setOptions (forceFullSimConfig=True)
-config.setOptions (noEffSF=True)
-config.setOptions (identificationWP="{{calib.electron_working_point}}")
-config.setOptions (isolationWP="{{calib.electron_isolation}}")
-
-# Thinning
-config.addBlock ('Thinning')
-config.setOptions (containerName=electron_container_name)
-config.setOptions (selectionName='loose_ele')
-config.setOptions (outputName='OutElectrons')
-
-
-# Output electron_collection = OutElectrons_{{ sys_error }}
+from EgammaAnalysisAlgorithms.ElectronAnalysisSequence import makeElectronAnalysisSequence
+electronSequence = makeElectronAnalysisSequence( 'mc', '{{calib.electron_working_point}}.{{calib.electron_isolation}}', postfix = '{{calib.electron_working_point}}_{{calib.electron_isolation}}')
+electronSequence.configure( inputName = '{{calib.electron_collection}}',
+                            outputName = '{{calib.electron_collection}}_{{calib.electron_working_point}}_{{calib.electron_isolation}}_%SYS%' )
+calibrationAlgSeq += electronSequence
+print( electronSequence ) # For debugging
+output_electron_container = "{{calib.electron_collection}}_{{calib.electron_working_point}}_{{calib.electron_isolation}}_%SYS%"
+# Output electron_collection = {{calib.electron_collection}}_{{calib.electron_working_point}}_{{calib.electron_isolation}}_{{ sys_error }}
