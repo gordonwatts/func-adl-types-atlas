@@ -91,8 +91,17 @@ That said, some classes of things are missing:
 * C++ `class typedef`'s are not supported and must be hand-coded. This is due to a limitation in ROOT: they do not store this information in a place easily accessible.
 * Not every class is translated. Only classes referenced by the ATLAS collections, and anything they in turn reference (and so on) are translated.
 
+## Releasing New Versions
+
+After merging your changes here are the steps to release new versions:
+
+1. Create a new release and tag for the version in this repo
+2. Edit the release.yaml found in the [Type Generator Repository](https://github.com/iris-hep/func_adl_type_generator) to the version of the new tag created and commit these changes to main.
+3. Follow the release steps in the the Type Generator repo to release through there.
+
 ## Supported Releases
 
 * ATLAS AnalysisBase Containers
   * R21 Series
   * R22 Series
+  * R25 Series
