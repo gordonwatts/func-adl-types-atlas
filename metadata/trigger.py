@@ -124,7 +124,7 @@ def tdt_chain_fired(triggers: str) -> bool:
 @func_adl_callable(_tmt_match_object_processor)
 def tmt_match_object(trigger: str, offline_object, dr: float = 0.7) -> bool:
     '''Returns true if the `offline_object` is a close match to the trigger
-    object. Close match is done as a function of $\Delta R < `dr`$.
+    object. Close match is done as a function of $\\Delta R < `dr`$.
 
     Args:
         trigger (str): Trigger name
