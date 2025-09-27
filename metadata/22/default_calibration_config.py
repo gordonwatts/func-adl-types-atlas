@@ -70,7 +70,7 @@ def default_calibration_config() -> Dict[str, CalibrationEventConfig]:
             muon_collection="AnalysisMuons",
             muon_working_point="Medium",
             muon_isolation="NonIso",
-            tau_collection="AnalysisTaus",
+            tau_collection="AnalysisTauJets",
             tau_working_point="Tight",
             met_collection="MET_Core_AnalysisMET",
             perform_overlap_removal=True,
