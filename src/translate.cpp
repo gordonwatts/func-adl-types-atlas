@@ -358,6 +358,9 @@ class_info translate_class(const std::string &class_name)
     {
         enum_info e_info;
         e_info.name = enum_obj->GetName();
+        if (e_info.name == "(unnamed)") {
+            e_info.name = "Global";
+        }
 
         // Get all the enum values
         auto all_values = enum_obj->GetConstants();
