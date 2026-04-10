@@ -48,7 +48,7 @@ def _add_match_tool(s: ObjectStream[T]) -> ObjectStream[T]:
                     "TriggerMatchingTool/MatchFromCompositeTool.h",
                 ],
                 "instance_initialization": [
-                    'm_tmt("Trig::MatchFromCompositeTool")',
+                    'm_tmt("Trig::MatchFromCompositeTool/MatchFromCompositeTool")',
                 ],
                 "initialize_lines": [
                     'ANA_CHECK(m_tmt.initialize());',
