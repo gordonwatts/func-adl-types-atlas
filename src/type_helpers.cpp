@@ -570,6 +570,36 @@ std::string typename_cpp_string(const typename_info &ti)
     return stream.str();
 }
 
+// Standard library types that must carry the std:: namespace qualifier.
+static const set<string> _std_qualified_types({
+    "vector", "string", "map", "set", "pair", "list", "deque",
+    "unordered_map", "unordered_set", "multimap", "multiset", "array", "tuple"
+});
+
+// Recursively ensure all standard library types in ti carry the std:: namespace.
+// Leaves non-standard types (DataVector, xAOD::Jet, etc.) unchanged.
+typename_info qualify_std_types(const typename_info &ti)
+{
+    typename_info result = ti;
+
+    for (auto &ns : result.namespace_list) {
+        ns = qualify_std_types(ns);
+    }
+    for (auto &t_arg : result.template_arguments) {
+        t_arg = qualify_std_types(t_arg);
+    }
+
+    if (result.namespace_list.empty() && _std_qualified_types.count(result.type_name) > 0) {
+        typename_info std_ns;
+        std_ns.type_name = "std";
+        std_ns.cpp_name = "std";
+        result.namespace_list.push_back(std_ns);
+    }
+
+    result.cpp_name = typename_cpp_string(result);
+    return result;
+}
+
 set<string> _known_templates({
     "vector",
     // "ElementLink",

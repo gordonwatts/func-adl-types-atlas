@@ -77,6 +77,10 @@ bool is_understood_method(const method_info &meth, const std::set<std::string> &
 typename_info py_typename(const std::string &t_name);
 typename_info py_typename(const typename_info &t);
 
+// Add std:: namespace to all unqualified standard library types (vector, string, etc.)
+// recursively through all template arguments.
+typename_info qualify_std_types(const typename_info &ti);
+
 // Return a TClass, but skip internal classes.
 class TClass;
 TClass *get_tclass(const std::string &name);

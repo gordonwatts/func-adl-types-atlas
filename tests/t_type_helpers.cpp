@@ -815,3 +815,59 @@ TEST(t_type_helpers, referenced_types_nested_vector)
     EXPECT_EQ(r.find("int") != r.end(), true);
     EXPECT_EQ(r.find("ElementLink<int>") != r.end(), true);
 }
+
+// qualify_std_types: leaves already-qualified types unchanged
+TEST(t_type_helpers, qualify_std_already_qualified)
+{
+    auto t = qualify_std_types(parse_typename("std::vector<float>"));
+    EXPECT_EQ(t.cpp_name, "std::vector<float>");
+}
+
+// qualify_std_types: adds std:: to unqualified vector<>
+TEST(t_type_helpers, qualify_std_bare_vector)
+{
+    auto t = qualify_std_types(parse_typename("vector<float>"));
+    EXPECT_EQ(t.cpp_name, "std::vector<float>");
+}
+
+// qualify_std_types: strips const but qualifies correctly via cpp_name
+TEST(t_type_helpers, qualify_std_const_vector)
+{
+    auto t = qualify_std_types(parse_typename("const vector<float>"));
+    EXPECT_EQ(t.cpp_name, "const std::vector<float>");
+}
+
+// qualify_std_types: handles nested vector<vector<float>>
+TEST(t_type_helpers, qualify_std_nested_vector)
+{
+    auto t = qualify_std_types(parse_typename("vector<vector<float>>"));
+    EXPECT_EQ(t.cpp_name, "std::vector<std::vector<float>>");
+}
+
+// qualify_std_types: handles const vector<vector<float>>
+TEST(t_type_helpers, qualify_std_const_nested_vector)
+{
+    auto t = qualify_std_types(parse_typename("const vector<vector<float>>"));
+    EXPECT_EQ(t.cpp_name, "const std::vector<std::vector<float>>");
+}
+
+// qualify_std_types: does NOT add std:: to non-std types like DataVector
+TEST(t_type_helpers, qualify_std_datavector_unchanged)
+{
+    auto t = qualify_std_types(parse_typename("DataVector<xAOD::Jet_v1>"));
+    EXPECT_EQ(t.cpp_name, "DataVector<xAOD::Jet_v1>");
+}
+
+// qualify_std_types: adds std:: to string
+TEST(t_type_helpers, qualify_std_string)
+{
+    auto t = qualify_std_types(parse_typename("string"));
+    EXPECT_EQ(t.cpp_name, "std::string");
+}
+
+// qualify_std_types: handles vector<string> (both get qualified)
+TEST(t_type_helpers, qualify_std_vector_of_string)
+{
+    auto t = qualify_std_types(parse_typename("vector<string>"));
+    EXPECT_EQ(t.cpp_name, "std::vector<std::string>");
+}
