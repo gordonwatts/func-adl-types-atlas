@@ -25,7 +25,7 @@ TEST(t_class_info, referenced_class_template_argument) {
     ci.name_as_type = parse_typename(ci.name);
 
     auto ref_list = referenced_types(ci);
-    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"SubClass", "vector<SubClass>"}));
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"SubClass", "std::vector<SubClass>"}));
 }
 
 TEST(t_class_info, referenced_typeinfo_pointer) {
@@ -47,21 +47,21 @@ TEST(t_class_info, referenced_typeinfo_template) {
     auto tn = parse_typename("vector<SubClass>");
 
     auto ref_list = referenced_types(tn);
-    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"SubClass", "vector<SubClass>"}));
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"SubClass", "std::vector<SubClass>"}));
 }
 
 TEST(t_class_info, referenced_typeinfo_template_with_namespace) {
     auto tn = parse_typename("vector<std::SubClass>");
 
     auto ref_list = referenced_types(tn);
-    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"std::SubClass", "vector<std::SubClass>"}));
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"std::SubClass", "std::vector<std::SubClass>"}));
 }
 
 TEST(t_class_info, referenced_typeinfo_qualified_name) {
     auto tn = parse_typename("vector<std::SubClass>::size_t");
 
     auto ref_list = referenced_types(tn);
-    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"vector<std::SubClass>::size_t"}));
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"std::vector<std::SubClass>::size_t"}));
 }
 
 TEST(t_class_info, referenced_element_link) {
@@ -77,7 +77,7 @@ TEST(t_class_info, referenced_method_return_type) {
     mi.return_type = "vector<std::SubClass>";
 
     auto ref_list = referenced_types(mi);
-    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"vector<std::SubClass>", "std::SubClass"}));
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"std::vector<std::SubClass>", "std::SubClass"}));
 }
 
 TEST(t_class_info, referenced_method_args) {
@@ -92,7 +92,7 @@ TEST(t_class_info, referenced_method_args) {
     mi.arguments.push_back(ma);
 
     auto ref_list = referenced_types(mi);
-    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"vector<std::SubClass>", "std::SubClass", "xAOD::Jet"}));
+    EXPECT_EQ(set<string>(ref_list.begin(), ref_list.end()), set<string>({"std::vector<std::SubClass>", "std::SubClass", "xAOD::Jet"}));
 }
 
 TEST(t_class_info, referenced_typename_ignore_integers) {
