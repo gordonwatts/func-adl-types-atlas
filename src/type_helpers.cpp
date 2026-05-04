@@ -521,6 +521,12 @@ std::string unqualified_typename(const typename_info &ti)
     return typename_cpp_string(n_ti);
 }
 
+set<string> _known_templates({
+    "vector",
+    // "ElementLink",
+    // "DataVector",
+});
+
 // Return the C++ type in a standard format
 std::string typename_cpp_string(const typename_info &ti)
 {
@@ -541,7 +547,11 @@ std::string typename_cpp_string(const typename_info &ti)
     if (!first)
         stream << "::";
 
+    if (first && _known_templates.count(ti.type_name))
+        stream << "std::";
+    
     stream << ti.type_name;
+
 
     // And any template arguments
     first = true;
@@ -569,12 +579,6 @@ std::string typename_cpp_string(const typename_info &ti)
 
     return stream.str();
 }
-
-set<string> _known_templates({
-    "vector",
-    // "ElementLink",
-    // "DataVector",
-});
 
 // See if we can handle this type:
 // Raw types in the known list are ok
