@@ -211,7 +211,8 @@ TEST(t_type_helpers, type_const_unsigned_int)
 TEST(t_type_helpers, type_vector_int) {
     auto t = parse_typename("vector<int>");
 
-    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.namespace_list.size(), 1);
+    EXPECT_EQ(t.namespace_list[0].type_name, "std");
     EXPECT_EQ(t.template_arguments.size(), 1);
     auto sub_t = t.template_arguments[0];
     EXPECT_EQ(sub_t.type_name, "int");
@@ -274,7 +275,8 @@ TEST(t_type_helpers, type_namespaced_buried) {
 
     EXPECT_EQ(t.type_name, "vector");
 
-    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.namespace_list.size(), 1);
+    EXPECT_EQ(t.namespace_list[0].type_name, "std");
 
     EXPECT_EQ(t.template_arguments.size(), 1);
     auto t_arg1 = t.template_arguments[0];
@@ -316,7 +318,8 @@ TEST(t_type_helpers, type_multiple_template_args) {
 
     EXPECT_EQ(t.type_name, "vector");
 
-    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.namespace_list.size(), 1);
+    EXPECT_EQ(t.namespace_list[0].type_name, "std");
 
     EXPECT_EQ(t.template_arguments.size(), 2);
     EXPECT_EQ(t.template_arguments[0].type_name, "size_t");
@@ -329,7 +332,8 @@ TEST(t_type_helpers, type_multiple_template_args_with_spaces)
 
     EXPECT_EQ(t.type_name, "vector");
 
-    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.namespace_list.size(), 1);
+    EXPECT_EQ(t.namespace_list[0].type_name, "std");
 
     EXPECT_EQ(t.template_arguments.size(), 2);
     EXPECT_EQ(t.template_arguments[0].type_name, "size_t");
@@ -344,7 +348,8 @@ TEST(t_type_helpers, type_multiple_template_args_with_spaces_no_ns)
 
     EXPECT_EQ(t.type_name, "vector");
 
-    EXPECT_EQ(t.namespace_list.size(), 0);
+    EXPECT_EQ(t.namespace_list.size(), 1);
+    EXPECT_EQ(t.namespace_list[0].type_name, "std");
 
     EXPECT_EQ(t.template_arguments.size(), 2);
     EXPECT_EQ(t.template_arguments[0].type_name, "size_t");
@@ -683,7 +688,7 @@ TEST(t_type_helpers, normalized_int) {
 }
 
 TEST(t_type_helpers, normalized_vector) {
-    EXPECT_EQ(normalized_type_name("vector<float>"), "vector_float_");
+    EXPECT_EQ(normalized_type_name("vector<float>"), "std.vector_float_");
 }
 
 TEST(t_type_helpers, normalized_iterable) {
@@ -691,7 +696,7 @@ TEST(t_type_helpers, normalized_iterable) {
 }
 
 TEST(t_type_helpers, normalized_vector_ns) {
-    EXPECT_EQ(normalized_type_name("vector<ROOT::Fit::ParameterSettings>"), "vector_ROOT_Fit_ParameterSettings_");
+    EXPECT_EQ(normalized_type_name("vector<ROOT::Fit::ParameterSettings>"), "std.vector_ROOT_Fit_ParameterSettings_");
 }
 
 TEST(t_type_helpers, normalized_vector_front_ns) {
@@ -700,7 +705,7 @@ TEST(t_type_helpers, normalized_vector_front_ns) {
 
 TEST(t_type_helpers, normalized_vector_space)
 {
-    EXPECT_EQ(normalized_type_name("vector<unsigned char>"), "vector_int_");
+    EXPECT_EQ(normalized_type_name("vector<unsigned char>"), "std.vector_int_");
 }
 
 TEST(t_type_helpers, normalized_elPtr)

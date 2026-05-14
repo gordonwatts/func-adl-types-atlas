@@ -119,7 +119,7 @@ TEST(t_class_info, convert_double_to_float) {
     auto tn = parse_typename("vector<double>");
     ostringstream out;
     out << tn;
-    EXPECT_EQ(out.str(), "vector[float]");
+    EXPECT_EQ(out.str(), "std.vector[float]");
 }
 
 TEST(t_class_info, convert_unsigned_char)
@@ -127,7 +127,7 @@ TEST(t_class_info, convert_unsigned_char)
     auto tn = parse_typename("vector<unsigned char>");
     ostringstream out;
     out << tn;
-    EXPECT_EQ(out.str(), "vector[int]");
+    EXPECT_EQ(out.str(), "std.vector[int]");
 }
 
 TEST(t_class_info, has_methods_no)
